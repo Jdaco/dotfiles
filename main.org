@@ -172,7 +172,7 @@ git clone https://github.com/hlissner/doom-emacs ~/.emacs.d
        make              ; run make tasks from Emacs
        pass              ; password manager for nerds
        pdf               ; pdf enhancements
-       ;;prodigy           ; FIXME managing external services & code builders
+       prodigy           ; FIXME managing external services & code builders
        ;;rgb               ; creating color strings
        ;;taskrunner        ; taskrunner for all your projects
        terraform         ; infrastructure as code
@@ -1273,6 +1273,16 @@ ITEM is each book information."
   ;;   (sudo-run-async "netctl stop-all" "*netctl*")
   ;;   (message "Stopped all networks"))
 #+end_src
+
+** File Sharing
+*** Syncthing
+#+begin_src elisp :noweb-ref prodigy-services
+(prodigy-define-service
+    :name "Syncthing"
+    :command "syncthing"
+    :kill-process-buffer-on-stop t)
+#+end_src
+
 * RSS
 #+begin_src elisp :noweb-ref configs
 (after! elfeed
@@ -1383,3 +1393,14 @@ right_meter_modes=1 2 2 2 2 2 2 2
 | Info-top-node       | g t |                                  |
 | info-next-reference | g j | Next link on the page            |
 | info-forward-node   | C-j | Next node (down / forward level) |
+* Services
+** Prodigy
+#+begin_src elisp :noweb-ref configs
+(after! prodigy
+  <<prodigy-services>>
+  )
+
+(map! :after prodigy
+      :leader
+      "o y" #'prodigy)
+#+end_src
