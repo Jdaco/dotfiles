@@ -21,6 +21,7 @@
 ** Eshell Aliases
 #+begin_src conf :tangle ~/.config/doom/eshell/aliases
 alias doom ~/.emacs.d/bin/doom $*
+alias guixupdate sudo guix system reconfigure /etc/config.scm
 #+end_src
 
 * Emacs
