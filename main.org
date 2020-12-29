@@ -20,7 +20,7 @@
 
 ** Eshell Aliases
 #+begin_src conf :tangle ~/.config/doom/eshell/aliases
-alias doom ~/.emacs.d/bin/doom
+alias doom ~/.emacs.d/bin/doom $*
 #+end_src
 
 * Emacs
