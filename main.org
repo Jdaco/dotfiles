@@ -17,6 +17,12 @@
   ;;   (let ((default-directory "/sudo:root@localhost:"))
   ;;     (start-file-process-shell-command "sudo-run-async" buffer command)))
 #+end_src
+
+** Eshell Aliases
+#+begin_src conf :tangle ~/.config/doom/eshell/aliases
+alias doom ~/.emacs.d/bin/doom
+#+end_src
+
 * Emacs
 ** Editing
 #+begin_src elisp :noweb-ref configs
