@@ -1,0 +1,1351 @@
+#+TITLE: Emacs
+#+VISIBILITY: overview
+#+PROPERTY: header-args :mkdirp t :noweb yes :results none
+
+* Shell
+| Command        | Key       |
+|----------------+-----------|
+| +eshell/toggle | ~SPC o e~ |
+| +eshell/here   | ~SPC o E~ |
+
+#+begin_src elisp :noweb-ref configs
+  ;; (defun sudo-run (command buffer)
+  ;;   (let ((default-directory "/sudo:root@localhost:"))
+  ;;     (process-file-shell-command command nil buffer)))
+
+  ;; (defun sudo-run-async (command buffer)
+  ;;   (let ((default-directory "/sudo:root@localhost:"))
+  ;;     (start-file-process-shell-command "sudo-run-async" buffer command)))
+#+end_src
+* Emacs
+** Editing
+#+begin_src elisp :noweb-ref configs
+;; Evil
+(setq evil-escape-key-sequence ";a"
+      evil-escape-unordered-key-sequence t)
+
+;; Files
+(map! :leader
+      :nv "f S" #'evil-write-all)
+
+(map! :nv "M-a" #'evil-scroll-up
+      :nv "M-;" #'evil-scroll-down
+      )
+
+(after! key-chord
+  (key-chord-define-global "dk" 'evil-write-all)
+  (key-chord-mode)
+  )
+
+;; buffers
+#+end_src
+
+#+begin_src elisp :noweb-ref packages
+(package! key-chord)
+#+end_src
+*** Snippets
+#+begin_src elisp :noweb-ref configs
+(map! :i "M-a" #'yas-previous-field
+      :i "M-;" #'yas-next-field)
+#+end_src
+** Global
+#+begin_src elisp :noweb-ref configs
+(map! :leader
+      :desc "M-x" "SPC" #'helm-M-x)
+
+; Help
+(map! :leader
+      (:prefix "h"
+      "I" #'helm-info))
+#+end_src
+
+#+begin_src elisp :noweb-ref packages
+;; (package! helpful)
+#+end_src
+** Doom
+
+*** Installation
+#+begin_src shell
+COMMIT="0c9256411d6bdb6cfc920bcce2216d99ff28a0c5"
+
+git clone https://github.com/hlissner/doom-emacs ~/.emacs.d
+(cd ~/.emacs.d && git checkout $COMMIT)
+~/.emacs.d/bin/doom install
+#+end_src
+*** init.el
+#+begin_src elisp :tangle ~/.config/doom/init.el
+;;; init.el -*- lexical-binding: t; -*-
+
+;; This file controls what Doom modules are enabled and what order they load
+;; in. Remember to run 'doom sync' after modifying it!
+
+;; NOTE Press 'SPC h d h' (or 'C-h d h' for non-vim users) to access Doom's
+;;      documentation. There you'll find a "Module Index" link where you'll find
+;;      a comprehensive list of Doom's modules and what flags they support.
+
+;; NOTE Move your cursor over a module's name (or its flags) and press 'K' (or
+;;      'C-c c k' for non-vim users) to view its documentation. This works on
+;;      flags as well (those symbols that start with a plus).
+;;
+;;      Alternatively, press 'gd' (or 'C-c c d') on a module to browse its
+;;      directory (for easy access to its source code).
+
+(doom! :input
+       ;;chinese
+       ;;japanese
+       ;;layout            ; auie,ctsrnm is the superior home row
+
+       :completion
+       company           ; the ultimate code completion backend
+       helm              ; the *other* search engine for love and life
+       ;;ido               ; the other *other* search engine...
+       ;;ivy               ; a search engine for love and life
+
+       :ui
+       ;;deft              ; notational velocity for Emacs
+       doom              ; what makes DOOM look the way it does
+       doom-dashboard    ; a nifty splash screen for Emacs
+       doom-quit         ; DOOM quit-message prompts when you quit Emacs
+       ;;(emoji +unicode)  ; 🙂
+       ;;fill-column       ; a `fill-column' indicator
+       hl-todo           ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
+       hydra
+       indent-guides     ; highlighted indent columns
+       ;;ligatures         ; ligatures and symbols to make your code pretty again
+       ;;minimap           ; show a map of the code on the side
+       modeline          ; snazzy, Atom-inspired modeline, plus API
+       ;;nav-flash         ; blink cursor line after big motions
+       ;; neotree           ; a project drawer, like NERDTree for vim
+       ophints           ; highlight the region an operation acts on
+       (popup +defaults)   ; tame sudden yet inevitable temporary windows
+       ;;tabs              ; a tab bar for Emacs
+       treemacs          ; a project drawer, like neotree but cooler
+       ;;unicode           ; extended unicode support for various languages
+       vc-gutter         ; vcs diff in the fringe
+       vi-tilde-fringe   ; fringe tildes to mark beyond EOB
+       ;;window-select     ; visually switch windows
+       workspaces        ; tab emulation, persistence & separate workspaces
+       zen               ; distraction-free coding or writing
+
+       :editor
+       (evil +everywhere); come to the dark side, we have cookies
+       file-templates    ; auto-snippets for empty files
+       fold              ; (nigh) universal code folding
+       ;;(format +onsave)  ; automated prettiness
+       ;;god               ; run Emacs commands without modifier keys
+       ;;lispy             ; vim for lisp, for people who don't like vim
+       ;;multiple-cursors  ; editing in many places at once
+       ;;objed             ; text object editing for the innocent
+       ;;parinfer          ; turn lisp into python, sort of
+       ;;rotate-text       ; cycle region at point between text candidates
+       snippets          ; my elves. They type so I don't have to
+       ;;word-wrap         ; soft wrapping with language-aware indent
+
+       :emacs
+       (dired +ranger +icons)             ; making dired pretty [functional]
+       electric          ; smarter, keyword-based electric-indent
+       ;;ibuffer         ; interactive buffer management
+       undo              ; persistent, smarter undo for your inevitable mistakes
+       vc                ; version-control and Emacs, sitting in a tree
+
+       :term
+       eshell            ; the elisp shell that works everywhere
+       shell             ; simple shell REPL for Emacs
+       term              ; basic terminal emulator for Emacs
+       vterm             ; the best terminal emulation in Emacs
+
+       :checkers
+       syntax              ; tasing you for every semicolon you forget
+       ;;spell             ; tasing you for misspelling mispelling
+       ;;grammar           ; tasing grammar mistake every you make
+
+       :tools
+       ;;ansible
+       ;;debugger          ; FIXME stepping through code, to help you add bugs
+       ;;direnv
+       ;;docker
+       ;;editorconfig      ; let someone else argue about tabs vs spaces
+       ;;ein               ; tame Jupyter notebooks with emacs
+       (eval +overlay)     ; run code, run (also, repls)
+       ;;gist              ; interacting with github gists
+       lookup              ; navigate your code and its documentation
+       ;;lsp
+       magit             ; a git porcelain for Emacs
+       make              ; run make tasks from Emacs
+       pass              ; password manager for nerds
+       pdf               ; pdf enhancements
+       ;;prodigy           ; FIXME managing external services & code builders
+       ;;rgb               ; creating color strings
+       ;;taskrunner        ; taskrunner for all your projects
+       terraform         ; infrastructure as code
+       ;;tmux              ; an API for interacting with tmux
+       ;;upload            ; map local to remote projects via ssh/ftp
+
+       :os
+       ;;tty               ; improve the terminal Emacs experience
+
+       :lang
+       ;;agda              ; types of types of types of types...
+       ;;cc                ; C/C++/Obj-C madness
+       ;;clojure           ; java with a lisp
+       ;;common-lisp       ; if you've seen one lisp, you've seen them all
+       ;;coq               ; proofs-as-programs
+       ;;crystal           ; ruby at the speed of c
+       ;;csharp            ; unity, .NET, and mono shenanigans
+       data              ; config/data formats
+       ;;(dart +flutter)   ; paint ui and not much else
+       ;;elixir            ; erlang done right
+       ;;elm               ; care for a cup of TEA?
+       emacs-lisp        ; drown in parentheses
+       ;;erlang            ; an elegant language for a more civilized age
+       ;;ess               ; emacs speaks statistics
+       ;;faust             ; dsp, but you get to keep your soul
+       ;;fsharp            ; ML stands for Microsoft's Language
+       ;;fstar             ; (dependent) types and (monadic) effects and Z3
+       ;;gdscript          ; the language you waited for
+       ;;(go +lsp)         ; the hipster dialect
+       ;;(haskell +dante)  ; a language that's lazier than I am
+       ;;hy                ; readability of scheme w/ speed of python
+       ;;idris             ; a language you can depend on
+       json              ; At least it ain't XML
+       ;;(java +meghanada) ; the poster child for carpal tunnel syndrome
+       ;;javascript        ; all(hope(abandon(ye(who(enter(here))))))
+       ;;julia             ; a better, faster MATLAB
+       ;;kotlin            ; a better, slicker Java(Script)
+       ;;latex             ; writing papers in Emacs has never been so fun
+       ;;lean
+       ;;factor
+       ledger            ; an accounting system in Emacs
+       ;;lua               ; one-based indices? one-based indices
+       markdown          ; writing docs for people to ignore
+       ;;nim               ; python + lisp at the speed of c
+       ;;nix               ; I hereby declare "nix geht mehr!"
+       ;;ocaml             ; an objective camel
+       (org +noter +pandoc +roam)               ; organize your plain life in plain text
+       ;;php               ; perl's insecure younger brother
+       ;;plantuml          ; diagrams for confusing people more
+       ;;purescript        ; javascript, but functional
+       python            ; beautiful is better than ugly
+       ;;qt                ; the 'cutest' gui framework ever
+       ;;racket            ; a DSL for DSLs
+       ;;raku              ; the artist formerly known as perl6
+       ;;rest              ; Emacs as a REST client
+       ;;rst               ; ReST in peace
+       ;;(ruby +rails)     ; 1.step {|i| p "Ruby is #{i.even? ? 'love' : 'life'}"}
+       ;;rust              ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
+       ;;scala             ; java, but good
+       ;;scheme            ; a fully conniving family of lisps
+       sh                ; she sells {ba,z,fi}sh shells on the C xor
+       ;;sml
+       ;;solidity          ; do you need a blockchain? No.
+       ;;swift             ; who asked for emoji variables?
+       ;;terra             ; Earth and Moon in alignment for performance.
+       ;;web               ; the tubes
+       yaml              ; JSON, but readable
+
+       :email
+       ;;(mu4e +gmail)
+       ;;notmuch
+       ;;(wanderlust +gmail)
+
+       :app
+       ;;calendar
+       ;;irc               ; how neckbeards socialize
+       (rss +org)        ; emacs as an RSS reader
+       ;;twitter           ; twitter client https://twitter.com/vnought
+
+       :config
+       ;;literate
+       (default +bindings +smartparens))
+#+end_src
+*** config.el
+#+begin_src elisp :tangle ~/.config/doom/config.el
+;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
+
+;; Place your private configuration here! Remember, you do not need to run 'doom
+;; sync' after modifying this file!
+
+
+;; Some functionality uses this to identify you, e.g. GPG configuration, email
+;; clients, file templates and snippets.
+(setq user-full-name "Chaise Conn"
+      user-mail-address "chaisecanz@gmail.com")
+
+;; Doom exposes five (optional) variables for controlling fonts in Doom. Here
+;; are the three important ones:
+;;
+;; + `doom-font'
+;; + `doom-variable-pitch-font'
+;; + `doom-big-font' -- used for `doom-big-font-mode'; use this for
+;;   presentations or streaming.
+;;
+;; They all accept either a font-spec, font string ("Input Mono-12"), or xlfd
+;; font string. You generally only need these two:
+;; (setq doom-font (font-spec :family "monospace" :size 12 :weight 'semi-light)
+;;       doom-variable-pitch-font (font-spec :family "sans" :size 13))
+
+
+   ;; dotspacemacs-default-font '("Victor Mono"
+   ;;                             :size 14
+   ;;                             :weight normal
+   ;;                             :width normal
+   ;;                             :powerline-scale 1.0)
+
+;; (setq doom-font (font-spec :family "monospace" :size 12 :weight 'semi-light)
+
+;; There are two ways to load a theme. Both assume the theme is installed and
+;; available. You can either set `doom-theme' or manually load a theme with the
+;; `load-theme' function. This is the default:
+(setq doom-theme 'doom-sourcerer)
+
+
+;; If you use `org' and don't want your org files in the default location below,
+;; change `org-directory'. It must be set before org loads!
+(setq org-directory "~/roam/")
+
+;; This determines the style of line numbers in effect. If set to `nil', line
+;; numbers are disabled. For relative line numbers, set this to `relative'.
+(setq display-line-numbers-type 'relative)
+
+
+;; Here are some additional functions/macros that could help you configure Doom:
+;;
+;; - `load!' for loading external *.el files relative to this one
+;; - `use-package!' for configuring packages
+;; - `after!' for running code after a package has loaded
+;; - `add-load-path!' for adding directories to the `load-path', relative to
+;;   this file. Emacs searches the `load-path' when you load packages with
+;;   `require' or `use-package'.
+;; - `map!' for binding new keys
+;;
+;; To get information about any of these functions/macros, move the cursor over
+;; the highlighted symbol at press 'K' (non-evil users must press 'C-c c k').
+;; This will open documentation for it, including demos of how they are used.
+;;
+;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
+;; they are implemented.
+
+(setq doom-localleader-key ",")
+
+(undefine-key! doom-leader-map
+  ; make-frame
+  "o f"
+  )
+
+<<configs>>
+#+end_src
+
+*** packages.el
+#+begin_src elisp :tangle ~/.config/doom/packages.el
+;; -*- no-byte-compile: t; -*-
+;;; $DOOMDIR/packages.el
+
+;; To install a package with Doom you must declare them here and run 'doom sync'
+;; on the command line, then restart Emacs for the changes to take effect -- or
+;; use 'M-x doom/reload'.
+
+
+;; To install SOME-PACKAGE from MELPA, ELPA or emacsmirror:
+;(package! some-package)
+
+;; To install a package directly from a remote git repo, you must specify a
+;; `:recipe'. You'll find documentation on what `:recipe' accepts here:
+;; https://github.com/raxod502/straight.el#the-recipe-format
+;(package! another-package
+;  :recipe (:host github :repo "username/repo"))
+
+;; If the package you are trying to install does not contain a PACKAGENAME.el
+;; file, or is located in a subdirectory of the repo, you'll need to specify
+;; `:files' in the `:recipe':
+;(package! this-package
+;  :recipe (:host github :repo "username/repo"
+;           :files ("some-file.el" "src/lisp/*.el")))
+
+;; If you'd like to disable a package included with Doom, you can do so here
+;; with the `:disable' property:
+;(package! builtin-package :disable t)
+
+;; You can override the recipe of a built in package without having to specify
+;; all the properties for `:recipe'. These will inherit the rest of its recipe
+;; from Doom or MELPA/ELPA/Emacsmirror:
+;(package! builtin-package :recipe (:nonrecursive t))
+;(package! builtin-package-2 :recipe (:repo "myfork/package"))
+
+;; Specify a `:branch' to install a package from a particular branch or tag.
+;; This is required for some packages whose default branch isn't 'master' (which
+;; our package manager can't deal with; see raxod502/straight.el#279)
+;(package! builtin-package :recipe (:branch "develop"))
+
+;; Use `:pin' to specify a particular commit to install.
+;(package! builtin-package :pin "1a2b3c4d5e")
+
+
+;; Doom's packages are pinned to a specific commit and updated from release to
+;; release. The `unpin!' macro allows you to unpin single packages...
+;(unpin! pinned-package)
+;; ...or multiple packages
+;(unpin! pinned-package another-pinned-package)
+;; ...Or *all* packages (NOT RECOMMENDED; will likely break things)
+;(unpin! t)
+
+<<packages>>
+#+end_src
+** Navigation
+#+begin_src elisp :noweb-ref configs
+; Dired
+(map! :leader
+      "f -" #'dired-jump)
+
+; Ranger settings
+(setq ranger-clieanup-eagerly t
+      ranger-show-literal nil
+      ranger-show-dotfiles nil
+      ranger-parent-depth 2)
+#+end_src
+
+*** Treemacs
+*** Projectile
+#+begin_src elisp noweb-ref configs
+(defun projectile-find-makefile () (interactive)
+       (let ((fpath (projectile-expand-root "Makefile")))
+         (if (file-exists-p fpath)
+             (find-file fpath)
+           (message "Makefile doesn't exist"))))
+
+(defun projectile-find-readme () (interactive)
+         (let ((fpaths (append
+                        (file-expand-wildcards (projectile-expand-root "*.org"))
+                        (file-expand-wildcards (projectile-expand-root "*.md")))))
+           (if (and (not (seq-empty-p fpaths))
+                    (file-exists-p (car fpaths)))
+               (find-file (car fpaths))
+             (message "README doesn't exist"))))
+
+(setq projectile-project-root-files '())
+
+
+(map! :leader
+      (:prefix "p"
+      "C" #'projectile-configure-project
+      "r" #'projectile-run-project
+      "m" #'projectile-find-makefile
+      "/" #'projectile-find-readme)
+      )
+
+
+#+end_src
+
+* Security
+#+begin_src elisp :noweb-ref configs
+;; Allow emacs to be used by GnuPG for pinentry
+;; (setq epg-pinentry-mode 'loopback)
+#+end_src
+** Passwords
+* Package Manager
+
+** Guix
+#+begin_src elisp :noweb-ref configs
+(use-package! guix
+  :config (map! :leader
+                "o g" #'guix))
+#+end_src
+
+#+begin_src elisp :noweb-ref packages
+(package! guix)
+#+end_src
+* Browser
+** Extensions
+https://addons.mozilla.org/en-US/firefox/addon/darkreader/
+https://addons.mozilla.org/en-US/firefox/addon/clearurls/
+https://addons.mozilla.org/en-US/firefox/addon/foxyproxy-standard/
+https://addons.mozilla.org/en-US/firefox/addon/export-tabs-urls-and-titles/
+https://addons.mozilla.org/en-US/firefox/addon/privacy-badger17/
+https://addons.mozilla.org/en-US/firefox/addon/random_user_agent/
+https://addons.mozilla.org/en-US/firefox/addon/tree-style-tab/
+https://addons.mozilla.org/en-US/firefox/addon/ublock-origin/
+https://addons.mozilla.org/en-US/firefox/addon/temporary-containers/
+https://addons.mozilla.org/en-US/firefox/addon/multi-account-containers/
+https://addons.mozilla.org/en-US/firefox/addon/canvasblocker/
+* X
+#+begin_src elisp :noweb-ref configs
+; X Lock Screen
+;; (defun lock () (interactive) (shell-command "dm-tool lock"))
+
+;; (map! :leader "L" #'lock)
+#+end_src
+** .Xmodmap
+#+begin_src conf :tangle ~/.Xmodmap
+clear Mod1
+
+keysym Alt_R = Super_L
+
+add Mod1 = Alt_L
+
+!
+! Swap Caps_Lock and Control_L
+!
+remove Lock = Caps_Lock
+remove Control = Control_L
+keysym Control_L = Caps_Lock
+keysym Caps_Lock = Control_L
+add Lock = Caps_Lock
+add Control = Control_L
+#+end_src
+
+** EXWM
+#+begin_src elisp :tangle ~/.exwm
+(require 'exwm)
+(require 'exwm-config)
+(require 'exwm-randr)
+
+(defvar exwm-app-launcher--prompt "$ "
+  "Prompt for the EXWM application launcher")
+
+(defun exwm/app-launcher (command)
+  "Launches an application in your PATH.
+Can show completions at point for COMMAND using helm or ivy"
+  (interactive (list (read-shell-command exwm-app-launcher--prompt)))
+  (exwm/run-program-in-home command))
+
+(defun exwm/run-program-in-home (command)
+  (let ((default-directory (expand-file-name "~")))
+    (start-process-shell-command command nil command)))
+
+(setq exwm-randr-workspace-monitor-plist '(0 "VGA-1" 1 "DVI-D-1" 2 "DVI-D-2" 3 "HDMI-3"))
+
+(setq exwm-workspace-number 4)
+
+(setq exwm-input-global-keys
+          `(
+            ([s-<TAB>] . evil-switch-to-windows-last-buffer)
+            ([s-<SPC>] . execute-extended-command)
+            ([?\s-w] . evil-window-up)
+            ([?\s-s] . evil-window-down)
+            ([?\s-a] . evil-window-left)
+            ([?\s-d] . evil-window-right)
+            ([?\s-W] . evil-window-move-very-top)
+            ([?\s-S] . evil-window-move-very-bottom)
+            ([?\s-A] . evil-window-move-far-left)
+            ([?\s-D] . evil-window-move-far-right)
+            ([?\s-f] . exwm-layout-toggle-fullscreen)
+            ([?\s-m] . exwm-workspace-move)
+            ;; Launch application.
+            ([?\s-r] . (lambda (command)
+                         (interactive (list (read-shell-command "$ ")))
+                         (start-process-shell-command command nil command)))
+            ;; 's-N': Switch to certain workspace.
+            ,@(mapcar (lambda (i)
+                        `(,(kbd (format "s-%d" (1+ i))) .
+                          (lambda ()
+                            (interactive)
+                            (exwm-workspace-switch ,i))))
+                      (number-sequence 0 exwm-workspace-number))))
+
+;; (setq exwm-manage-configuration '(((string-match-p )))
+
+(add-hook 'exwm-randr-screen-change-hook
+          (lambda ()
+            (start-process-shell-command
+             "autorandr" nil "autorandr --change")))
+
+(exwm-randr-enable)
+(exwm-enable)
+(exwm-config-misc)
+#+end_src
+#+begin_src elisp :noweb-ref packages
+(package! helm-exwm)
+#+end_src
+*** Autorandr
+#+begin_src text :tangle ~/.config/autorandr/desktop/config
+output VGA-1
+crtc 0
+mode 1920x1080
+pos 1080x0
+primary
+rate 60.00
+output DVI-D-1
+crtc 1
+mode 1920x1080
+pos 0x1080
+rate 60.00
+rotate right
+output DVI-D-2
+crtc 2
+mode 1920x1080
+pos 1080x1080
+rate 60.00
+output HDMI-3
+crtc 3
+mode 1920x1080
+pos 3000x1080
+rate 60.00
+rotate left
+#+end_src
+#+begin_src text :tangle ~/.config/autorandr/desktop/setup
+DVI-D-1 00ffffffffffff004c2d200d584d5a5a341b010380341d782a9315a655519c27115054bfef80714f81c0810081809500a9c0b3000101023a801871382d40582c450009252100001e000000fd00324b1e5111000a202020202020000000fc00533234463335300a2020202020000000ff0048345a4a4330363239320a202001a0020311b14690041f13120365030c001000011d00bc52d01e20b828554009252100001e8c0ad090204031200c4055000925210000188c0ad08a20e02d10103e9600092521000018000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000051
+DVI-D-2 00ffffffffffff001e6d4c5b55b90d00071b010380331d78ea6275a3554fa027125054a76b80714f81c08100818095009040a9c0b300023a801871382d40582c4500fe221100001e000000fd00384b1e530f000a202020202020000000fc0032344d4233340a202020202020000000ff003730374d58425053463431330a0033
+HDMI-3 00ffffffffffff004c2d200d584d5a5a331b010380341d782a9315a655519c27115054bfef80714f81c0810081809500a9c0b3000101023a801871382d40582c450009252100001e000000fd00324b1e5111000a202020202020000000fc00533234463335300a2020202020000000ff0048345a4a4330353537370a2020019c020311b14690041f13120365030c001000011d00bc52d01e20b828554009252100001e8c0ad090204031200c4055000925210000188c0ad08a20e02d10103e9600092521000018000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000051
+VGA-1 00ffffffffffff000472aa010db550032314010368301b78ca3585a656489a24125054b30d00714f818081009500d1c0010101010101023a801871382d40582c4500dd0c1100001e000000fd00384c1f5311000a202020202020000000fc0053323131484c0a202020202020000000ff004c50333044303032383531310a0079
+#+end_src
+* Media
+** Audio
+#+begin_src elisp :noweb-ref configs
+
+  ;; (spacemacs/declare-prefix "os" "sound")
+  ;; ;; Open volume mixer
+  ;; (defun pulsemixer () (interactive) (ansi-term "pulsemixer"))
+  ;; (defun pulsemixer-mute-audio ()
+  ;;   (interactive)
+  ;;   (shell-command "pulsemixer --toggle-mute"))
+  ;; (defun pulsemixer-mute-mic ()
+  ;;   (interactive)
+  ;;   (shell-command "pulsemixer --toggle-mute --id source-1"))
+  ;; (spacemacs/set-leader-keys "osv" 'pulsemixer)
+  ;; (spacemacs/set-leader-keys "osm" 'pulsemixer-mute-audio)
+  ;; (spacemacs/set-leader-keys "osM" 'pulsemixer-mute-mic)
+#+end_src
+** Video
+#+begin_src elisp :noweb-ref configs
+(defun webcam ()
+  (interactive)
+  (exwm/run-program-in-home "mpv /dev/video0"))
+
+(map! :leader
+      (:prefix ("M" . "Media")
+      "v" #'webcam))
+#+end_src
+** Images
+#+begin_src elisp :noweb-ref configs
+; Image keybinds
+(map! :map image-mode-map
+      "C-k" #'image-previous-file
+      "C-j" #'image-next-file
+      )
+#+end_src
+* Org
+#+begin_src elisp :noweb-ref configs
+(after! (helm org-agenda)
+  (defun goto-or-create-heading (heading &optional level)
+    (find-areas)
+    (let ((existing (org-ql-select (current-buffer)
+                      `(and (level ,(or level 1)) (heading ,heading))
+                      :action #'point)))
+      (if existing
+          (goto-char (car existing))
+        (progn
+          (end-of-buffer)
+          (insert (format "\n* %s)" heading))))))
+
+  (defun choose (prompt choices)
+    "Choose an option from CHOICES using helm"
+    (helm :sources (helm-build-sync-source prompt :candidates choices)))
+
+
+  (defun find-place () (interactive)
+         (helm :sources
+               (helm-build-sync-source "Places"
+                 :candidates (org-map-entries '(join (org-get-outline-path t) "/") nil '("~/roam/other/places.org"))
+                 :action '(("Search" . (lambda (place) (org-ql-search 'org-agenda-files `(children (property "Place" ,place)) :super-groups '((:auto-category t)))))
+                           ("Copy" . (lambda (place) (kill-new place)))))))
+
+  (defun find-areas (&optional action)
+    (interactive)
+    (helm :sources (helm-build-sync-source "Areas"
+                     :candidates (mapcar (lambda (fpath) (list (file-name-base fpath) fpath)) (directory-files "~/roam/areas" t "^[^.].*\.org"))
+                     :action (or action (lambda (fpath) (find-file (car fpath))))
+                     :fuzzy-match t)))
+
+
+  (defun org-dblock-write:contacts (params)
+    (org-dblock-write:org-ql `(:file "~/roam/other/contacts.org"
+                               :columns (heading todo ((property "Place") "Place"))
+                               :query (children (and (heading "Services") (children (heading ,(plist-get params :service))))))))
+  (defun org-dblock-write:block-update-time (params)
+    (let ((fmt (or (plist-get params :format) "%d. %m. %Y")))
+      (insert "Last block update at: "
+              (format-time-string fmt))))
+
+  (map! :map org-mode-map
+        "C-<return>" #'evil-org-org-insert-heading-respect-contents-below
+        "M-l" #'org-demote-subtree
+        "M-h" #'org-promote-subtree
+        "M-k" #'org-move-subtree-up
+        "M-j" #'org-move-subtree-down
+        )
+
+  (map! :map org-mode-map
+        :localleader
+        "v E" #'org-edit-src-code
+        )
+
+  (map!
+   (:leader
+    :prefix ("o o" . "Org")
+    "V" #'org-ql-view
+    (:prefix ("D" . "org-drill")
+     "d" #'org-drill
+     "t" #'org-drill-tree
+     "r" #'org-drill-resume
+     )
+    (:prefix ("S" . "org-sidebar")
+     "s" #'org-sidebar-toggle
+     "t" #'org-sidebar-tree-toggle
+     )
+    (:prefix ("f" . "Find")
+     "a" #'find-areas
+     "p" #'find-place
+     )
+    ))
+
+  (setq org-roam-directory "~/roam"
+        org-id-link-to-org-use-id t
+        org-log-into-drawer t
+        org-highest-priority 65
+        org-lowest-priority 68
+        org-default-priority 68
+        org-tags-exclude-from-inheritance '(storage book certification assistant recipe)
+        holiday-bahai-holidays nil
+        holiday-hebrew-holidays nil
+        holiday-islamic-holidays nil
+        org-outline-path-complete-in-steps nil
+        org-refile-use-outline-path t
+        org-attach-store-link-p t
+        org-modules '(org-drill org-crypt)
+        org-export-with-tags nil
+        org-export-with-section-numbers nil
+        org-refile-targets '((org-agenda-files :maxlevel . 6))
+
+        )
+  )
+
+#+end_src
+
+#+begin_src elisp :noweb-ref packages
+(package! org-sidebar)
+(package! org-picklink)
+#+end_src
+** Capture
+#+begin_src elisp :noweb-ref configs
+(after! org-capture
+  (setq org-capture-templates
+        (doct `(("Inbox" :keys "i" :file "~/inbox.org" :template "* %?")
+                ("Task" :keys "t" :file (lambda () (find-areas #'car)) :olp ("Tasks") :template "* TODO %?")
+                ("Recipe" :keys "r" :function (lambda () (goto-or-create-heading "Recipe")) :template "* %?     :recipe:")
+                ("Book" :keys "b" :function (lambda () (goto-or-create-heading "Books"))
+                 :template (lambda () (bibtex-completion-fill-template
+                                       (bibtex-completion-get-entry (helm-bibtex-find-key))
+                                       (with-current-buffer (find-file-noselect "~/roam/areas/org/templates/book.org")
+                                         (buffer-string)))))
+                ("New Cookie" :keys "C"
+                 :function (lambda() (find-file (f-join "~/cookies" (format "%s.org" (read-string "Cookie Name: ")))))
+                 :template-file "~/cookies/cookie.org")
+                ("Cookies" :keys "c"
+                 :function cookie-new-project
+                 :immediate-finish t
+                 :kill-buffer nil
+                 :prepare-finalize (lambda () (process-cookie))
+                 :after-finalize (lambda () (cookie-gitignore) (cookie-git) (cookie-visit-file))
+                 :git t
+                 :visit-file "Makefile"
+                 :children (
+                            ("Mkosi" :keys "m" :template-file "~/cookies/mkosi.org")
+                            ("Terraform" :keys "t"
+                             :children (("Environment"  :keys "e" :template-file "~/cookies/terraform/environment.org" :git nil)
+                                        ("Project"  :keys "p" :template-file "~/cookies/terraform/project.org"
+                                         :gitignore ("terraform" "terragrunt"))
+                                        ("Remote State" :keys "r" :git nil
+                                         :children (("AWS" :keys "w" :template-file "~/cookies/terraform/remote-state/aws.org")
+                                                    ("Azure" :keys "a" :template-file "~/cookies/terraform/remote-state/azure.org"))))))))))
+  )
+
+#+end_src
+#+begin_src elisp :noweb-ref packages
+(package! doct)
+#+end_src
+*** Cookies
+#+begin_src elisp :noweb-ref configs
+(defun cookie-get-path ()
+    "Generate the path to tangle src block to
+Intended to be used in the form of `:tangle (get-path) on files that are meant
+to be tangled'"
+    (apply 'f-join (cons (file-name-directory (buffer-file-name (marker-buffer (org-capture-get :cookie-mark))))
+                         (cdr (org-get-outline-path t)))))
+
+(defun cookie-root ()
+    (f-dirname
+     (buffer-file-name (marker-buffer (org-capture-get :cookie-mark)))))
+
+(defun cookie-git ()
+    (when (doct-get :git)
+      (let ((root (cookie-root)))
+        (save-window-excursion
+          (magit-init root)
+          (magit-stage-file root)))))
+
+(defun cookie-visit-file ()
+    (let ((path (expand-file-name (doct-get :visit-file) (cookie-root))))
+      (find-file path)
+      (magit-status)))
+
+(defun cookie-gitignore ()
+    "Generate a gitignore from https://gitignore.io"
+    (when (doct-get :gitignore)
+      (with-current-buffer (find-file-noselect (expand-file-name ".gitignore" (cookie-root)))
+        (end-of-buffer)
+        (insert "\n.project.org\n" (gitignore-templates--url-to-string (helm-gitignore--generate-url (doct-get :gitignore))))
+        (save-buffer))))
+
+  (defun cookie-new-project (&optional directory)
+    "Find the staring place for the capture process
+
+Info is stored in a .project.org file
+
+Prompts the user for a directory to use
+
+Looks for `.project.org' in the projectile root, not the selected directory
+
+If the project root isn't the selected directory, make sub headings to match the
+path relative to the project root
+"
+    (let* ((project-dir (read-directory-name "Project Directory: "))
+           (root (projectile-project-root project-dir))
+           (relative-to-root (f-relative  project-dir (or root project-dir))))
+      (find-file (concat (or root project-dir) ".project.org"))
+      (beginning-of-buffer)
+      (when (eq 0 (buffer-size))
+        (org-insert-heading)
+        (insert (f-base (f-dirname (buffer-file-name))))
+        (org-entry-put nil "VISIBILITY" "contents")
+        (org-entry-put nil "header-args" ":noweb yes :mkdirp yes"))
+      (unless (string= "./" relative-to-root)
+        (let ((path (list (org-get-heading t t))))
+          (dolist (segment (f-split relative-to-root))
+            (setq path (append path (list segment)))
+            (let ((found (org-ql-select (current-buffer) (cons 'outline-path-segment path) :action #'point)))
+              (if found
+                  (goto-char (car found))
+                (progn
+                  (org-insert-subheading '(4))
+                  (insert segment)))))
+          ))
+      (org-capture-put :cookie-mark (point-marker))))
+
+  (defun process-cookie ()
+    "Generate the project files from the cookie"
+    (org-babel-tangle)
+    (org-map-entries
+     (lambda ()
+       (progn
+         (let* ((path (get-path))
+                (dir (file-name-directory path))
+                (contents (org-get-entry)))
+           (unless (file-directory-p dir) (mkdir dir t))
+           (with-current-buffer (find-file-noselect path)
+             (org-paste-subtree nil contents)
+             (save-buffer)))))
+     "TAGS={export}" nil))
+
+  (defun cookie-get (prop)
+    "Get PROP from the projects `.project.org' file
+
+Intended to be used as `%(cookie-get PROP)' from the cookie templates"
+    (or (org-entry-get (org-capture-get :cookie-mark) prop t) ""))
+
+  (defun cookie-prompt (var &optional initial)
+    "Prompt the user for a value and save it in `.project.org'
+
+Returns an empty string
+Intended to be used as `%(cookie-prompt PROP INITIAL)' from the cookie templates"
+    (org-entry-put (org-capture-get :cookie-mark) var (read-string (format "%s: " var) initial))
+    "")
+
+  (defun cookie-choice (var &rest choices)
+    "Prompt the user to choose a value and save it in `.project.org'
+
+Returns an empty string
+Intended to be used as `%(cookie-choice PROP CHOICE CHOICE ...)' from the cookie
+templates"
+    (org-entry-put (org-capture-get :cookie-mark) var (choose (format "%s: " var) choices))
+    "")
+
+
+
+#+end_src
+** Agenda
+#+begin_src elisp :noweb-ref configs
+(use-package! org-super-agenda
+  :after org-agenda
+  :init
+  (setq org-super-agenda-mode t
+        org-agenda-span 1
+
+        ; The evil keys aren't working on super-agenda headings
+        ; https://github.com/alphapapa/org-super-agenda/issues/50
+        org-super-agenda-header-map (make-sparse-keymap)
+        org-agenda-files '("~/roam/areas")
+        org-todo-keyword-faces '(("SCHEDULED" . (:foreground "YELLOW" :weight bold)))
+        org-todo-keywords '((sequence "TODO(t)" "PROGRESS(p!)" "WAITING(w!)" "|" "DONE(d!)" "CANCELLED(c@/!)")
+                            (sequence "SCHEDULED(s)" "|" "DONE(d!)" "CANCELLED(c@/!)")
+                            (sequence "WISH(W)" "SHIPPING(S)" "|" "OWNED(o!)" "TRASHED(T!)" "RETURNED(r!)"))
+        org-super-agenda-groups '((:time-grid)
+                                  (:deadline (past))
+                                  (:todo "WAITING")
+                                  (:todo "SHIPPING")
+                                  (:tag "assistant")
+                                  (:tag "maintenance")
+                                  (:deadline (future))
+                                  (:auto-category))
+
+        org-ql-views '(("Visions"
+                        :buffers-files org-agenda-files
+                        :query (tags-local "vision")
+                        :super-groups ((:auto-category)))
+                       ("Rules"
+                        :buffers-files org-agenda-files
+                        :query (tags-local "rule" "test")
+                        :super-groups ((:auto-category)))
+                       ("Recipes"
+                        :buffers-files org-agenda-files
+                        :query (tags-local "recipe")
+                        :super-groups ((:auto-category)))
+                       ("Maintenance"
+                        :buffers-files org-agenda-files
+                        :query (and (tags "maintenance") (todo))
+                        :super-groups ((:auto-category)))
+                       ("Work Queue"
+                        :buffers-files org-agenda-files
+                        :query (and
+                                (not (scheduled))
+                                (not (todo "WISH" "SHIPPING"))
+                                (not (tags "ARCHIVE" "recipe" "certification" "book" "goal" "vision"))
+                                (not (path "contacts.org"))
+                                (todo))
+                        :sort priority
+                        :super-groups ((:name "In Progress" :todo "PROGRESS")
+                                       (:name "Waiting" :todo "WAITING")
+                                       (:priority "A")
+                                       (:auto-category)))
+                       ("Wishlist"
+                        :buffers-files org-agenda-files
+                        :query (todo "WISH" "SHIPPING")
+                        :sort priority
+                        :super-groups ((:name "In Progress" :todo "SHIPPING")
+                                       (:auto-category)))
+                       ("Owned"
+                        :buffers-files org-agenda-files
+                        :query (or (and (tags-local "owned") (not (tags-local "book"))) (todo "OWNED"))
+                        :sort priority
+                        :super-groups ((:auto-category)))
+                       ("Consumables"
+                        :buffers-files org-agenda-files
+                        :query (tags-local "consumable")
+                        :sort priority
+                        :super-groups ((:auto-category)))
+                       ("Goals"
+                        :buffers-files org-agenda-files
+                        :query (tags-local "goal")
+                        :super-groups ((:name "In Progress" :todo "PROGRESS")
+                                       (:auto-category)))
+                       ("Books"
+                        :buffers-files org-agenda-files
+                        :query (tags-local "book")
+                        :sort (priority todo)
+                        :super-groups ((:name "In Progress" :todo "PROGRESS")
+                                       (:priority "A")
+                                       (:auto-category)))
+                       ("Certifications"
+                        :buffers-files org-agenda-files
+                        :query (tags-local "certification")
+                        :super-groups ((:name "In Progress" :todo "PROGRESS")
+                                       (:name "Done" :todo "DONE")
+                                       (:auto-category)))  )
+
+
+        org-clock-clocktable-default-properties '(:scope agenda-with-archives
+                                                  :fileskip0 t
+                                                  :block today
+                                                  :compact t
+                                                  :link t)
+        )
+  :config
+  (org-super-agenda-mode)
+  )
+
+#+end_src
+#+begin_src elisp :noweb-ref packages
+(package! org-super-agenda)
+(package! org-ql)
+#+end_src
+** Notes
+*** Roam
+#+begin_src elisp :noweb-ref configs
+
+(setq org-roam-directory "~/roam"
+      org-roam-tag-sources '(prop last-directory)
+      org-roam-capture-templates '(("d" "default"
+                                    plain #'org-roam--capture-get-point "%?"
+                                    :file-name "notes/%<%Y%m%d%H%M%S>-${slug}"
+                                    :head "#+title: ${title}\n\n- tags :: "
+                                    :unnarrowed t)
+                                   ("s" "Store"
+                                    plain #'org-roam--capture-get-point "%?"
+                                    :file-name "stores/%<%Y%m%d%H%M%S>-${slug}"
+                                    :head "#+title: ${title}\n#+roam_key: \n\n- tags :: "
+                                    :unnarrowed t)
+                                   ("p" "Programming Language"
+                                    plain #'org-roam--capture-get-point
+                                    (file "~/roam/areas/software/templates/programming_language.org")
+                                    :file-name "notes/%<%Y%m%d%H%M%S>-${slug}"))
+      )
+#+end_src
+*** Noter
+#+begin_src elisp :noweb-ref configs
+(setq org-noter-always-create-frame nil
+      org-noter-notes-search-path '("~/roam/books")
+                )
+#+end_src
+
+#+begin_src elisp :noweb-ref packages
+(package! org-noter-pdftools)
+#+end_src
+*** Bibtex
+#+begin_src elisp :noweb-ref configs
+(setq
+          bibtex-completion-bibliography "~/roam/books/books.bib"
+          bibtex-completion-library-path "~/roam/books"
+          bibtex-completion-notes-path "~/roam/books"
+          org-ref-default-bibliography '("~/roam/books/books.bib")
+          reftex-default-bibliography org-ref-default-bibliography
+          org-ref-pdf-directory "~/roam/books/"
+                bibtex-completion-notes-template-multiple-files "#+TITLE: ${title}
+,#+ROAM_KEY: cite:${=key=}
+
+- tags :: %?"
+                )
+
+(defun helm-bibtex-find-key ()
+    (helm :sources (helm-build-sync-source "*helm-bibtex*"
+                     :candidates (bibtex-completion-candidates)
+                     :filtered-candidate-transformer #'helm-bibtex-candidates-formatter)))
+
+
+(defun bibtex-add-entry (entry)
+  (let* ((id (with-temp-buffer
+                  (bibtex-mode)
+                  (insert entry)
+                  (bibtex-completion-key-at-point)))
+        (exists (bibtex-completion-get-entry id)))
+    (if exists
+        (message (format "Entry %s already exists" id))
+      (with-current-buffer (find-file-noselect bibtex-completion-bibliography)
+        (end-of-buffer)
+        (insert "\n" entry)
+        (save-buffer)))))
+
+(map! :leader
+      "o x b" #'helm-bibtex)
+
+#+end_src
+#+begin_src elisp :noweb-ref packages
+(package! org-roam-bibtex)
+(package! helm-bibtex)
+(package! org-ref)
+#+end_src
+**** helm-books
+#+begin_src elisp :noweb-ref configs
+(after! helm
+  (defun helm-books--get-bibtex (candidate)
+    (alist-get 'id candidate)
+    (let ((bibtex (url-to-string
+                   (format "https://books.google.com/books?id=%s&output=bibtex" (alist-get 'id candidate)))))
+      (bibtex-add-entry bibtex)))
+
+  (defun url-to-string (url)
+    (with-current-buffer (url-retrieve-synchronously url)
+      (set-buffer-multibyte t)
+      (prog1 (buffer-substring (1+ url-http-end-of-headers)
+                               (point-max))
+        (kill-buffer))))
+
+  (defun helm-books--url-retrieve-from-google ()
+    "Retrieve information of book using google books api."
+    (switch-to-buffer
+     (url-retrieve-synchronously
+      (concat "https://www.googleapis.com/books/v1/volumes?q=" helm-pattern)))
+    (let ((response-string (buffer-substring-no-properties
+                            url-http-end-of-headers (point-max))))
+      (kill-buffer (current-buffer))
+      (json-read-from-string (decode-coding-string response-string 'utf-8))))
+
+  (defun helm-books--extract-values-from-google (item)
+    "Extract attribute from result of api.
+ITEM is each book information."
+    (let ((title "")
+          (author "")
+          (publisher "")
+          (publishedDate ""))
+      (dolist (i item)
+        (when (string= "volumeInfo" (car i))
+          (dolist (j (cdr i))
+            (when (string= "title" (car j))
+              (setq title (cdr j)))
+            (when (string= "authors" (car j))
+              (setq author (cdr j)))
+            (when (string= "publisher" (car j))
+              (setq publisher (cdr j)))
+            (when (string= "publishedDate" (car j))
+              (setq publishedDate (cdr j)))
+            )))
+      (cons
+       (format "Title:%s, Authors:%s, Publisher:%s, PublishedDate:%s" title author publisher publishedDate)
+       item)))
+
+  (defun helm-books--candidates-from-google ()
+    (mapcar 'helm-books--extract-values-from-google (cdr (nth 2 (helm-books--url-retrieve-from-google)))))
+
+  (defvar helm-books--source
+    (helm-build-sync-source  "Books"
+      :candidates #'helm-books--candidates-from-google
+      :requires-pattern 1
+      :volatile t
+      :action (helm-make-actions
+               "Download Bibtex" #'helm-books--get-bibtex)))
+
+  (defun helm-books ()
+    "Books searcher with helm interface."
+    (interactive)
+    (let ((helm-input-idle-delay 0.3))
+      (helm :sources '(helm-books--source)
+            :prompt "Search books: "
+            :buffer "*helm books*")))
+  )
+#+end_src
+*** org-ql
+**** Customized dblock
+#+begin_src elisp :noweb-ref configs
+(cl-defun org-dblock-write:org-ql (params)
+  "Insert content for org-ql dynamic block at point according to PARAMS.
+Valid parameters include:
+
+  :query    An Org QL query expression in either sexp or non-sexp
+            form.
+
+  :columns  A list of columns, including `heading', `todo',
+            `property', `priority', `deadline', `scheduled'.
+            Each column may also be specified as a list with the
+            second element being a header string.  For example,
+            to abbreviate the priority column: (priority \"P\").
+            For certain columns, like `property', arguments may
+            be passed by specifying the column type itself as a
+            list.  For example, to display a column showing the
+            values of a property named \"milestone\", with the
+            header being abbreviated to \"M\":
+
+              ((property \"milestone\") \"M\").
+
+  :sort     One or a list of Org QL sorting methods
+            (see `org-ql-select').
+
+  :take     Optionally take a number of results from the front (a
+            positive number) or the end (a negative number) of
+            the results.
+
+  :ts-format  Optional format string used to format
+              timestamp-based columns.
+
+For example, an org-ql dynamic block header could look like:
+
+  #+BEGIN: org-ql :query (todo \"UNDERWAY\") :columns (priority todo heading) :sort (priority date) :ts-format \"%Y-%m-%d %H:%M\""
+  (-let* (((&plist :query :columns :sort :ts-format :take :file) params)
+          (query (cl-etypecase query
+                   (string (org-ql--plain-query query))
+                   (t query)))
+          (columns (or columns '(heading todo (priority "P"))))
+          ;; MAYBE: Custom column functions.
+          (format-fns
+           ;; NOTE: Backquoting this alist prevents the lambdas from seeing
+           ;; the variable `ts-format', so we use `list' and `cons'.
+           (list (cons 'todo (lambda (element)
+                               (org-element-property :todo-keyword element)))
+                 (cons 'heading (lambda (element)
+                                  (org-make-link-string (format "file:%s::%s" file (org-element-property :raw-value element))
+                                                        (org-element-property :raw-value element))))
+                 (cons 'priority (lambda (element)
+                                   (--when-let (org-element-property :priority element)
+                                     (char-to-string it))))
+                 (cons 'deadline (lambda (element)
+                                   (--when-let (org-element-property :deadline element)
+                                     (ts-format ts-format (ts-parse-org-element it)))))
+                 (cons 'scheduled (lambda (element)
+                                    (--when-let (org-element-property :scheduled element)
+                                      (ts-format ts-format (ts-parse-org-element it)))))
+                 (cons 'property (lambda (element property)
+                                   (org-element-property (intern (concat ":" (upcase property))) element)))))
+          (elements (org-ql-query :from (or file (current-buffer))
+                                  :where query
+                                  :select '(org-element-headline-parser (line-end-position))
+                                  :order-by sort)))
+    (when take
+      (setf elements (cl-etypecase take
+                       ((and integer (satisfies cl-minusp)) (-take-last (abs take) elements))
+                       (integer (-take take elements)))))
+    (cl-labels ((format-element
+                 (element) (string-join (cl-loop for column in columns
+                                                 collect (or (pcase-exhaustive column
+                                                               ((pred symbolp)
+                                                                (funcall (alist-get column format-fns) element))
+                                                               (`((,column . ,args) ,_header)
+                                                                (apply (alist-get column format-fns) element args))
+                                                               (`(,column ,_header)
+                                                                (funcall (alist-get column format-fns) element)))
+                                                             ""))
+                                        " | ")))
+      ;; Table header
+      (insert "| " (string-join (--map (pcase it
+                                         ((pred symbolp) (capitalize (symbol-name it)))
+                                         (`(,_ ,name) name))
+                                       columns)
+                                " | ")
+              " |" "\n")
+      (insert "|- \n")  ; Separator hline
+      (dolist (element elements)
+        (insert "| " (format-element element) " |" "\n"))
+      (delete-char -1)
+      (org-table-align))))
+#+end_src
+* Git
+#+begin_src elisp :noweb-ref configs
+;; (map! :leader
+;;       "g ." #'magit-file-dispatch
+;;       )
+#+end_src
+* Networking
+#+begin_src elisp :noweb-ref configs
+;; (defun interfaces () (interactive)
+;;        (helm :sources
+;;              (helm-build-async-source "*interfaces*"
+;;                :candidates-process
+;;                (lambda () (start-process "ip" nil "ip" "--brief" "link" "show" "up")))))
+
+  ;; (defun bluetooth ()
+  ;;   (interactive)
+  ;;   (helm :sources (helm-build-sync-source "Bluetooth Devices"
+  ;;                    :candidates (mapcar 'car bluetooth-devices)
+  ;;                    :action (lambda (device)
+  ;;                              (process-file-shell-command
+  ;;                               (concat "bluetoothctl connect " (cdr (assoc device bluetooth-devices))))))))
+
+  ;; (defun netctl-start()
+  ;;   (interactive)
+  ;;   (helm :sources (helm-build-sync-source "Networks"
+  ;;                    :candidates (mapcar #'file-name-base (seq-filter (-not #'file-directory-p) (directory-files "/etc/netctl" t)))
+  ;;                    :action (lambda (network) (sudo-run-async (concat "netctl start " network) "*netctl*"))
+  ;;                    :fuzzy-match t)))
+  ;; (defun netctl-stop-all()
+  ;;   (interactive)
+  ;;   (sudo-run-async "netctl stop-all" "*netctl*")
+  ;;   (message "Stopped all networks"))
+#+end_src
+* RSS
+#+begin_src elisp :noweb-ref configs
+(after! elfeed
+  (require 'elfeed)
+  (require 'elfeed-org)
+  (setq elfeed-search-filter "@6-months-ago +unread"
+        rmh-elfeed-org-files (list "~/roam/other/feeds.org")
+        elfeed-db-directory "~/.elfeed"
+        elfeed-search-title-min-width 32)
+
+
+
+  (defun elfeed-mpv (url)
+    "Watch a video from URL in MPV"
+    (start-process "elfeed-mpv" "elfeed-mpv" "mpv" "--demuxer-readahead-secs=300" url))
+
+  (defun elfeed-view-mpv (&optional use-generic-p)
+    "Youtube-feed link"
+    (interactive "P")
+    (let ((entries (elfeed-search-selected)))
+      (cl-loop for entry in entries
+               do (elfeed-untag entry 'unread)
+               when (elfeed-entry-link entry)
+               do (elfeed-mpv it))
+      (mapc #'elfeed-search-update-entry entries)
+      (unless (use-region-p) (forward-line))))
+
+  (defun elfeed-download-video ()
+    (interactive)
+    (elfeed-search-yank)
+    (ytdl-download))
+
+  (map! :leader
+        "o x" #'elfeed)
+
+  (map! :map elfeed-search-mode-map
+        "B" #'elfeed-view-mpv
+        "D" #'elfeed-download-video
+  )
+  (map! :map elfeed-show-mode-map
+        "C-g" #'elfeed-show-visit
+  )
+)
+
+#+end_src
+* Finance
+#+begin_src elisp :noweb-ref configs
+(after! ledger-mode
+  (setq ledger-clear-whole-transactions t
+        ledger-binary-path "ledger"
+        ledger-report-use-strict t
+        ledger-report-auto-width nil
+        ledger-reports '(("bal" "%(binary) -f %(ledger-file) bal --cleared ^Assets ^Liabilities")
+                         ("income" "%(binary) -f %(ledger-file) bal ^Income")
+                         ("reg" "%(binary) -f %(ledger-file) reg")
+                         ("payee" "%(binary) -f %(ledger-file) reg @%(payee)")
+                         ("account" "%(binary) -f %(ledger-file) reg %(account)")
+                         ("budget" "%(binary) -f %(ledger-file) budget -p 'this month' ^Expenses ^Income")
+                         ("unbudget" "%(binary) -f %(ledger-file) bal -p 'this month' --unbudgeted ^Expenses ^Income"))
+        )
+  )
+#+end_src
+* Monitoring
+** Htop
+#+begin_src conf :tangle ~/.configs/htop/htoprc
+# Beware! This file is rewritten by htop when settings are changed in the interface.
+# The parser is also very primitive, and not human-friendly.
+fields=0 48 17 18 38 39 40 2 46 47 49 1
+sort_key=46
+sort_direction=1
+hide_kernel_threads=1
+hide_userland_threads=0
+shadow_other_users=0
+show_thread_names=0
+show_program_path=1
+highlight_base_name=0
+highlight_megabytes=1
+highlight_threads=1
+highlight_changes=0
+highlight_changes_delay_secs=5
+find_comm_in_cmdline=1
+strip_exe_from_cmdline=1
+show_merged_command=0
+tree_view=0
+header_margin=0
+detailed_cpu_time=0
+cpu_count_from_one=1
+show_cpu_usage=1
+show_cpu_frequency=1
+show_cpu_temperature=1
+degree_fahrenheit=0
+update_process_names=0
+account_guest_in_cpu_meter=0
+color_scheme=0
+enable_mouse=1
+delay=15
+left_meters=LeftCPUs Memory Swap
+left_meter_modes=1 1 1
+right_meters=RightCPUs Tasks LoadAverage Battery Uptime Systemd NetworkIO DiskIO
+right_meter_modes=1 2 2 2 2 2 2 2
+#+end_src
+* Email
+** offlineimap
