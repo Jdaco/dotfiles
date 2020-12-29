@@ -28,10 +28,6 @@
 (map! :leader
       :nv "f S" #'evil-write-all)
 
-(map! :nv "M-a" #'evil-scroll-up
-      :nv "M-;" #'evil-scroll-down
-      )
-
 (after! key-chord
   (key-chord-define-global "dk" 'evil-write-all)
   (key-chord-mode)
@@ -57,10 +53,6 @@
 (map! :leader
       (:prefix "h"
       "I" #'helm-info))
-#+end_src
-
-#+begin_src elisp :noweb-ref packages
-;; (package! helpful)
 #+end_src
 ** Doom
 
@@ -870,6 +862,11 @@ templates"
 
 
 
+
+
+
+  )
+
 #+end_src
 ** Agenda
 #+begin_src elisp :noweb-ref configs
@@ -998,128 +995,6 @@ templates"
                                     :file-name "notes/%<%Y%m%d%H%M%S>-${slug}"))
       )
 #+end_src
-*** Noter
-#+begin_src elisp :noweb-ref configs
-(setq org-noter-always-create-frame nil
-      org-noter-notes-search-path '("~/roam/books")
-                )
-#+end_src
-
-#+begin_src elisp :noweb-ref packages
-(package! org-noter-pdftools)
-#+end_src
-*** Bibtex
-#+begin_src elisp :noweb-ref configs
-(setq
-          bibtex-completion-bibliography "~/roam/books/books.bib"
-          bibtex-completion-library-path "~/roam/books"
-          bibtex-completion-notes-path "~/roam/books"
-          org-ref-default-bibliography '("~/roam/books/books.bib")
-          reftex-default-bibliography org-ref-default-bibliography
-          org-ref-pdf-directory "~/roam/books/"
-                bibtex-completion-notes-template-multiple-files "#+TITLE: ${title}
-,#+ROAM_KEY: cite:${=key=}
-
-- tags :: %?"
-                )
-
-(defun helm-bibtex-find-key ()
-    (helm :sources (helm-build-sync-source "*helm-bibtex*"
-                     :candidates (bibtex-completion-candidates)
-                     :filtered-candidate-transformer #'helm-bibtex-candidates-formatter)))
-
-
-(defun bibtex-add-entry (entry)
-  (let* ((id (with-temp-buffer
-                  (bibtex-mode)
-                  (insert entry)
-                  (bibtex-completion-key-at-point)))
-        (exists (bibtex-completion-get-entry id)))
-    (if exists
-        (message (format "Entry %s already exists" id))
-      (with-current-buffer (find-file-noselect bibtex-completion-bibliography)
-        (end-of-buffer)
-        (insert "\n" entry)
-        (save-buffer)))))
-
-(map! :leader
-      "o x b" #'helm-bibtex)
-
-#+end_src
-#+begin_src elisp :noweb-ref packages
-(package! org-roam-bibtex)
-(package! helm-bibtex)
-(package! org-ref)
-#+end_src
-**** helm-books
-#+begin_src elisp :noweb-ref configs
-(after! helm
-  (defun helm-books--get-bibtex (candidate)
-    (alist-get 'id candidate)
-    (let ((bibtex (url-to-string
-                   (format "https://books.google.com/books?id=%s&output=bibtex" (alist-get 'id candidate)))))
-      (bibtex-add-entry bibtex)))
-
-  (defun url-to-string (url)
-    (with-current-buffer (url-retrieve-synchronously url)
-      (set-buffer-multibyte t)
-      (prog1 (buffer-substring (1+ url-http-end-of-headers)
-                               (point-max))
-        (kill-buffer))))
-
-  (defun helm-books--url-retrieve-from-google ()
-    "Retrieve information of book using google books api."
-    (switch-to-buffer
-     (url-retrieve-synchronously
-      (concat "https://www.googleapis.com/books/v1/volumes?q=" helm-pattern)))
-    (let ((response-string (buffer-substring-no-properties
-                            url-http-end-of-headers (point-max))))
-      (kill-buffer (current-buffer))
-      (json-read-from-string (decode-coding-string response-string 'utf-8))))
-
-  (defun helm-books--extract-values-from-google (item)
-    "Extract attribute from result of api.
-ITEM is each book information."
-    (let ((title "")
-          (author "")
-          (publisher "")
-          (publishedDate ""))
-      (dolist (i item)
-        (when (string= "volumeInfo" (car i))
-          (dolist (j (cdr i))
-            (when (string= "title" (car j))
-              (setq title (cdr j)))
-            (when (string= "authors" (car j))
-              (setq author (cdr j)))
-            (when (string= "publisher" (car j))
-              (setq publisher (cdr j)))
-            (when (string= "publishedDate" (car j))
-              (setq publishedDate (cdr j)))
-            )))
-      (cons
-       (format "Title:%s, Authors:%s, Publisher:%s, PublishedDate:%s" title author publisher publishedDate)
-       item)))
-
-  (defun helm-books--candidates-from-google ()
-    (mapcar 'helm-books--extract-values-from-google (cdr (nth 2 (helm-books--url-retrieve-from-google)))))
-
-  (defvar helm-books--source
-    (helm-build-sync-source  "Books"
-      :candidates #'helm-books--candidates-from-google
-      :requires-pattern 1
-      :volatile t
-      :action (helm-make-actions
-               "Download Bibtex" #'helm-books--get-bibtex)))
-
-  (defun helm-books ()
-    "Books searcher with helm interface."
-    (interactive)
-    (let ((helm-input-idle-delay 0.3))
-      (helm :sources '(helm-books--source)
-            :prompt "Search books: "
-            :buffer "*helm books*")))
-  )
-#+end_src
 *** org-ql
 **** Customized dblock
 #+begin_src elisp :noweb-ref configs
@@ -1212,6 +1087,145 @@ For example, an org-ql dynamic block header could look like:
         (insert "| " (format-element element) " |" "\n"))
       (delete-char -1)
       (org-table-align))))
+#+end_src
+*** Books
+**** Noter
+#+begin_src elisp :noweb-ref configs
+(setq org-noter-always-create-frame nil
+      org-noter-notes-search-path '("~/roam/books")
+                )
+#+end_src
+
+#+begin_src elisp :noweb-ref packages
+(package! org-noter-pdftools)
+#+end_src
+**** Bibtex
+#+begin_src elisp :noweb-ref configs
+(setq
+          bibtex-completion-bibliography "~/roam/books/books.bib"
+          bibtex-completion-library-path "~/roam/books"
+          bibtex-completion-notes-path "~/roam/books"
+          org-ref-default-bibliography '("~/roam/books/books.bib")
+          reftex-default-bibliography org-ref-default-bibliography
+          org-ref-pdf-directory "~/roam/books/"
+                bibtex-completion-notes-template-multiple-files "#+TITLE: ${title}
+,#+ROAM_KEY: cite:${=key=}
+
+- tags :: %?"
+                )
+
+(defun helm-bibtex-find-key ()
+    (helm :sources (helm-build-sync-source "*helm-bibtex*"
+                     :candidates (bibtex-completion-candidates)
+                     :filtered-candidate-transformer #'helm-bibtex-candidates-formatter)))
+
+
+(defun bibtex-add-entry (entry)
+  (let* ((id (with-temp-buffer
+                  (bibtex-mode)
+                  (insert entry)
+                  (bibtex-completion-key-at-point)))
+        (exists (bibtex-completion-get-entry id)))
+    (if exists
+        (message (format "Entry %s already exists" id))
+      (with-current-buffer (find-file-noselect bibtex-completion-bibliography)
+        (end-of-buffer)
+        (insert "\n" entry)
+        (save-buffer)))))
+
+(map! :leader
+      "o x b" #'helm-bibtex)
+
+#+end_src
+#+begin_src elisp :noweb-ref packages
+(package! org-roam-bibtex)
+(package! helm-bibtex)
+(package! org-ref)
+#+end_src
+***** helm-books
+#+begin_src elisp :noweb-ref configs
+(after! helm
+  (defun helm-books--get-bibtex (candidate)
+    (alist-get 'id candidate)
+    (let ((bibtex (url-to-string
+                   (format "https://books.google.com/books?id=%s&output=bibtex" (alist-get 'id candidate)))))
+      (bibtex-add-entry bibtex)))
+
+  (defun url-to-string (url)
+    (with-current-buffer (url-retrieve-synchronously url)
+      (set-buffer-multibyte t)
+      (prog1 (buffer-substring (1+ url-http-end-of-headers)
+                               (point-max))
+        (kill-buffer))))
+
+  (defun helm-books--url-retrieve-from-google ()
+    "Retrieve information of book using google books api."
+    (switch-to-buffer
+     (url-retrieve-synchronously
+      (concat "https://www.googleapis.com/books/v1/volumes?q=" helm-pattern)))
+    (let ((response-string (buffer-substring-no-properties
+                            url-http-end-of-headers (point-max))))
+      (kill-buffer (current-buffer))
+      (json-read-from-string (decode-coding-string response-string 'utf-8))))
+
+  (defun helm-books--extract-values-from-google (item)
+    "Extract attribute from result of api.
+ITEM is each book information."
+    (let ((title "")
+          (author "")
+          (publisher "")
+          (publishedDate ""))
+      (dolist (i item)
+        (when (string= "volumeInfo" (car i))
+          (dolist (j (cdr i))
+            (when (string= "title" (car j))
+              (setq title (cdr j)))
+            (when (string= "authors" (car j))
+              (setq author (cdr j)))
+            (when (string= "publisher" (car j))
+              (setq publisher (cdr j)))
+            (when (string= "publishedDate" (car j))
+              (setq publishedDate (cdr j)))
+            )))
+      (cons
+       (format "Title:%s, Authors:%s, Publisher:%s, PublishedDate:%s" title author publisher publishedDate)
+       item)))
+
+  (defun helm-books--candidates-from-google ()
+    (mapcar 'helm-books--extract-values-from-google (cdr (nth 2 (helm-books--url-retrieve-from-google)))))
+
+  (defvar helm-books--source
+    (helm-build-sync-source  "Books"
+      :candidates #'helm-books--candidates-from-google
+      :requires-pattern 1
+      :volatile t
+      :action (helm-make-actions
+               "Download Bibtex" #'helm-books--get-bibtex)))
+
+  (defun helm-books ()
+    "Books searcher with helm interface."
+    (interactive)
+    (let ((helm-input-idle-delay 0.3))
+      (helm :sources '(helm-books--source)
+            :prompt "Search books: "
+            :buffer "*helm books*")))
+  )
+#+end_src
+**** pdf-tools
+| Command                                   | Key       | Description             |
+|-------------------------------------------+-----------+-------------------------|
+| pdf-view-goto-page                        | g p       |                         |
+| pdf-view-midnight-minor-mode              | z m       | Dark mode               |
+| pdf-view-fit-height-to-window             | H         |                         |
+| pdf-view-fit-width-to-window              | W         |                         |
+| pdf-annot-add-highlight-markup-annotation | C-c C-a h | Highlight selected text |
+| pdf-annot-list-annotations                | C-c C-a l | List all annotations    |
+
+#+begin_src elisp :noweb-ref configs
+(map! :after pdf-tools
+      :mode pdf-view-mode
+      :n "g p" #'pdf-view-goto-page
+      )
 #+end_src
 * Git
 #+begin_src elisp :noweb-ref configs
@@ -1349,3 +1363,10 @@ right_meter_modes=1 2 2 2 2 2 2 2
 #+end_src
 * Email
 ** offlineimap
+* Help
+** Info
+| Command             | Key | Description                      |
+|---------------------+-----+----------------------------------|
+| Info-top-node       | g t |                                  |
+| info-next-reference | g j | Next link on the page            |
+| info-forward-node   | C-j | Next node (down / forward level) |
