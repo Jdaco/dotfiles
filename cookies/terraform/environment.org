@@ -1,0 +1,59 @@
+%(cookie-prompt "environment")
+
+* common.tfvars
+
+#+BEGIN_SRC terraform :tangle (cookie-get-path)
+tags = {
+  Project = "%(cookie-get "project")"
+  Environment = "%(cookie-get "environment")"
+}
+#+END_SRC
+
+* services
+
+** foo
+
+*** main.tf
+
+  #+BEGIN_SRC terraform :tangle (cookie-get-path)
+resource "aws_s3_bucket" "my_bucket" {
+  bucket = "my-bucket"
+  tags = var.tags
+}
+  #+END_SRC
+
+*** terragrunt.hcl
+
+#+BEGIN_SRC terraform :tangle (cookie-get-path)
+include {
+  path = find_in_parent_folders()
+}
+#+END_SRC
+
+*** variables.tf
+#+BEGIN_SRC terraform :tangle (cookie-get-path)
+variable "tags" {
+  type = map
+  default = {}
+}
+
+
+locals {
+  tags = merge(
+    var.tags,
+    {
+      "Service": "foo"
+    }
+  )
+}
+
+#+END_SRC
+
+*** outputs.tf
+#+BEGIN_SRC terraform :tangle (cookie-get-path)
+output "foo_output" {
+  value = "some_value"
+}
+#+END_SRC
+
+

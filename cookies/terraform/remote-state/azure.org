@@ -1,0 +1,54 @@
+%(cookie-prompt "remote-state-resource-group")
+%(cookie-prompt "remote-state-storage-account" "terraformstate")
+%(cookie-prompt "remote-state-container" "terraform-locks")
+
+* terragrunt.hcl
+#+BEGIN_SRC terraform :tangle (cookie-get-path)
+# This is where you define common terraform settings, like provider and remote state settings
+terraform {
+  extra_arguments "common_vars" {
+    commands = get_terraform_commands_that_need_vars()
+
+    arguments = [
+      "-var-file=${get_parent_terragrunt_dir()}/common.tfvars",
+    ]
+  }
+}
+
+remote_state {
+  backend = "azurerm"
+  generate = {
+    path      = "backend.tf"
+    if_exists = "overwrite_terragrunt"
+  }
+  config = {
+    resource_group_name = "%(cookie-get "remote-state-resource-group")"
+    storage_account_name = "%(cookie-get "remote-state-storage-account")"
+    container_name = "%(cookie-get "remote-state-container")"
+    key = "%(cookie-get "environment").${path_relative_to_include()}.terraform.tfstate"
+  }
+}
+#+END_SRC
+
+* terraform-setup.sh
+#+BEGIN_SRC shell :shebang "#!/bin/bash" :tangle (cookie-get-path)
+echo "Creating storage account: %(cookie-get "remote-state-storage-account")..."
+
+az storage account create \
+   --name "%(cookie-get "remote-state-storage-account")" \
+   --resource-group "%(cookie-get "remote-state-resource-group")" \
+   --access-tier Hot \
+   --allow-blob-public-access false \
+   --encryption-services blob \
+   --kind StorageV2 \
+   --tags "Project=%(cookie-get "project") Environment=%(cookie-get "environment")" \
+   --output none \
+
+echo "Creating storage container: %(cookie-get "remote-state-container")..."
+az storage container create \
+    --name "%(cookie-get "remote-state-container")" \
+    --account-name "%(cookie-get "remote-state-storage-account")" \
+    --resource-group "%(cookie-get "remote-state-resource-group")" \
+    --public-access off \
+    --output none \
+#+END_SRC

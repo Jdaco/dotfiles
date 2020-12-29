@@ -1,0 +1,51 @@
+* Makefile
+#+BEGIN_SRC makefile :tangle (cookie-get-path)
+CONTAINER := \%(cookie-prompt "project")
+SOURCE_MOUNT := /proj
+
+DOCKER_RUN := docker run --rm -it \
+  --workdir $(SOURCE_MOUNT) \
+  --volume $(shell pwd):$(SOURCE_MOUNT) \
+  $(CONTAINER)
+
+.PHONY: help
+help: ## Show help message
+	@grep -hE '^\S+:.*##' $(MAKEFILE_LIST) | sed -e 's/:[[:blank:]]*\(##\)[[:blank:]]*/\1/' | column -s '##' -t
+
+.PHONY: shell
+shell: ## Open a shell in the dev environment
+	@$(DOCKER_RUN) sh
+
+.PHONY: setup
+setup: ## Set up the dev environments
+	@docker build -t $(CONTAINER) environment
+#+END_SRC
+* Dockerfile
+#+BEGIN_SRC dockerfile :tangle (cookie-get-path)
+FROM ubuntu:20.04
+#+END_SRC
+
+* CHANGELOG.org                                                      :export:
+** Changelog
+
+ All notable changes to this project will be documented in this file.
+
+ The format is based on [[https://keepachangelog.com/en/1.0.0/][Keep a Changelog]], and this project adheres to [[https://semver.org/spec/v2.0.0.html][Semantic Versioning]].
+
+*** [Unreleased]
+
+**** Added
+
+**** Changed
+
+**** Fixed
+
+**** Removed
+* README.org                                                         :export:
+
+** \%(cookie-get "project")
+
+*** Installation
+
+*** Usage
+

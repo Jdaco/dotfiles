@@ -1,0 +1,382 @@
+%(cookie-prompt "project")
+%(cookie-choice "distribution" "arch" "ubunutu")
+%(cookie-choice "architecture" "x86_64")
+%(cookie-prompt "root-pass" "root")
+%(cookie-prompt "root-size" "5G")
+%(cookie-prompt "user-name" "mkosi")
+%(cookie-prompt "user-pass" "toor")
+
+
+* Makefile
+#+BEGIN_SRC makefile :tangle (cookie-get-path)
+CACHE_DIR=mkosi-cache
+OS_IMG=image.raw
+OS_IMG_NSPAWN = $(basename $(OS_IMG)).nspawn
+
+ifeq ($(shell whoami),vagrant)
+	TEMPORARY_PATH := /home/vagrant
+else
+	TEMPORARY_PATH := .
+endif
+
+# Default target
+.PHONY: all
+all: $(OS_IMG)
+
+.PHONY: boot-qemu
+boot-qemu: ## Boot the machine image using QEMU
+	@qemu-system-x86_64 \
+		-smp 2 \
+		-m 2048 \
+		-enable-kvm \
+		-vga std \
+		-cpu host \
+    -drive if=pflash,format=raw,readonly,file=/usr/share/ovmf/x64/OVMF_CODE.fd \
+		-drive format=raw,file=$(OS_IMG) \
+    -object rng-random,filename=/dev/urandom,id=rng0 \
+		-device virtio-rng-pci,rng=rng0,id=rng-device0 \
+		-net nic,model=virtio \
+		-net user
+
+.PHONY: help
+help: ## Show help message
+	@grep -hE '^\S+:.*##' $(MAKEFILE_LIST) | sed -e 's/:[[:blank:]]*\(##\)[[:blank:]]*/\1/' | column -s '##' -t
+
+$(OS_IMG): ## Generate the raw disk image
+	@mkdir -p $(CACHE_DIR)
+	sudo $(MKOSI) --cache $(CACHE_DIR) --output $(TEMPORARY_PATH)/$(OS_IMG)
+	@mv --verbose --no-clobber $(TEMPORARY_PATH)/$(OS_IMG) $(TEMPORARY_PATH)/$(OS_IMG_NSPAWN) .
+
+.PHONY: boot
+boot: ## Boot into the system
+	sudo mkosi -o $(OS_IMG) boot
+
+.PHONY: shell
+shell: ## Enter a shell in the system (without booting it)
+	sudo mkosi -o $(OS_IMG) shell
+
+.PHONY: mostlyclean
+mostlyclean: ## Remove created files, excluding the package cache
+	@rm -f $(OS_IMG)
+	sudo mkosi -o $(OS_IMG) -f clean
+	sudo rm -rf .mkosi-*
+
+.PHONY: clean
+clean: mostlyclean ## Remove all created files
+	@rm -rf $(CACHE_DIR)
+#+END_SRC
+* mkosi.default
+
+#+name: packages-ubuntu
+#+BEGIN_SRC conf
+  # Networking
+  openssh-client
+  openssh-server
+  inetutils-ping
+  net-tools
+  iproute2
+  curl
+  wget
+  dhcpcd5
+  # Wireless
+  wireless-tools
+  wpasupplicant
+  # Docker
+  apt-transport-https
+  ca-certificates
+  gpg-agent
+  # Hardware
+  usbutils
+  # Misc
+  locales
+  vim
+  software-properties-common
+  sudo
+  man
+  build-essential
+#+END_SRC
+
+#+NAME: packages-arch
+#+BEGIN_SRC conf
+  # Networking
+  openssh
+  iputils
+  net-tools
+  wireless_tools
+  wpa_supplicant
+  # Misc
+  vim
+  tmux
+  arch-install-scripts
+  pacman-contrib
+  sudo
+  man
+#+END_SRC
+
+#+BEGIN_SRC conf :tangle (cookie-get-path)
+[Distribution]
+Distribution=%(cookie-get "distribution")
+Architecture=%(cookie-get "architecture")
+
+[Validation]
+Password=%(cookie-get "root-pass")
+
+[Packages]
+WithNetwork=true
+WithDocs=true
+Packages=
+  <<packages-%(cookie-get "distribution")>>
+
+[Partitions]
+RootSize=%(cookie-get "root-size")
+
+[Output]
+Bootable=yes
+Hostname=yes
+Output=image.raw
+#+END_SRC
+* mkosi.postinst
+#+name: postinst-ubuntu
+#+BEGIN_SRC shell
+function package_setup() {
+}
+
+function install_docker() {
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+
+    add-apt-repository \
+        "deb http://archive.ubuntu.com/ubuntu \
+  $(lsb_release -cs)-security \
+  main universe"
+
+    add-apt-repository \
+        "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+  $(lsb_release -cs) \
+  stable"
+
+    apt-get upgrade -y
+
+    apt-get install -y docker-ce docker-ce-cli containerd.io
+
+    systemctl enable docker
+}
+#+END_SRC
+
+#+name: postinst-arch
+#+BEGIN_SRC shell
+function package_setup() {
+    # Update the list of mirrors
+    curl -s "https://www.archlinux.org/mirrorlist/?country=US&protocol=https&use_mirror_status=on" | sed -e 's/^#Server/Server/' -e '/^#/d' | rankmirrors -n 5 - > /etc/pacman.d/mirrorlist
+}
+
+function install_docker() {
+    pacman -S docker
+
+    systemctl enable docker
+}
+#+END_SRC
+
+#+BEGIN_SRC shell :shebang "#!/bin/bash" :tangle (cookie-get-path)
+set -e
+
+<<postinst-%(cookie-get "distribution")>>
+
+function set_locale() {
+    update-locale LANG=$1 LC_ALL=$1
+
+    export LANG=$1
+    export LC_ALL=$1
+}
+
+function setup_sudo() {
+    groupadd -f sudo
+    echo '%sudo	ALL=(ALL) ALL' > /etc/sudoers
+}
+
+function add_user() {
+    useradd --create-home --groups users,sudo --no-user-group ${1}
+    echo "${1}:${2}" | chpasswd
+}
+
+package_setup
+set_locale "C.UTF-8"
+setup_sudo
+add_user %(cookie-get "user-name") %(cookie-get "user-pass")
+install_docker
+
+# Enable systemd networking
+systemctl enable systemd-networkd
+#+END_SRC
+
+* mkosi.nspawn
+#+BEGIN_SRC conf :tangle (cookie-get-path)
+[Exec]
+Environment=LANG=C.UTF-8
+Environment=LC_ALL=C.UTF-8
+
+[Files]
+BindReadOnly=/etc/resolv.conf
+#+END_SRC
+
+* Vagrantfile
+#+BEGIN_SRC ruby :tangle (cookie-get-path)
+$script = <<-SCRIPT
+#!/bin/bash
+set -e
+
+
+curl -s "https://www.archlinux.org/mirrorlist/?country=US&protocol=https&use_mirror_status=on" | sed -e 's/^#Server/Server/' -e '/^#/d' > /tmp/mirrorlist
+
+cp -v /tmp/mirrorlist /etc/pacman.d
+
+# Update the package db
+pacman --noconfirm -Syy
+
+# Update the package signature keys
+# pacman-key --refresh-keys
+pacman-key --init
+pacman-key --populate archlinux
+pacman --noconfirm -S archlinux-keyring
+
+# Install for the `rankmirrors` command
+pacman --noconfirm -S pacman-contrib
+
+# Use the top 5 fastest mirrors
+rankmirrors -n 5 /tmp/mirrorlist > /etc/pacman.d/mirrorlist
+
+# Update the system
+pacman --noconfirm -Syu
+pacman --noconfirm -S base-devel dosfstools debootstrap squashfs-tools squashfuse
+
+# Install mkosi
+# PKGBUILD from the AUR: https://aur.archlinux.org/cgit/aur.git/plain/PKGBUILD?h=mkosi
+cat <<EOF > mkosi.pkgbuild
+pkgname=mkosi
+pkgver=5
+pkgrel=1
+pkgdesc='Build Legacy-Free OS Images'
+arch=('any')
+url='https://github.com/systemd/mkosi'
+license=('LGPL2.1')
+depends=('python')
+makedepends=('python-setuptools')
+optdepends=('dnf: build Fedora or Mageia images'
+            'debootstrap: build Debian or Ubuntu images'
+            'debian-archive-keyring: build Debian images'
+            'ubuntu-keyring: build Ubuntu images'
+            'arch-install-scripts: build Arch images'
+            'zypper-git: build openSUSE images'
+            'gnupg: sign images'
+            'xz: compress images with xz'
+            'btrfs-progs: raw_btrfs and subvolume output formats'
+            'dosfstools: build bootable images'
+            'squashfs-tools: raw_squashfs output format'
+            'tar: tar output format'
+            'cryptsetup: add dm-verity partitions'
+            'edk2-ovmf: run bootable images in QEMU'
+            'qemu: run bootable images in QEMU'
+            'sbsigntools: sign EFI binaries for UEFI SecureBoot')
+source=("https://github.com/systemd/mkosi/archive/v\\$pkgver.tar.gz")
+sha256sums=('88e995dac8dfc665d2e741bd24f94c5aeb7f11fc79f2cd8560001f68a86a4bda')
+
+package() {
+  cd "mkosi-\\$pkgver"
+  python setup.py install --root="\\$pkgdir"
+}
+EOF
+sudo -u vagrant makepkg --noconfirm -icsp mkosi.pkgbuild
+
+# This patch is necessary because the current version of debootstrap is broken when used with --verbose
+sed -i '1615d' /usr/bin/mkosi
+
+systemctl enable systemd-networkd
+SCRIPT
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "archlinux/archlinux"
+  config.vm.provision "shell", inline: $script
+end
+#+END_SRC
+
+* CHANGELOG.org                                                      :export:
+** Changelog
+
+ All notable changes to this project will be documented in this file.
+
+ The format is based on [[https://keepachangelog.com/en/1.0.0/][Keep a Changelog]], and this project adheres to [[https://semver.org/spec/v2.0.0.html][Semantic Versioning]].
+
+*** [Unreleased]
+
+**** Added
+
+**** Changed
+
+**** Fixed
+
+**** Removed
+* README.org                                                         :export:
+
+** %(cookie-get "project")
+   - OS :: %(cookie-get "distribution")
+
+*** Services
+    - sshd
+
+*** Users
+    - root
+        - Default password: %(cookie-get "rootpass")
+    - %(cookie-get "user-name")
+        - Default password: %(cookie-get "user-pass")
+
+*** Usage
+
+    Produce a bootable disk image as `image.raw`:
+    #+BEGIN_SRC shell
+     make
+    #+END_SRC
+
+    Test your created image:
+    #+BEGIN_SRC shell
+     make boot
+    #+END_SRC
+
+    This will boot the image in a systemd-nspawn container.
+
+    To get network access in the container, make sure the `systemd-networkd` service is running on your machine and in the container. 
+
+    To boot the image using a QEMU VM instead:
+    #+BEGIN_SRC shell
+     make boot-qemu
+    #+END_SRC
+
+    This more accurately resembles how the OS will behave when it's installed on a machine.
+
+    **Note:** You won't be able to do this from within vagrant
+
+    You can also start a shell within the image without starting system:
+    #+BEGIN_SRC shell
+     make shell
+    #+END_SRC
+
+    ~make mostlyclean~ will remove all files except for the package cache. The cache is helpful for speeding up subsequent builds. If you want to remove the cache as well you can use ~make clean~
+
+*** Post-Installtion Steps
+    1. Resize Partitions
+    2. Configure Networking
+
+*** References
+    - [[https://github.com/systemd/mkosi/blob/master/mkosi.md][mkosi - Man Page]]
+    - [[http://0pointer.net/blog/mkosi-a-tool-for-generating-os-images.html][mkosi — A Tool for Generating OS Images]]
+    - [[https://wiki.archlinux.org/index.php/Systemd-nspawn#Configure_networking][systemd-nspawn - Configuring networking - ArchWiki]]
+       
+* .gitignore
+#+BEGIN_SRC gitignore :tangle (cookie-get-path)
+# Vagrant
+.vagrant
+
+# Mkosi files
+mkosi-cache
+image.raw
+image.nspawn
+#+END_SRC
+

@@ -729,8 +729,8 @@ VGA-1 00ffffffffffff000472aa010db550032314010368301b78ca3585a656489a24125054b30d
                                        (with-current-buffer (find-file-noselect "~/roam/areas/org/templates/book.org")
                                          (buffer-string)))))
                 ("New Cookie" :keys "C"
-                 :function (lambda() (find-file (f-join "~/cookies" (format "%s.org" (read-string "Cookie Name: ")))))
-                 :template-file "~/cookies/cookie.org")
+                 :function (lambda() (find-file (f-join cookie-path (format "%s.org" (read-string "Cookie Name: ")))))
+                 :template-file (f-join cookie-path "cookie.org"))
                 ("Cookies" :keys "c"
                  :function cookie-new-project
                  :immediate-finish t
@@ -740,14 +740,23 @@ VGA-1 00ffffffffffff000472aa010db550032314010368301b78ca3585a656489a24125054b30d
                  :git t
                  :visit-file "Makefile"
                  :children (
-                            ("Mkosi" :keys "m" :template-file "~/cookies/mkosi.org")
+                            ("Mkosi" :keys "m" :template-file (f-join cookie-path "mkosi.org"))
                             ("Terraform" :keys "t"
-                             :children (("Environment"  :keys "e" :template-file "~/cookies/terraform/environment.org" :git nil)
-                                        ("Project"  :keys "p" :template-file "~/cookies/terraform/project.org"
+                             :children (("Environment"
+                                         :keys "e"
+                                         :template-file (f-join cookie-path "terraform/environment.org" )
+                                         :git nil)
+                                        ("Project"
+                                         :keys "p"
+                                         :template-file (f-join cookie-path "terraform/project.org")
                                          :gitignore ("terraform" "terragrunt"))
                                         ("Remote State" :keys "r" :git nil
-                                         :children (("AWS" :keys "w" :template-file "~/cookies/terraform/remote-state/aws.org")
-                                                    ("Azure" :keys "a" :template-file "~/cookies/terraform/remote-state/azure.org"))))))))))
+                                         :children (("AWS"
+                                                     :keys "w"
+                                                     :template-file (f-join cookie-path "terraform/remote-state/aws.org"))
+                                                    ("Azure"
+                                                     :keys "a"
+                                                     :template-file (f-join cookie-path "terraform/remote-state/azure.org" )))))))))))
   )
 
 #+end_src
@@ -756,30 +765,34 @@ VGA-1 00ffffffffffff000472aa010db550032314010368301b78ca3585a656489a24125054b30d
 #+end_src
 *** Cookies
 #+begin_src elisp :noweb-ref configs
-(defun cookie-get-path ()
+(after! (helm org-capture)
+  (defvar cookie-path "~/dotfiles/cookies"
+    "Path to cookie dierectory")
+
+  (defun cookie-get-path ()
     "Generate the path to tangle src block to
 Intended to be used in the form of `:tangle (get-path) on files that are meant
 to be tangled'"
     (apply 'f-join (cons (file-name-directory (buffer-file-name (marker-buffer (org-capture-get :cookie-mark))))
                          (cdr (org-get-outline-path t)))))
 
-(defun cookie-root ()
+  (defun cookie-root ()
     (f-dirname
      (buffer-file-name (marker-buffer (org-capture-get :cookie-mark)))))
 
-(defun cookie-git ()
+  (defun cookie-git ()
     (when (doct-get :git)
       (let ((root (cookie-root)))
         (save-window-excursion
           (magit-init root)
           (magit-stage-file root)))))
 
-(defun cookie-visit-file ()
+  (defun cookie-visit-file ()
     (let ((path (expand-file-name (doct-get :visit-file) (cookie-root))))
       (find-file path)
       (magit-status)))
 
-(defun cookie-gitignore ()
+  (defun cookie-gitignore ()
     "Generate a gitignore from https://gitignore.io"
     (when (doct-get :gitignore)
       (with-current-buffer (find-file-noselect (expand-file-name ".gitignore" (cookie-root)))
