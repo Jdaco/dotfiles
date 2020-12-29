@@ -2,27 +2,13 @@
 #+VISIBILITY: overview
 #+PROPERTY: header-args :mkdirp t :noweb yes :results none
 
-* Shell
-| Command        | Key       |
-|----------------+-----------|
-| +eshell/toggle | ~SPC o e~ |
-| +eshell/here   | ~SPC o E~ |
 
-#+begin_src elisp :noweb-ref configs
-  ;; (defun sudo-run (command buffer)
-  ;;   (let ((default-directory "/sudo:root@localhost:"))
-  ;;     (process-file-shell-command command nil buffer)))
+- Data files
+  + Elfeed database
+  + Org files (roam + inbox.org)
+  + Syncthing shares
+  + Project Repos
 
-  ;; (defun sudo-run-async (command buffer)
-  ;;   (let ((default-directory "/sudo:root@localhost:"))
-  ;;     (start-file-process-shell-command "sudo-run-async" buffer command)))
-#+end_src
-
-** Eshell Aliases
-#+begin_src conf :tangle ~/.config/doom/eshell/aliases
-alias doom ~/.emacs.d/bin/doom $*
-alias guixupdate sudo guix system reconfigure /etc/config.scm
-#+end_src
 
 * Emacs
 ** Editing
@@ -434,12 +420,67 @@ git clone https://github.com/hlissner/doom-emacs ~/.emacs.d
 
 #+end_src
 
+* Shell
+| Command        | Key       |
+|----------------+-----------|
+| +eshell/toggle | ~SPC o e~ |
+| +eshell/here   | ~SPC o E~ |
+
+#+begin_src elisp :noweb-ref configs
+  ;; (defun sudo-run (command buffer)
+  ;;   (let ((default-directory "/sudo:root@localhost:"))
+  ;;     (process-file-shell-command command nil buffer)))
+
+  ;; (defun sudo-run-async (command buffer)
+  ;;   (let ((default-directory "/sudo:root@localhost:"))
+  ;;     (start-file-process-shell-command "sudo-run-async" buffer command)))
+#+end_src
+
+** Eshell Aliases
+** Eshell
+#+begin_src elisp :noweb-ref configs
+
+#+end_src
+*** Aliases
+:PROPERTIES:
+:ID:       d14e235d-95ff-4976-bed9-4c0253a576e3
+:END:
+#+begin_src conf :tangle ~/.config/doom/eshell/aliases
+alias doom ~/.emacs.d/bin/doom $*
+alias guixupdate sudo guix system reconfigure /etc/config.scm
+#+end_src
+
 * Security
+** Passwords
+I store my passwords on a USB drive, so symlink the =~/.password-store= to the path that I mount the key
+#+begin_src shell
+ln -s /mnt/key/passwords ~/.password-store
+#+end_src
+
+#+begin_src elisp :noweb-ref configs
+(map! :after helm-pass
+      :leader
+      (:prefix ("!" . "Passwords")
+       "!" #'helm-pass
+       "l" #'pass
+       )
+      )
+#+end_src
+** GnuPG
+:PROPERTIES:
+:ID:       391f2534-a448-40c7-a196-fdbaef3f9d1d
+:END:
 #+begin_src elisp :noweb-ref configs
 ;; Allow emacs to be used by GnuPG for pinentry
 ;; (setq epg-pinentry-mode 'loopback)
 #+end_src
-** Passwords
+
+#+begin_src conf :tangle ~/.gnupg/gpg-agent.conf
+default-cache-ttl 3600
+# allow-loopback-pinentry
+# pinentry-program /usr/bin/pinentry-emacs
+# allow-emacs-pinentry
+#+end_src
 * Package Manager
 
 ** Guix
@@ -1394,6 +1435,14 @@ right_meter_modes=1 2 2 2 2 2 2 2
 | Info-top-node       | g t |                                  |
 | info-next-reference | g j | Next link on the page            |
 | info-forward-node   | C-j | Next node (down / forward level) |
+
+** Man
+#+begin_src elisp :noweb-ref configs
+(map! :leader
+      :prefix "h"
+      "h" #'man)
+#+end_src
+
 * Services
 ** Prodigy
 #+begin_src elisp :noweb-ref configs
