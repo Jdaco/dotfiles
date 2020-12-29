@@ -724,53 +724,6 @@ VGA-1 00ffffffffffff000472aa010db550032314010368301b78ca3585a656489a24125054b30d
 #+end_src
 ** Capture
 #+begin_src elisp :noweb-ref configs
-(after! org-capture
-  (setq org-capture-templates
-        (doct `(("Inbox" :keys "i" :file "~/inbox.org" :template "* %?")
-                ("Task" :keys "t" :file (lambda () (find-areas #'car)) :olp ("Tasks") :template "* TODO %?")
-                ("Recipe" :keys "r" :function (lambda () (goto-or-create-heading "Recipe")) :template "* %?     :recipe:")
-                ("Book" :keys "b" :function (lambda () (goto-or-create-heading "Books"))
-                 :template (lambda () (bibtex-completion-fill-template
-                                       (bibtex-completion-get-entry (helm-bibtex-find-key))
-                                       (with-current-buffer (find-file-noselect "~/roam/areas/org/templates/book.org")
-                                         (buffer-string)))))
-                ("New Cookie" :keys "C"
-                 :function (lambda() (find-file (f-join cookie-path (format "%s.org" (read-string "Cookie Name: ")))))
-                 :template-file (f-join cookie-path "cookie.org"))
-                ("Cookies" :keys "c"
-                 :function cookie-new-project
-                 :immediate-finish t
-                 :kill-buffer nil
-                 :prepare-finalize (lambda () (process-cookie))
-                 :after-finalize (lambda () (cookie-gitignore) (cookie-git) (cookie-visit-file))
-                 :git t
-                 :visit-file "Makefile"
-                 :children (
-                            ("Mkosi" :keys "m" :template-file (f-join cookie-path "mkosi.org"))
-                            ("Terraform" :keys "t"
-                             :children (("Environment"
-                                         :keys "e"
-                                         :template-file (f-join cookie-path "terraform/environment.org" )
-                                         :git nil)
-                                        ("Project"
-                                         :keys "p"
-                                         :template-file (f-join cookie-path "terraform/project.org")
-                                         :gitignore ("terraform" "terragrunt"))
-                                        ("Remote State" :keys "r" :git nil
-                                         :children (("AWS"
-                                                     :keys "w"
-                                                     :template-file (f-join cookie-path "terraform/remote-state/aws.org"))
-                                                    ("Azure"
-                                                     :keys "a"
-                                                     :template-file (f-join cookie-path "terraform/remote-state/azure.org" )))))))))))
-  )
-
-#+end_src
-#+begin_src elisp :noweb-ref packages
-(package! doct)
-#+end_src
-*** Cookies
-#+begin_src elisp :noweb-ref configs
 (after! (helm org-capture)
   (defvar cookie-path "~/dotfiles/cookies"
     "Path to cookie dierectory")
@@ -884,8 +837,49 @@ templates"
 
 
 
+  (setq org-capture-templates
+        (doct `(("Inbox" :keys "i" :file "~/inbox.org" :template "* %?")
+                ("Task" :keys "t" :file (lambda () (find-areas #'car)) :olp ("Tasks") :template "* TODO %?")
+                ("Recipe" :keys "r" :function (lambda () (goto-or-create-heading "Recipe")) :template "* %?     :recipe:")
+                ("Book" :keys "b" :function (lambda () (goto-or-create-heading "Books"))
+                 :template (lambda () (bibtex-completion-fill-template
+                                       (bibtex-completion-get-entry (helm-bibtex-find-key))
+                                       (with-current-buffer (find-file-noselect "~/roam/areas/org/templates/book.org")
+                                         (buffer-string)))))
+                ("New Cookie" :keys "C"
+                 :function (lambda() (find-file (f-join cookie-path (format "%s.org" (read-string "Cookie Name: ")))))
+                 :template-file ,(f-join cookie-path "cookie.org"))
+                ("Cookies" :keys "c"
+                 :function cookie-new-project
+                 :immediate-finish t
+                 :kill-buffer nil
+                 :prepare-finalize (lambda () (process-cookie))
+                 :after-finalize (lambda () (cookie-gitignore) (cookie-git) (cookie-visit-file))
+                 :git t
+                 :visit-file "Makefile"
+                 :children (
+                            ("Mkosi" :keys "m" :template-file ,(f-join cookie-path "mkosi.org"))
+                            ("Terraform" :keys "t"
+                             :children (("Environment"
+                                         :keys "e"
+                                         :template-file ,(f-join cookie-path "terraform/environment.org" )
+                                         :git nil)
+                                        ("Project"
+                                         :keys "p"
+                                         :template-file ,(f-join cookie-path "terraform/project.org")
+                                         :gitignore ("terraform" "terragrunt"))
+                                        ("Remote State" :keys "r" :git nil
+                                         :children (("AWS"
+                                                     :keys "w"
+                                                     :template-file ,(f-join cookie-path "terraform/remote-state/aws.org"))
+                                                    ("Azure"
+                                                     :keys "a"
+                                                     :template-file ,(f-join cookie-path "terraform/remote-state/azure.org" )))))))))))
   )
 
+#+end_src
+#+begin_src elisp :noweb-ref packages
+(package! doct)
 #+end_src
 ** Agenda
 #+begin_src elisp :noweb-ref configs
