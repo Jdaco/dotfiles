@@ -21,17 +21,9 @@
 (map! :leader
       :nv "f S" #'evil-write-all)
 
-(after! key-chord
-  (key-chord-define-global "dk" 'evil-write-all)
-  (key-chord-mode)
-  )
-
 ;; buffers
 #+end_src
 
-#+begin_src elisp :noweb-ref packages
-(package! key-chord)
-#+end_src
 *** Snippets
 #+begin_src elisp :noweb-ref configs
 (map! :i "M-a" #'yas-previous-field
@@ -58,6 +50,9 @@ git clone https://github.com/hlissner/doom-emacs ~/.emacs.d
 ~/.emacs.d/bin/doom install
 #+end_src
 *** init.el
+:PROPERTIES:
+:ID:       2e3b632f-315d-4026-aea7-1fb176106422
+:END:
 #+begin_src elisp :tangle ~/.config/doom/init.el
 ;;; init.el -*- lexical-binding: t; -*-
 
@@ -244,6 +239,9 @@ git clone https://github.com/hlissner/doom-emacs ~/.emacs.d
        (default +bindings +smartparens))
 #+end_src
 *** config.el
+:PROPERTIES:
+:ID:       197382ca-b112-444f-90a0-f38e5b3ad0f4
+:END:
 #+begin_src elisp :tangle ~/.config/doom/config.el
 ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
 
@@ -321,6 +319,9 @@ git clone https://github.com/hlissner/doom-emacs ~/.emacs.d
 #+end_src
 
 *** packages.el
+:PROPERTIES:
+:ID:       aed1d1c4-b001-4775-a391-b30a05095d2e
+:END:
 #+begin_src elisp :tangle ~/.config/doom/packages.el
 ;; -*- no-byte-compile: t; -*-
 ;;; $DOOMDIR/packages.el
@@ -514,6 +515,9 @@ https://addons.mozilla.org/en-US/firefox/addon/canvasblocker/
 ;; (map! :leader "L" #'lock)
 #+end_src
 ** .Xmodmap
+:PROPERTIES:
+:ID:       a21ede96-424c-4e23-8cea-df612295bfd0
+:END:
 #+begin_src conf :tangle ~/.Xmodmap
 clear Mod1
 
@@ -533,6 +537,9 @@ add Control = Control_L
 #+end_src
 
 ** EXWM
+:PROPERTIES:
+:ID:       adb6de39-b7dd-4359-a026-c5b8c5c6a029
+:END:
 #+begin_src elisp :tangle ~/.exwm
 (require 'exwm)
 (require 'exwm-config)
@@ -596,6 +603,9 @@ Can show completions at point for COMMAND using helm or ivy"
 (package! helm-exwm)
 #+end_src
 *** Autorandr
+:PROPERTIES:
+:ID:       58ffc6be-9d5a-47ca-bc75-37e43c79c239
+:END:
 #+begin_src text :tangle ~/.config/autorandr/desktop/config
 output VGA-1
 crtc 0
@@ -1189,7 +1199,7 @@ For example, an org-ql dynamic block header could look like:
         (save-buffer)))))
 
 (map! :leader
-      "o x b" #'helm-bibtex)
+      "o B" #'helm-bibtex)
 
 #+end_src
 #+begin_src elisp :noweb-ref packages
@@ -1330,12 +1340,11 @@ ITEM is each book information."
 (after! elfeed
   (require 'elfeed)
   (require 'elfeed-org)
+
   (setq elfeed-search-filter "@6-months-ago +unread"
-        rmh-elfeed-org-files (list "~/roam/other/feeds.org")
-        elfeed-db-directory "~/.elfeed"
-        elfeed-search-title-min-width 32)
-
-
+    rmh-elfeed-org-files (list "~/roam/other/feeds.org")
+    elfeed-db-directory "~/.elfeed"
+    elfeed-search-title-min-width 32)
 
   (defun elfeed-mpv (url)
     "Watch a video from URL in MPV"
@@ -1356,19 +1365,23 @@ ITEM is each book information."
     (interactive)
     (elfeed-search-yank)
     (ytdl-download))
-
-  (map! :leader
-        "o x" #'elfeed)
-
-  (map! :map elfeed-search-mode-map
-        "B" #'elfeed-view-mpv
-        "D" #'elfeed-download-video
-  )
-  (map! :map elfeed-show-mode-map
-        "C-g" #'elfeed-show-visit
-  )
 )
 
+
+
+
+(map! :leader
+      "o x" #'elfeed)
+
+(map! :after elfeed
+      (:map elfeed-search-mode-map
+       :n "B" #'elfeed-view-mpv
+       :n "D" #'elfeed-download-video
+       )
+      (:map elfeed-show-mode-map
+       "C-g" #'elfeed-show-visit
+       )
+      )
 #+end_src
 * Finance
 #+begin_src elisp :noweb-ref configs
@@ -1389,6 +1402,9 @@ ITEM is each book information."
 #+end_src
 * Monitoring
 ** Htop
+:PROPERTIES:
+:ID:       7d735640-e9da-4239-a84b-66b9bf630048
+:END:
 #+begin_src conf :tangle ~/.configs/htop/htoprc
 # Beware! This file is rewritten by htop when settings are changed in the interface.
 # The parser is also very primitive, and not human-friendly.
