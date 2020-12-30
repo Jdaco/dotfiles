@@ -1466,7 +1466,6 @@ right_meter_modes=1 2 2 2 2 2 2 2
   <<prodigy-services>>
   )
 
-(map! :after prodigy
-      :leader
+(map! :leader
       "o y" #'prodigy)
 #+end_src
