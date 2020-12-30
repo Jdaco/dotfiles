@@ -349,7 +349,7 @@ These are ssytem specific settings
 
 Configs for my arch laptop
 
-#+begin_src elisp :noweb-refs archlinux-configs
+#+begin_src elisp :noweb-ref archlinux-configs
 (setq inbox-file "~/sync/inbox.org"
       org-directory "~/sync"
       org-roam-directory "~/sync")
