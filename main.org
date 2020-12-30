@@ -1,6 +1,6 @@
 #+TITLE: Emacs
 #+VISIBILITY: overview
-#+PROPERTY: header-args :mkdirp t :noweb yes :results none
+#+PROPERTY: header-args :mkdirp t :noweb yes
 
 
 - Data files
@@ -9,6 +9,24 @@
   + Syncthing shares
   + Project Repos
 
+
+#+name: system-configs
+#+begin_src elisp
+(defun get-system-name ()
+  (s-trim (shell-command-to-string "hostname")))
+
+(let ((system (get-system-name)))
+  (cond ((string= system "alpha")
+         '(progn
+           <<alpha-configs>>
+           ))
+        ((string= system "archlinux")
+         '(progn
+           <<archlinux-configs>>
+           ))
+        ))
+
+#+end_src
 
 * Emacs
 ** Editing
@@ -284,7 +302,7 @@ git clone https://github.com/hlissner/doom-emacs ~/.emacs.d
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
-(setq org-directory "~/roam/")
+    ;; (setq org-directory "~/roam/")
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
@@ -315,7 +333,26 @@ git clone https://github.com/hlissner/doom-emacs ~/.emacs.d
   "o f"
   )
 
+
 <<configs>>
+<<system-configs()>>
+#+end_src
+
+These are ssytem specific settings
+
+#+begin_src elisp :noweb-ref configs
+(setq dotfiles-directory "~/dotfiles"
+      org-directory "~/roam"
+      org-roam-directory ""
+      inbox-file "~/inbox.org")
+#+end_src
+
+Configs for my arch laptop
+
+#+begin_src elisp :noweb-refs archlinux-configs
+(setq inbox-file "~/sync/inbox.org"
+      org-directory "~/sync"
+      org-roam-directory "~/sync")
 #+end_src
 
 *** packages.el
@@ -602,6 +639,40 @@ Can show completions at point for COMMAND using helm or ivy"
 #+begin_src elisp :noweb-ref packages
 (package! helm-exwm)
 #+end_src
+
+**** Arch Laptop
+My Arch laptop isn't suing Guix so the XSession needs to be created manually
+
+#+begin_src conf
+[Desktop Entry]
+Name=EXWM
+Comment=Emacs Window Manager
+Exec=exwm-start
+Type=Application
+#+end_src
+
+#+begin_src shell :shebang "#!/bin/bash"
+# this makes it work in Ubuntu
+xhost +
+## you might need to append the TTY you are working on
+xinit
+
+wmname LG3D
+
+# Set fallback cursor
+xsetroot -cursor_name left_ptr
+
+# If Emacs is started in server mode, `emacsclient` is a convenient way to edit
+# files in place (used by e.g. `git commit`)
+export VISUAL=emacsclient
+export EDITOR="$VISUAL"
+
+autorandr --change
+
+# Finally launch emacs and enable exwm
+exec emacs --eval '(cond ((file-exists-p "~/.exwm") (load-file "~/.exwm")) ((not (featurep (quote exwm))) (require (quote exwm)) (require (quote exwm-config)) (exwm-config-default) (message (concat "exwm configuration not found. " "Falling back to default configuration..."))))'
+#+end_src
+
 *** Autorandr
 :PROPERTIES:
 :ID:       58ffc6be-9d5a-47ca-bc75-37e43c79c239
@@ -675,41 +746,12 @@ VGA-1 00ffffffffffff000472aa010db550032314010368301b78ca3585a656489a24125054b30d
 * Org
 #+begin_src elisp :noweb-ref configs
 (after! (helm org-agenda)
-  (defun goto-or-create-heading (heading &optional level)
-    (find-areas)
-    (let ((existing (org-ql-select (current-buffer)
-                      `(and (level ,(or level 1)) (heading ,heading))
-                      :action #'point)))
-      (if existing
-          (goto-char (car existing))
-        (progn
-          (end-of-buffer)
-          (insert (format "\n* %s)" heading))))))
 
   (defun choose (prompt choices)
     "Choose an option from CHOICES using helm"
     (helm :sources (helm-build-sync-source prompt :candidates choices)))
 
 
-  (defun find-place () (interactive)
-         (helm :sources
-               (helm-build-sync-source "Places"
-                 :candidates (org-map-entries '(join (org-get-outline-path t) "/") nil '("~/roam/other/places.org"))
-                 :action '(("Search" . (lambda (place) (org-ql-search 'org-agenda-files `(children (property "Place" ,place)) :super-groups '((:auto-category t)))))
-                           ("Copy" . (lambda (place) (kill-new place)))))))
-
-  (defun find-areas (&optional action)
-    (interactive)
-    (helm :sources (helm-build-sync-source "Areas"
-                     :candidates (mapcar (lambda (fpath) (list (file-name-base fpath) fpath)) (directory-files "~/roam/areas" t "^[^.].*\.org"))
-                     :action (or action (lambda (fpath) (find-file (car fpath))))
-                     :fuzzy-match t)))
-
-
-  (defun org-dblock-write:contacts (params)
-    (org-dblock-write:org-ql `(:file "~/roam/other/contacts.org"
-                               :columns (heading todo ((property "Place") "Place"))
-                               :query (children (and (heading "Services") (children (heading ,(plist-get params :service))))))))
   (defun org-dblock-write:block-update-time (params)
     (let ((fmt (or (plist-get params :format) "%d. %m. %Y")))
       (insert "Last block update at: "
@@ -728,7 +770,7 @@ VGA-1 00ffffffffffff000472aa010db550032314010368301b78ca3585a656489a24125054b30d
         "v E" #'org-edit-src-code
         )
 
-  (map!
+(map!
    (:leader
     :prefix ("o o" . "Org")
     "V" #'org-ql-view
@@ -741,19 +783,14 @@ VGA-1 00ffffffffffff000472aa010db550032314010368301b78ca3585a656489a24125054b30d
      "s" #'org-sidebar-toggle
      "t" #'org-sidebar-tree-toggle
      )
-    (:prefix ("f" . "Find")
-     "a" #'find-areas
-     "p" #'find-place
-     )
+
     ))
 
-  (setq org-roam-directory "~/roam"
-        org-id-link-to-org-use-id t
+(setq org-id-link-to-org-use-id t
         org-log-into-drawer t
         org-highest-priority 65
         org-lowest-priority 68
         org-default-priority 68
-        org-tags-exclude-from-inheritance '(storage book certification assistant recipe)
         holiday-bahai-holidays nil
         holiday-hebrew-holidays nil
         holiday-islamic-holidays nil
@@ -766,8 +803,61 @@ VGA-1 00ffffffffffff000472aa010db550032314010368301b78ca3585a656489a24125054b30d
         org-refile-targets '((org-agenda-files :maxlevel . 6))
 
         )
+
   )
 
+#+end_src
+
+#+begin_src elisp :noweb-ref alpha-configs
+(after! helm
+
+  (defun goto-or-create-heading (heading &optional level)
+    (find-areas)
+    (let ((existing (org-ql-select (current-buffer)
+                      `(and (level ,(or level 1)) (heading ,heading))
+                      :action #'point)))
+      (if existing
+          (goto-char (car existing))
+        (progn
+          (end-of-buffer)
+          (insert (format "\n* %s)" heading))))))
+
+
+  (defun find-place () (interactive)
+         (helm :sources
+               (helm-build-sync-source "Places"
+                 :candidates (org-map-entries
+                              '(join (org-get-outline-path t) "/")
+                              nil
+                              `(,(f-join org-directory "other/places.org")))
+                 :action '(("Search" . (lambda (place) (org-ql-search 'org-agenda-files `(children (property "Place" ,place)) :super-groups '((:auto-category t)))))
+                           ("Copy" . (lambda (place) (kill-new place)))))))
+
+  (defun find-areas (&optional action)
+    (interactive)
+    (helm :sources (helm-build-sync-source "Areas"
+                     :candidates (mapcar (lambda (fpath)
+                                           (list (file-name-base fpath) fpath))
+                                         (directory-files (f-join org-directory "areas") t "^[^.].*\.org"))
+                     :action (or action (lambda (fpath) (find-file (car fpath))))
+                     :fuzzy-match t)))
+
+
+  (defun org-dblock-write:contacts (params)
+    (org-dblock-write:org-ql `(:file (f-join org-directory "other/contacts.org")
+                               :columns (heading todo ((property "Place") "Place"))
+                               :query (children (and (heading "Services") (children (heading ,(plist-get params :service))))))))
+
+(map! :leader
+      :prefix ("o f" . "Find")
+      "a" #'find-areas
+      "p" #'find-place)
+
+
+(setq org-tags-exclude-from-inheritance '(storage book certification assistant recipe)
+      )
+
+)
 #+end_src
 
 #+begin_src elisp :noweb-ref packages
@@ -776,8 +866,8 @@ VGA-1 00ffffffffffff000472aa010db550032314010368301b78ca3585a656489a24125054b30d
 #+end_src
 ** Capture
 #+begin_src elisp :noweb-ref configs
-(after! (helm org-capture)
-  (defvar cookie-path "~/dotfiles/cookies"
+(after! (helm org-capture doct)
+  (defvar cookie-path (f-join dotfiles-directory "cookies")
     "Path to cookie dierectory")
 
   (defun cookie-get-path ()
@@ -808,7 +898,8 @@ to be tangled'"
     (when (doct-get :gitignore)
       (with-current-buffer (find-file-noselect (expand-file-name ".gitignore" (cookie-root)))
         (end-of-buffer)
-        (insert "\n.project.org\n" (gitignore-templates--url-to-string (helm-gitignore--generate-url (doct-get :gitignore))))
+        (insert "\n.project.org\n"
+                (gitignore-templates--url-to-string (helm-gitignore--generate-url (doct-get :gitignore))))
         (save-buffer))))
 
   (defun cookie-new-project (&optional directory)
@@ -885,12 +976,8 @@ templates"
     "")
 
 
-
-
-
-
   (setq org-capture-templates
-        (doct `(("Inbox" :keys "i" :file "~/inbox.org" :template "* %?")
+        (doct `(("Inbox" :keys "i" :file inbox-file :template "* %?")
                 ("Task" :keys "t" :file (lambda () (find-areas #'car)) :olp ("Tasks") :template "* TODO %?")
                 ("Recipe" :keys "r" :function (lambda () (goto-or-create-heading "Recipe")) :template "* %?     :recipe:")
                 ("Book" :keys "b" :function (lambda () (goto-or-create-heading "Books"))
@@ -930,6 +1017,7 @@ templates"
   )
 
 #+end_src
+
 #+begin_src elisp :noweb-ref packages
 (package! doct)
 #+end_src
@@ -1034,16 +1122,19 @@ templates"
   )
 
 #+end_src
+
 #+begin_src elisp :noweb-ref packages
 (package! org-super-agenda)
 (package! org-ql)
 #+end_src
 ** Notes
 *** Roam
-#+begin_src elisp :noweb-ref configs
 
-(setq org-roam-directory "~/roam"
-      org-roam-tag-sources '(prop last-directory)
+I'm only using =org-roam= on my Alpha machine at the moment
+
+#+begin_src elisp :noweb-ref alpha-configs
+
+(setq org-roam-tag-sources '(prop last-directory)
       org-roam-capture-templates '(("d" "default"
                                     plain #'org-roam--capture-get-point "%?"
                                     :file-name "notes/%<%Y%m%d%H%M%S>-${slug}"
@@ -1060,9 +1151,11 @@ templates"
                                     :file-name "notes/%<%Y%m%d%H%M%S>-${slug}"))
       )
 #+end_src
+
 *** org-ql
 **** Customized dblock
-#+begin_src elisp :noweb-ref configs
+
+#+begin_src elisp :noweb-ref alpha-configs
 (cl-defun org-dblock-write:org-ql (params)
   "Insert content for org-ql dynamic block at point according to PARAMS.
 Valid parameters include:
@@ -1165,7 +1258,7 @@ For example, an org-ql dynamic block header could look like:
 (package! org-noter-pdftools)
 #+end_src
 **** Bibtex
-#+begin_src elisp :noweb-ref configs
+#+begin_src elisp :noweb-ref alpha-configs
 (setq
           bibtex-completion-bibliography "~/roam/books/books.bib"
           bibtex-completion-library-path "~/roam/books"
@@ -1208,7 +1301,7 @@ For example, an org-ql dynamic block header could look like:
 (package! org-ref)
 #+end_src
 ***** helm-books
-#+begin_src elisp :noweb-ref configs
+#+begin_src elisp :noweb-ref alpha-configs
 (after! helm
   (defun helm-books--get-bibtex (candidate)
     (alist-get 'id candidate)
@@ -1293,37 +1386,44 @@ ITEM is each book information."
       )
 #+end_src
 * Git
-#+begin_src elisp :noweb-ref configs
-;; (map! :leader
-;;       "g ." #'magit-file-dispatch
-;;       )
-#+end_src
 * Networking
-#+begin_src elisp :noweb-ref configs
-;; (defun interfaces () (interactive)
-;;        (helm :sources
-;;              (helm-build-async-source "*interfaces*"
-;;                :candidates-process
-;;                (lambda () (start-process "ip" nil "ip" "--brief" "link" "show" "up")))))
+#+begin_src elisp :noweb-ref archlinux-configs
+(after! helm
+  (defun interfaces () (interactive)
+         (helm :sources
+               (helm-build-async-source "*interfaces*"
+                 :candidates-process
+                 (lambda () (start-process "ip" nil "ip" "--brief" "link" "show" "up")))))
 
-  ;; (defun bluetooth ()
-  ;;   (interactive)
-  ;;   (helm :sources (helm-build-sync-source "Bluetooth Devices"
-  ;;                    :candidates (mapcar 'car bluetooth-devices)
-  ;;                    :action (lambda (device)
-  ;;                              (process-file-shell-command
-  ;;                               (concat "bluetoothctl connect " (cdr (assoc device bluetooth-devices))))))))
+  (defun bluetooth ()
+    (interactive)
+    (helm :sources (helm-build-sync-source "Bluetooth Devices"
+                     :candidates (mapcar 'car bluetooth-devices)
+                     :action (lambda (device)
+                               (process-file-shell-command
+                                (concat "bluetoothctl connect " (cdr (assoc device bluetooth-devices))))))))
 
-  ;; (defun netctl-start()
-  ;;   (interactive)
-  ;;   (helm :sources (helm-build-sync-source "Networks"
-  ;;                    :candidates (mapcar #'file-name-base (seq-filter (-not #'file-directory-p) (directory-files "/etc/netctl" t)))
-  ;;                    :action (lambda (network) (sudo-run-async (concat "netctl start " network) "*netctl*"))
-  ;;                    :fuzzy-match t)))
-  ;; (defun netctl-stop-all()
-  ;;   (interactive)
-  ;;   (sudo-run-async "netctl stop-all" "*netctl*")
-  ;;   (message "Stopped all networks"))
+  (defun netctl-start()
+    (interactive)
+    (helm :sources (helm-build-sync-source "Networks"
+                     :candidates (mapcar #'file-name-base (seq-filter (-not #'file-directory-p) (directory-files "/etc/netctl" t)))
+                     :action (lambda (network) (sudo-run-async (concat "netctl start " network) "*netctl*"))
+                     :fuzzy-match t)))
+  (defun netctl-stop-all()
+    (interactive)
+    (sudo-run-async "netctl stop-all" "*netctl*")
+    (message "Stopped all networks"))
+
+
+  (map! :leader
+        (:prefix ("N" . "Network")
+         :n "n" #'netctl-start
+         :n "S" #'netctl-stop-all
+         :n "B" #'bluetooth
+         :n "i" #'interfaces))
+
+  )
+
 #+end_src
 
 ** File Sharing
@@ -1336,7 +1436,7 @@ ITEM is each book information."
 #+end_src
 
 * RSS
-#+begin_src elisp :noweb-ref configs
+#+begin_src elisp :noweb-ref alpha-configs
 (after! elfeed
   (require 'elfeed)
   (require 'elfeed-org)
