@@ -1,40 +1,18 @@
 %(cookie-prompt "project")
-%(cookie-choice "cloud" "aws" "azure")
-%(cookie-prompt "default-region" "us-west-1")
 %(cookie-prompt "tenant-domain")
+%(cookie-prompt "remote-state-location" "westus2")
+%(cookie-prompt "remote-state-resource-group")
+%(cookie-prompt "remote-state-container")
 
 * Makefile
-
-#+name: make-aws
-#+BEGIN_SRC makefile
-AWS_CONFIGS := $(HOME)/.aws
-AWS_PROFILE := $(CONTAINER)
-AWS_REGION := %(cookie-get "default-region")
-
-CLOUD_PARAMS := \
-  --env "AWS_PROFILE=$(AWS_PROFILE)" \
-  --env "AWS_DEFAULT_REGION=$(AWS_REGION)" \
-  --volume $(AWS_CONFIGS):/root/.aws \
-#+END_SRC
-
-#+name: make-azure
-#+BEGIN_SRC makefile
-AZURE_DIR := $(shell pwd)/.azure
-AZ_DIRECTORY := %(cookie-get "tenant-domain")
-
-CLOUD_PARAMS :=
-#+END_SRC
 
 #+BEGIN_SRC makefile :tangle (cookie-get-path)
 CONTAINER := %(cookie-get "project")
 SOURCE_MOUNT := /proj
 
-MODULES_DIR = modules
-
-<<make-%(cookie-get "cloud")>>
+AZURE_DIR := $(shell pwd)/.azure
 
 DOCKER_RUN := docker run --rm -it \
-  $(CLOUD_PARAMS) \
   --workdir $(SOURCE_MOUNT) \
   --volume $(shell pwd):$(SOURCE_MOUNT) \
   $(CONTAINER)
@@ -49,78 +27,40 @@ shell: ## Open a shell in the dev environment
 
 .PHONY: setup
 setup: ## Set up the dev environments
+	@mkdir -p $(AZURE_DIR)
 	@docker build -t $(CONTAINER) .
-
-<<make-targets-%(cookie-get "cloud")>>
 #+END_SRC
-
-#+name: make-targets-azure
-#+begin_src makefile
-.PHONY: _login
-_login:
-	@az login --tenant $(AZ_DIRECTORY)
-#+end_src
 
 * Dockerfile
-
-#+name: docker-aws
-#+BEGIN_SRC dockerfile
-# SAML2AWS
-ENV SAML2AWS_VERSION=2.26.1
-ENV SAML2AWS_SHA512='15f1ad5dda74865639a64790630ac604cbce446c2d331b5ae8f65a0435101f1eab24ad96e736aae5c9e074ad3252947f80dba267ec792649c2c1cfab5326d2fc'
-
-RUN wget -O /tmp/saml2aws.tar.gz "https://github.com/Versent/saml2aws/releases/download/v${SAML2AWS_VERSION}/saml2aws_${SAML2AWS_VERSION}_linux_amd64.tar.gz"
-
-RUN echo "${SAML2AWS_SHA512}  /tmp/saml2aws.tar.gz" | sha512sum -c -
-
-RUN tar -xzvf /tmp/saml2aws.tar.gz -C /usr/bin
-RUN chmod +x /usr/bin/saml2aws
-
-ARG SAML2AWS_PROVIDER
-ARG SAML2AWS_URL
-ARG AWS_PROFILE
-ARG EMAIL
-
-RUN saml2aws configure \
-  --idp-provider ${SAML2AWS_PROVIDER} \
-  --url  ${SAML2AWS_URL}\
-  --profile ${AWS_PROFILE} \
-  --session-duration 36000 \
-  --mfa Auto \
-  --skip-prompt
-#+END_SRC
-
-#+name: docker-azure
-#+BEGIN_SRC dockerfile
-# Azure CLI
-ADD azure_cli_install.sh .
-RUN bash azure_cli_install.sh
-#+END_SRC
-
 #+BEGIN_SRC dockerfile :tangle (cookie-get-path)
 FROM ubuntu:20.04
 
 COPY --from=hashicorp/terraform:0.14.2 /bin/terraform /usr/bin/terraform
-COPY --from=hashicorp/packer:light /bin/packer /usr/bin/packer
 
-RUN apt-get update -yqq && apt-get install -yqq wget make git python3-pip
+RUN apt-get update -yqq && apt-get install -yqq wget make git direnv jq
 
-# Terragrunt
-RUN wget -O /usr/bin/terragrunt 'https://github.com/gruntwork-io/terragrunt/releases/download/v0.23.17/terragrunt_linux_amd64'
+# tfenv
+RUN wget -O /usr/bin/tfenv 'https://github.com/cloudposse/tfenv/releases/download/0.4.0/tfenv_linux_amd64'
+RUN echo '47cb95933fc6b4ff6652ae19b8ad5a15303632496820e3c5d3c423ebaf5f737f /usr/bin/tfenv' | sha256sum -c -
+RUN chmod +x /usr/bin/tfenv
 
-RUN echo '22a55f84ff6d69bfdc52af6dc1853ace5d55da5313465847b6c5bb9d8b9f8801  /usr/bin/terragrunt' | sha256sum -c -
+RUN mkdir -p /root/.config/direnv
+ADD docker/direnv.toml /root/.config/direnv/config.toml
+ADD docker/direnvrc /root/.direnvrc
 
-RUN chmod +x /usr/bin/terragrunt
+ADD docker/bashrc /root/.bashrc
 
-<<docker-%(cookie-get "cloud")>>
+# Azure CLI
+ADD azure_cli_install.sh .
+RUN bash azure_cli_install.sh
 
-ADD docker_entry.sh /usr/local/bin/entry.sh
+ADD docker/entry.sh /usr/local/bin/entry.sh
 
 CMD /usr/local/bin/entry.sh
 #+END_SRC
 
 * azure_cli_install.sh
-#+BEGIN_SRC shell :shebang "#!/bin/bash" :tangle (when (string= "azure" "%(cookie-get "cloud")") (cookie-get-path))
+#+BEGIN_SRC shell :shebang "#!/bin/bash" :tangle (cookie-get-path)
 #######################################################################################################################
 # This script does three fundamental things:                                                                          #
 #   1. Add Microsoft's GPG Key has a trusted source of apt packages.                                                  #
@@ -214,24 +154,41 @@ setup() {
 
 setup  # ensure the whole file is downloaded before executing
 #+END_SRC
-* docker_entry.sh
+
+* terraform-setup.sh
 #+BEGIN_SRC shell :shebang "#!/bin/bash" :tangle (cookie-get-path)
-set -euo pipefail
 
-make _login
+echo "Creating resource group: ${REMOTE_STATE_RESOURCE_GROUP}..."
 
-<<entry-%(cookie-get "cloud")>>
+az group create \
+    --name ${REMOTE_STATE_RESOURCE_GROUP} \
+    --location ${REMOTE_STATE_LOCATION} \
+    --tags "Project=%(cookie-get "project") Environment=%(cookie-get "environment")" \
+    --output none
 
-bash
-#+end_src
+echo "Creating storage account: ${REMOTE_STATE_STORAGE_ACCOUNT}..."
 
-#+name: entry-azure
-#+begin_src shell
-export ARM_ACCESS_KEY=$(az storage account keys list \
-    --resource-group  "%(cookie-get "cloud")" \
-    --account-name "%(cookie-get "")" \
-    --query '[0].value' -o tsv)
-#+end_src
+az storage account create \
+   --name ${REMOTE_STATE_STORAGE_ACCOUNT} \
+   --resource-group ${REMOTE_STATE_RESOURCE_GROUP} \
+   --access-tier Hot \
+   --allow-blob-public-access false \
+   --encryption-services blob \
+   --kind StorageV2 \
+   --tags "Project=%(cookie-get "project") Environment=%(cookie-get "environment")" \
+   --output none
+
+ACCOUNT_KEY=$(az storage account keys list --resource-group ${REMOTE_STATE_RESOURCE_GROUP} --account-name ${REMOTE_STATE_STORAGE_ACCOUNT} --query '[0].value' -o tsv)
+
+echo "Creating storage container: ${REMOTE_STATE_STORAGE_ACCOUNT}..."
+az storage container create \
+    --name "${REMOTE_STATE_STORAGE_ACCOUNT}"
+    --account-name ${REMOTE_STATE_STORAGE_ACCOUNT} \
+    --account-key ${ACCOUNT_KEY} \
+    --resource-group ${REMOTE_STATE_RESOURCE_GROUP} \
+    --public-access off \
+    --output none
+#+END_SRC
 
 * CHANGELOG.org                                                      :export:
 ** Changelog
@@ -263,11 +220,50 @@ export ARM_ACCESS_KEY=$(az storage account keys list \
 backend.tf
 provider.tf
 
-<<gitignore-%(cookie-get "cloud")>>
-
-#+END_SRC
-
-#+name: gitignore-azure
-#+begin_src gitignore
+# Azure files
 .azure
+#+END_SRC
+* .envrc
+This uses ~direnv~ and ~tfenv~ to manage terraform environment variables
+
+#+begin_src shell :tangle (cookie-get-path)
+add_tag Project harbor-infra
+export REMOTE_STATE_CONTAINER="%(cookie-get "remote-state-container")"
+export REMOTE_STATE_RESOURCE_GROUP="%(cookie-get "remote-state_resource_group")"
+export REMOTE_STATE_STORAGE_ACCOUNT="%(cookie-get "remote-state-storage-account")"
+export REMOTE_STATE_LOCATION="%(cookie-get "remote-state-location")"
+export AZ_TENANT="%(cookie-get "remote-state-storage-account")"
+export TF_CLI_INIT_BACKEND_CONFIG_CONTAINER_NAME="${REMOTE_STATE_CONTAINER}"
+export TF_CLI_INIT_BACKEND_CONFIG_RESOURCE_GROUP_NAME="${REMOTE_STATE_RESOURCE_GROUP}"
+export TF_CLI_INIT_BACKEND_CONFIG_STORAGE_ACCOUNT_NAME="${REMOTE_STATE_STORAGE_ACCOUNT}"
+#
+#+end_src
+* docker
+** bashrc
+#+begin_src shell :tangle (cookie-get-path)
+az_login() {
+    az login --tenant ${AZ_TENANT}
+    export ARM_ACCESS_KEY=$(az storage account keys list \
+        --resource-group  "HarborTerraformState" \
+        --account-name "harborterraformstate" \
+        --query '[0].value' -o tsv)
+}
+
+
+eval "$(direnv hook bash)"
+#+end_src
+** direnvrc
+#+begin_src shell :tangle (cookie-get-path)
+add_tag() {
+    export TF_VAR_tags=$(echo "${TF_VAR_tags:-{\}}" | jq -c ".$1 = \"$2\"")
+}
+
+prepend_state() {
+    export TF_CLI_INIT_BACKEND_CONFIG_KEY="${1}.${TF_CLI_INIT_BACKEND_CONFIG_KEY}"
+}
+#+end_src
+** direnv.toml
+#+begin_src toml :tangle (cookie-get-path)
+[whitelist]
+prefix = [ "/proj" ]
 #+end_src

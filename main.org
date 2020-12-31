@@ -866,6 +866,9 @@ VGA-1 00ffffffffffff000472aa010db550032314010368301b78ca3585a656489a24125054b30d
 (package! org-picklink)
 #+end_src
 ** Capture
+:PROPERTIES:
+:ID:       5fe33daf-9f01-4348-91fd-e438e4381e50
+:END:
 #+begin_src elisp :noweb-ref configs
 (after! helm
   (defvar cookie-path (f-join dotfiles-directory "cookies")
@@ -1004,10 +1007,12 @@ templates"
                                          :keys "e"
                                          :template-file ,(f-join cookie-path "terraform/environment.org" )
                                          :git nil)
-                                        ("Project"
-                                         :keys "p"
-                                         :template-file ,(f-join cookie-path "terraform/project.org")
-                                         :gitignore ("terraform" "terragrunt"))
+                                        ("Project" :keys "p"
+                                         :gitignore ("terraform" "terragrunt")
+                                         ;; :template-file ,(f-join cookie-path "terraform/project.org")
+                                         :children (("Azure"
+                                                     :keys "a"
+                                                     :template-file ,(f-join cookie-path "terraform/project/azure.org"))))
                                         ("Module"
                                          :keys "m"
                                          :template-file ,(f-join cookie-path "terraform/module.org")

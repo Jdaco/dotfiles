@@ -1,14 +1,5 @@
 %(cookie-prompt "environment")
 
-* common.tfvars
-
-#+BEGIN_SRC terraform :tangle (cookie-get-path)
-tags = {
-  Project = "%(cookie-get "project")"
-  Environment = "%(cookie-get "environment")"
-}
-#+END_SRC
-
 * services
 
 ** foo
@@ -16,19 +7,17 @@ tags = {
 *** main.tf
 
   #+BEGIN_SRC terraform :tangle (cookie-get-path)
-resource "aws_s3_bucket" "my_bucket" {
-  bucket = "my-bucket"
-  tags = var.tags
+provider "azurerm" {
+  skip_provider_registration = true
+  features {}
+}
+
+resource "azurerm_resource_group" "test" {
+  name = "terraform_test_resource_group"
+  location  = "westus2"
+  tags = local.tags
 }
   #+END_SRC
-
-*** terragrunt.hcl
-
-#+BEGIN_SRC terraform :tangle (cookie-get-path)
-include {
-  path = find_in_parent_folders()
-}
-#+END_SRC
 
 *** variables.tf
 #+BEGIN_SRC terraform :tangle (cookie-get-path)
@@ -55,5 +44,16 @@ output "foo_output" {
   value = "some_value"
 }
 #+END_SRC
+*** .envrc
+#+begin_src shell :tangle (cookie-get-path)
+source_up
+add_tag Service foo
+prepend_state foo
+#+end_src
 
-
+* .envrc
+#+begin_src shell :tangle (cookie-get-path)
+source_up
+export ENVIRONMENT=%(cookie-get "environment")
+export TF_CLI_INIT_BACKEND_CONFIG_KEY="${ENVIRONMENT}.terraform.tfstate"
+#+end_src
