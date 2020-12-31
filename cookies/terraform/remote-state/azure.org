@@ -58,10 +58,13 @@ az storage account create \
    --tags "Project=%(cookie-get "project") Environment=%(cookie-get "environment")" \
    --output none
 
+KEY=$(az storage account keys list --resource-group ${RESOURCE_GROUP} --account-name ${STORAGE_ACCOUNT} --query '[0].value' -o tsv)
+
 echo "Creating storage container: %(cookie-get "remote-state-container")..."
 az storage container create \
     --name "%(cookie-get "remote-state-container")" \
     --account-name ${STORAGE_ACCOUNT} \
+    --account-key ${KEY} \
     --resource-group ${RESOURCE_GROUP} \
     --public-access off \
     --output none
