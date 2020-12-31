@@ -1,6 +1,6 @@
 #+TITLE: Emacs
 #+VISIBILITY: overview
-#+PROPERTY: header-args :mkdirp t :noweb yes :results none
+#+PROPERTY: header-args :mkdirp t :noweb yes
 
 
 - Data files
@@ -166,7 +166,7 @@ git clone https://github.com/hlissner/doom-emacs ~/.emacs.d
        ;;ein               ; tame Jupyter notebooks with emacs
        (eval +overlay)     ; run code, run (also, repls)
        ;;gist              ; interacting with github gists
-       lookup              ; navigate your code and its documentation
+       (lookup +docsets)              ; navigate your code and its documentation
        lsp
        magit             ; a git porcelain for Emacs
        make              ; run make tasks from Emacs
@@ -1037,7 +1037,7 @@ templates"
         ; The evil keys aren't working on super-agenda headings
         ; https://github.com/alphapapa/org-super-agenda/issues/50
         org-super-agenda-header-map (make-sparse-keymap)
-        org-agenda-files '("~/roam/areas")
+        org-agenda-files `(,(f-join org-roam-directory "areas"))
         org-todo-keyword-faces '(("SCHEDULED" . (:foreground "YELLOW" :weight bold)))
         org-todo-keywords '((sequence "TODO(t)" "PROGRESS(p!)" "WAITING(w!)" "|" "DONE(d!)" "CANCELLED(c@/!)")
                             (sequence "SCHEDULED(s)" "|" "DONE(d!)" "CANCELLED(c@/!)")
