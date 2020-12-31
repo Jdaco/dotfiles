@@ -1,305 +1,36 @@
-* Terraform Module
-  :PROPERTIES:
-  :Dir:      %(file-name-as-directory (read-file-name "Project Directory: " ".." "Mkosi"))
-  :Name: %^{Name}
-  :Cloud:  %^{Cloud|aws|azure}
-  :header-args: :noweb yes :mkdirp yes :tangle (s-join "/" (cons (org-entry-get nil "Dir" t) (cdr (org-get-outline-path t))))
-  :VISIBILITY: children
-  :END:
+%(cookie-prompt "module")
 
-#+NAME: env
-#+BEGIN_SRC elisp :tangle no
-(defun get-src-code (name)
-  (save-excursion
-    (org-babel-goto-named-src-block name)
-    (nth 1 (org-babel-get-src-block-info))))
-
-(defun get-prop (prop)
-  (org-entry-get nil prop t))
-
-(defun name-switch (prefix prop)
-  (s-trim (get-src-code (concat prefix (get-prop prop)))))
-#+END_SRC
-
-#+NAME: var
-#+BEGIN_SRC elisp :tangle no
-<<env>>
-(get-prop prop)
-#+END_SRC
-
-** CHANGELOG.org                                                     :export:
-*** Changelog
-
-  All notable changes to this project will be documented in this file.
-
-  The format is based on [[https://keepachangelog.com/en/1.0.0/][Keep a Changelog]], and this project adheres to [[https://semver.org/spec/v2.0.0.html][Semantic Versioning]].
-
-**** [Unreleased]
-
-***** Added
-
-***** Changed
-
-***** Fixed
-
-***** Removed
-** README.org                                                        :export:
+* README.org :export:
    :PROPERTIES:
    :header-args+: :tangle no
    :END:
 
-*** %\2
+** %(cookie-get "module")
 
-**** Installation
+*** Installation
 
-**** Usage
-** Makefile
+*** Usage
+* main.tf
 
-#+name: make-aws
-#+BEGIN_SRC makefile :tangle no
-AWS_CONFIGS := $(HOME)/.aws
-AWS_PROFILE := $(CONTAINER)
-AWS_REGION := {{ cookiecutter.region }}
-
-CLOUD_PARAMS := \
-  --env "AWS_PROFILE=$(AWS_PROFILE)" \
-  --env "AWS_DEFAULT_REGION=$(AWS_REGION)" \
-  --volume $(AWS_CONFIGS):/root/.aws \
-#+END_SRC
-
-#+name: make-azure
-#+BEGIN_SRC makefile :tangle no
-CLOUD_PARAMS :=
-#+END_SRC
-
-#+name: cloud-params
-#+BEGIN_SRC elisp :tangle no
-<<env>>
-(name-switch "make-" "Cloud")
-#+END_SRC
-
-#+BEGIN_SRC makefile
-CONTAINER=<<var(prop="Name")>>
-SOURCE_MOUNT := /proj
-
-MODULES_DIR = modules
-
-<<cloud-params()>>
-
-DOCKER_RUN := docker run --rm -it \
-  $(CLOUD_PARAMS) \
-  --workdir $(SOURCE_MOUNT) \
-  --volume $(shell pwd):$(SOURCE_MOUNT) \
-  $(CONTAINER)
-
-.PHONY: help
-help: ## Show help message
-  @grep -hE '^\S+:.*##' $(MAKEFILE_LIST) | sed -e 's/:[[:blank:]]*\(##\)[[:blank:]]*/\1/' | column -s '##' -t
-
-.PHONY: shell
-shell: ## Open a shell in the dev environment
-  @$(DOCKER_RUN) bash
-
-.PHONY: setup
-setup: ## Set up the dev environments
-  @docker build -t $(CONTAINER) .
-#+END_SRC
-** Dockerfile
-
-#+name: docker-aws
-#+BEGIN_SRC dockerfile :tangle no
-# SAML2AWS
-ENV SAML2AWS_VERSION=2.26.1
-ENV SAML2AWS_SHA512='15f1ad5dda74865639a64790630ac604cbce446c2d331b5ae8f65a0435101f1eab24ad96e736aae5c9e074ad3252947f80dba267ec792649c2c1cfab5326d2fc'
-
-RUN wget -O /tmp/saml2aws.tar.gz "https://github.com/Versent/saml2aws/releases/download/v${SAML2AWS_VERSION}/saml2aws_${SAML2AWS_VERSION}_linux_amd64.tar.gz"
-
-RUN echo "${SAML2AWS_SHA512}  /tmp/saml2aws.tar.gz" | sha512sum -c -
-
-RUN tar -xzvf /tmp/saml2aws.tar.gz -C /usr/bin
-RUN chmod +x /usr/bin/saml2aws
-
-ARG SAML2AWS_PROVIDER
-ARG SAML2AWS_URL
-ARG AWS_PROFILE
-ARG EMAIL
-
-RUN saml2aws configure \
-  --idp-provider ${SAML2AWS_PROVIDER} \
-  --url  ${SAML2AWS_URL}\
-  --profile ${AWS_PROFILE} \
-  --session-duration 36000 \
-  --mfa Auto \
-  --skip-prompt
-#+END_SRC
-
-
-#+name: docker-azure
-#+BEGIN_SRC dockerfile :tangle no
-# Azure CLI
-ADD azure_cli_install.sh .
-RUN bash azure_cli_install.sh
-#+END_SRC
-
-
-#+name: cloud-docker
-#+BEGIN_SRC elisp :tangle no
-<<env>>
-(name-switch "docker-" "Cloud")
-#+END_SRC
-
-
-#+BEGIN_SRC dockerfile
-FROM ubuntu:20.04
-
-COPY --from=hashicorp/terraform:0.12.24 /bin/terraform /usr/bin/terraform
-COPY --from=hashicorp/packer:light /bin/packer /usr/bin/packer
-
-RUN apt-get update -yqq && apt-get install -yqq wget make git python3-pip
-
-# Terragrunt
-RUN wget -O /usr/bin/terragrunt 'https://github.com/gruntwork-io/terragrunt/releases/download/v0.23.17/terragrunt_linux_amd64'
-
-RUN echo '22a55f84ff6d69bfdc52af6dc1853ace5d55da5313465847b6c5bb9d8b9f8801  /usr/bin/terragrunt' | sha256sum -c -
-
-RUN chmod +x /usr/bin/terragrunt
-
-# Cookiecutter
-RUN pip3 install cookiecutter
-
-
-COPY --from=hashicorp/terraform:0.12.24 /bin/terraform /usr/bin/terraform
-COPY --from=hashicorp/packer:light /bin/packer /usr/bin/packer
-RUN apt-get update -yqq && apt-get install -yqq wget make python3-pip git jq zip
-
-# Terragrunt
-RUN wget -O /usr/bin/terragrunt 'https://github.com/gruntwork-io/terragrunt/releases/download/v0.23.17/terragrunt_linux_amd64'
-
-RUN echo '22a55f84ff6d69bfdc52af6dc1853ace5d55da5313465847b6c5bb9d8b9f8801  /usr/bin/terragrunt' | sha256sum -c -
-
-RUN chmod +x /usr/bin/terragrunt
-
-<<cloud-docker()>>
-#+END_SRC
-
-** azure_cli_install.sh
-#+BEGIN_SRC shell :shebang "#!/bin/bash" :tangle (when (string= (get-prop "Cloud") "azure") "yes")
-#######################################################################################################################
-# This script does three fundamental things:                                                                          #
-#   1. Add Microsoft's GPG Key has a trusted source of apt packages.                                                  #
-#   2. Add Microsoft's repositories as a source for apt packages.                                                     #
-#   3. Installs the Azure CLI from those repositories.                                                                #
-# Given the nature of this script, it must be executed with elevated privileges, i.e. with `sudo`.                    #
-#                                                                                                                     #
-# Remember, with great power comes great responsibility.                                                              #
-#                                                                                                                     #
-# Do not be in the habit of executing scripts from the internet with root-level access to your machine. Only trust    #
-# well-known publishers.                                                                                              #
-#######################################################################################################################
-
-set -e
-
-if [[ $# -ge 1 && $1 == "-y" ]]; then
-    global_consent=0
-else
-    global_consent=1
-fi
-
-function assert_consent {
-    if [[ $2 -eq 0 ]]; then
-        return 0
-    fi
-
-    echo -n "$1 [Y/n] "
-    read consent
-    if [[ ! "${consent}" == "y" && ! "${consent}" == "Y" && ! "${consent}" == "" ]]; then
-        echo "'${consent}'"
-        exit 1
-    fi
-}
-
-global_consent=0 # Artificially giving global consent after review-feedback. Remove this line to enable interactive mode
-
-setup() {
-
-    assert_consent "Add packages necessary to modify your apt-package sources?" ${global_consent}
-    set -v
-    export DEBIAN_FRONTEND=noninteractive
-    apt-get update
-    apt-get install -y apt-transport-https lsb-release gnupg curl
-    set +v
-
-    assert_consent "Add Microsoft as a trusted package signer?" ${global_consent}
-    set -v
-    curl -sL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > /etc/apt/trusted.gpg.d/microsoft.gpg
-    set +v
-
-    assert_consent "Add the Azure CLI Repository to your apt sources?" ${global_consent}
-    set -v
-    # Use env var DIST_CODE for the package dist name if provided
-    if [[ -z $DIST_CODE ]]; then
-        CLI_REPO=$(lsb_release -cs)
-        shopt -s nocasematch
-        ERROR_MSG="Unable to find a package for your system. Please check if an existing package in https://packages.microsoft.com/repos/azure-cli/dists/ can be used in your system and install with the dist name: 'curl -sL https://aka.ms/InstallAzureCLIDeb | sudo DIST_CODE=<dist_code_name> bash'"
-        if [[ ! $(curl -sL https://packages.microsoft.com/repos/azure-cli/dists/) =~ $CLI_REPO ]]; then
-            DIST=$(lsb_release -is)
-            if [[ $DIST =~ "Ubuntu" ]]; then
-                CLI_REPO="focal"
-            elif [[ $DIST =~ "Debian" ]]; then
-                CLI_REPO="buster"
-            elif [[ $DIST =~ "LinuxMint" ]]; then
-                CLI_REPO=$(cat /etc/os-release | grep -Po 'UBUNTU_CODENAME=\K.*') || true
-                if [[ -z $CLI_REPO ]]; then
-                    echo $ERROR_MSG
-                    exit 1
-                fi
-            else
-                echo $ERROR_MSG
-                exit 1
-            fi
-        fi
-    else
-        CLI_REPO=$DIST_CODE
-        if [[ ! $(curl -sL https://packages.microsoft.com/repos/azure-cli/dists/) =~ $CLI_REPO ]]; then
-            echo "Unable to find an azure-cli package with DIST_CODE=$CLI_REPO in https://packages.microsoft.com/repos/azure-cli/dists/."
-            exit 1
-        fi
-    fi
-    echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ ${CLI_REPO} main" \
-        > /etc/apt/sources.list.d/azure-cli.list
-    apt-get update
-    set +v
-
-    assert_consent "Install the Azure CLI?" ${global_consent}
-    apt-get install -y azure-cli
-
-}
-
-setup  # ensure the whole file is downloaded before executing
-#+END_SRC
-** main.tf
-
-#+BEGIN_SRC terraform
+#+BEGIN_SRC terraform :tangle (cookie-get-path)
 resource "aws_s3_bucket" "my_bucket" {
   bucket = "my-bucket"
   tags = var.tags
 }
 #+END_SRC
 
-** outputs.tf
+* outputs.tf
 
-#+BEGIN_SRC terraform
+#+BEGIN_SRC terraform :tangle (cookie-get-path)
 output "bucket" {
   value = aws_s3_bucket.my_bucket.id
 }
 #+END_SRC
 
-** variables.tf
-#+BEGIN_SRC terraform
+* variables.tf
+#+BEGIN_SRC terraform :tangle (cookie-get-path)
 variable tags {
   type = map
   default = {}
 }
 #+END_SRC
-
-

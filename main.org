@@ -1,6 +1,6 @@
 #+TITLE: Emacs
 #+VISIBILITY: overview
-#+PROPERTY: header-args :mkdirp t :noweb yes
+#+PROPERTY: header-args :mkdirp t :noweb yes :results none
 
 
 - Data files
@@ -333,6 +333,12 @@ git clone https://github.com/hlissner/doom-emacs ~/.emacs.d
   "o f"
   )
 
+(defun url-to-string (url)
+  (with-current-buffer (url-retrieve-synchronously url)
+    (set-buffer-multibyte t)
+    (prog1 (buffer-substring (1+ url-http-end-of-headers)
+                             (point-max))
+      (kill-buffer))))
 
 <<configs>>
 <<system-configs()>>
@@ -865,7 +871,7 @@ VGA-1 00ffffffffffff000472aa010db550032314010368301b78ca3585a656489a24125054b30d
 
   (defun cookie-get-path ()
     "Generate the path to tangle src block to
-Intended to be used in the form of `:tangle (get-path) on files that are meant
+Intended to be used in the form of `:tangle (cookie-get-path) on files that are meant
 to be tangled'"
     (apply 'f-join (cons (file-name-directory (buffer-file-name (marker-buffer (org-capture-get :cookie-mark))))
                          (cdr (org-get-outline-path t)))))
@@ -892,7 +898,7 @@ to be tangled'"
       (with-current-buffer (find-file-noselect (expand-file-name ".gitignore" (cookie-root)))
         (end-of-buffer)
         (insert "\n.project.org\n"
-                (gitignore-templates--url-to-string (helm-gitignore--generate-url (doct-get :gitignore))))
+                (url-to-string (helm-gitignore--generate-url (doct-get :gitignore))))
         (save-buffer))))
 
   (defun cookie-new-project (&optional directory)
@@ -936,12 +942,12 @@ path relative to the project root
     (org-map-entries
      (lambda ()
        (progn
-         (let* ((path (get-path))
+         (let* ((path (cookie-get-path))
                 (dir (file-name-directory path))
                 (contents (org-get-entry)))
            (unless (file-directory-p dir) (mkdir dir t))
            (with-current-buffer (find-file-noselect path)
-             (org-paste-subtree nil contents)
+             ;; (org-paste-subtree nil contents)
              (save-buffer)))))
      "TAGS={export}" nil))
 
@@ -1000,6 +1006,10 @@ templates"
                                          :keys "p"
                                          :template-file ,(f-join cookie-path "terraform/project.org")
                                          :gitignore ("terraform" "terragrunt"))
+                                        ("Module"
+                                         :keys "m"
+                                         :template-file ,(f-join cookie-path "terraform/module.org")
+                                         :git nil)
                                         ("Remote State" :keys "r" :git nil
                                          :children (("AWS"
                                                      :keys "w"
@@ -1013,6 +1023,8 @@ templates"
 
 #+begin_src elisp :noweb-ref packages
 (package! doct)
+(package! gitignore-templates)
+(package! helm-gitignore)
 #+end_src
 ** Agenda
 #+begin_src elisp :noweb-ref configs
@@ -1302,12 +1314,6 @@ For example, an org-ql dynamic block header could look like:
                    (format "https://books.google.com/books?id=%s&output=bibtex" (alist-get 'id candidate)))))
       (bibtex-add-entry bibtex)))
 
-  (defun url-to-string (url)
-    (with-current-buffer (url-retrieve-synchronously url)
-      (set-buffer-multibyte t)
-      (prog1 (buffer-substring (1+ url-http-end-of-headers)
-                               (point-max))
-        (kill-buffer))))
 
   (defun helm-books--url-retrieve-from-google ()
     "Retrieve information of book using google books api."
