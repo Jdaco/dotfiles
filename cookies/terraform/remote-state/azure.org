@@ -1,6 +1,7 @@
 %(cookie-prompt "remote-state-resource-group")
 %(cookie-prompt "remote-state-storage-account" "terraformstate")
 %(cookie-prompt "remote-state-container" "terraform-locks")
+%(cookie-prompt "remote-state-location" "westus2")
 
 * terragrunt.hcl
 #+BEGIN_SRC terraform :tangle (cookie-get-path)
@@ -32,23 +33,36 @@ remote_state {
 
 * terraform-setup.sh
 #+BEGIN_SRC shell :shebang "#!/bin/bash" :tangle (cookie-get-path)
-echo "Creating storage account: %(cookie-get "remote-state-storage-account")..."
+
+RESOURCE_GROUP="%(cookie-get "remote-state-resource-group")"
+STORAGE_ACCOUNT="%(cookie-get "remote-state-storage-account")"
+LOCATION="%(cookie-get "remote-state-location")"
+
+echo "Creating resource group: ${RESOURCE_GROUP}..."
+
+az group create \
+    --name ${RESOURCE_GROUP} \
+    --location ${LOCATION} \
+    --tags "Project=%(cookie-get "project") Environment=%(cookie-get "environment")" \
+    --output none
+
+echo "Creating storage account: ${STORAGE_ACCOUNT}..."
 
 az storage account create \
-   --name "%(cookie-get "remote-state-storage-account")" \
-   --resource-group "%(cookie-get "remote-state-resource-group")" \
+   --name ${STORAGE_ACCOUNT} \
+   --resource-group ${RESOURCE_GROUP} \
    --access-tier Hot \
    --allow-blob-public-access false \
    --encryption-services blob \
    --kind StorageV2 \
    --tags "Project=%(cookie-get "project") Environment=%(cookie-get "environment")" \
-   --output none \
+   --output none
 
 echo "Creating storage container: %(cookie-get "remote-state-container")..."
 az storage container create \
     --name "%(cookie-get "remote-state-container")" \
-    --account-name "%(cookie-get "remote-state-storage-account")" \
-    --resource-group "%(cookie-get "remote-state-resource-group")" \
+    --account-name ${STORAGE_ACCOUNT} \
+    --resource-group ${RESOURCE_GROUP} \
     --public-access off \
-    --output none \
+    --output none
 #+END_SRC
