@@ -333,6 +333,8 @@ git clone https://github.com/hlissner/doom-emacs ~/.emacs.d
   "o f"
   )
 
+(recentf-mode 0)
+
 (defun url-to-string (url)
   (with-current-buffer (url-retrieve-synchronously url)
     (set-buffer-multibyte t)
