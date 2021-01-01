@@ -100,7 +100,7 @@ git clone https://github.com/hlissner/doom-emacs ~/.emacs.d
        ;;ivy               ; a search engine for love and life
 
        :ui
-       ;;deft              ; notational velocity for Emacs
+       deft              ; notational velocity for Emacs
        doom              ; what makes DOOM look the way it does
        doom-dashboard    ; a nifty splash screen for Emacs
        doom-quit         ; DOOM quit-message prompts when you quit Emacs
@@ -1390,6 +1390,11 @@ ITEM is each book information."
       :mode pdf-view-mode
       :n "g p" #'pdf-view-goto-page
       )
+#+end_src
+** Deft
+#+begin_src elisp :noweb-ref configs
+(after! deft
+  (setq deft-directory org-directory))
 #+end_src
 * Git
 * Networking
