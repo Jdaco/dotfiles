@@ -57,6 +57,7 @@
       (:prefix "h"
       "I" #'helm-info))
 #+end_src
+
 ** Doom
 
 *** Installation
@@ -328,6 +329,9 @@ git clone https://github.com/hlissner/doom-emacs ~/.emacs.d
 
 (setq doom-localleader-key ",")
 
+;; Set an additional leader to use in EXWM buffers
+(setq doom-leader-alt-key "s-SPC")
+
 (undefine-key! doom-leader-map
   ; make-frame
   "o f"
@@ -585,7 +589,7 @@ add Control = Control_L
 :PROPERTIES:
 :ID:       adb6de39-b7dd-4359-a026-c5b8c5c6a029
 :END:
-#+begin_src elisp :tangle ~/.exwm
+#+begin_src elisp :tangle ~/.exwm :results none
 (require 'exwm)
 (require 'exwm-config)
 (require 'exwm-randr)
@@ -607,10 +611,17 @@ Can show completions at point for COMMAND using helm or ivy"
 
 (setq exwm-workspace-number 4)
 
+
+;; Make the alternate doom leader key work in EXWM buffers
+(exwm-input-set-key (kbd doom-leader-alt-key) doom-leader-map)
+
 (setq exwm-input-global-keys
           `(
-            ([s-<TAB>] . evil-switch-to-windows-last-buffer)
-            ([s-<SPC>] . execute-extended-command)
+            ;; s-SPC - Switch to char mode
+            ;; ([8388640] . (lambda ()
+            ;;                (interactive)
+            ;;                (lookup-key exwm-mode-map (kbd ""))))
+
             ([?\s-w] . evil-window-up)
             ([?\s-s] . evil-window-down)
             ([?\s-a] . evil-window-left)
@@ -635,10 +646,24 @@ Can show completions at point for COMMAND using helm or ivy"
 
 ;; (setq exwm-manage-configuration '(((string-match-p )))
 
+;; The following snippet can be used to completely disable mode-specific keys:
+(define-key exwm-mode-map (kbd "C-c") nil)
+
 (add-hook 'exwm-randr-screen-change-hook
           (lambda ()
             (start-process-shell-command
              "autorandr" nil "autorandr --change")))
+
+(add-hook 'exwm-update-class-hook
+          (lambda ()
+            (exwm-workspace-rename-buffer exwm-class-name)))
+
+
+(add-hook 'exwm-update-title-hook
+        (lambda ()
+            (when (not exwm-instance-name)
+              (exwm-workspace-rename-buffer exwm-title))))
+
 
 (exwm-randr-enable)
 (exwm-enable)
