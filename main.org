@@ -1532,6 +1532,7 @@ ITEM is each book information."
 (after! ledger-mode
   (setq ledger-clear-whole-transactions t
         ledger-binary-path "ledger"
+        ledger-report-auto-width t
         ledger-report-use-strict t
         ledger-report-auto-width nil
         ledger-reports '(("bal" "%(binary) -f %(ledger-file) bal --cleared ^Assets ^Liabilities")
@@ -1543,6 +1544,10 @@ ITEM is each book information."
                          ("unbudget" "%(binary) -f %(ledger-file) bal -p 'this month' --unbudgeted ^Expenses ^Income"))
         )
   )
+(map! :after ledger
+      :mode ledger-mode
+      :localleader
+      :n "q" #'ledger-align-xact)
 #+end_src
 * Monitoring
 ** Htop
