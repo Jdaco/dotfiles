@@ -1476,6 +1476,7 @@ ITEM is each book information."
 (prodigy-define-service
     :name "Syncthing"
     :command "syncthing"
+    :port "8384"
     :kill-process-buffer-on-stop t)
 #+end_src
 
@@ -1617,4 +1618,35 @@ right_meter_modes=1 2 2 2 2 2 2 2
 
 (map! :leader
       "o y" #'prodigy)
+
+(map! :after prodigy
+      :mode prodigy-mode
+      "q" #'quit-window
+      "j" #'prodigy-next
+      "k" #'prodigy-prev
+      "g g" #'prodigy-first
+      "G" #'prodigy-last
+      "s" #'prodigy-start
+      "S" #'prodigy-stop
+      "R" #'prodigy-restart
+      "<RET>" #'prodigy-display-process
+      "o" #'prodigy-browse
+      "m" #'prodigy-mark
+      "M" #'prodigy-mark-all
+      )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #+end_src
