@@ -5,9 +5,19 @@
 
 - Data files
   + Elfeed database
+  + Emails
   + Org files (roam + inbox.org)
   + Syncthing shares
   + Project Repos
+
+- Manual install steps
+  + Install user packages
+  + ~git clone~
+  + babel tangle
+  + ~doom install~
+  + Email
+  + GPG
+
 
 
 #+name: system-configs
@@ -243,7 +253,7 @@ git clone https://github.com/hlissner/doom-emacs ~/.emacs.d
        yaml              ; JSON, but readable
 
        :email
-       ;;(mu4e +gmail)
+       (mu4e +gmail)
        ;;notmuch
        ;;(wanderlust +gmail)
 
@@ -1593,7 +1603,98 @@ right_meters=RightCPUs Tasks LoadAverage Battery Uptime Systemd NetworkIO DiskIO
 right_meter_modes=1 2 2 2 2 2 2 2
 #+end_src
 * Email
+
+The directory that I store my emails in
+
+#+begin_src text :noweb-ref maildir
+~/mail
+#+end_src
+
+Once you have ~offlineimap~ and ~mu~ install you'll need to run the below commands to download and index your emails
+
+#+BEGIN_SRC sh
+offlineimap -o
+mu init --maildir <<maildir>> --my-address email@example.com
+mu index
+#+END_SRC
+
+#+begin_src elisp :noweb-ref alpha-configs :results none
+;; This might be needed on some distros
+;; (add-to-list 'load-path "~/.guix-profile/share/emacs/site-lisp/mu4e")
+
+(setq +mu4e-backend 'offlineimap
+      mu4e-maildir "<<maildir>>"
+      mu4e-enable-async-operation t
+      mu4e-get-mail-command "offlineimap -o -q"
+      mu4e-view-show-images t)
+
+(map! :after mu4e
+      :mode mu4e-headers-mode
+      :n "i" #'mu4e-update-index)
+
+(after! prodigy
+  (prodigy-define-service
+    :name "Email"
+    :command "offlineimap"
+    :kill-process-buffer-on-stop t))
+#+end_src
+
 ** offlineimap
+:PROPERTIES:
+:ID:       ae10fc0b-f364-48e3-8b4a-922b3134ee24
+:END:
+
+#+begin_src conf :tangle ~/.offlineimaprc
+[general] # List of accounts to be synced, separated by a comma.
+accounts = Gmail
+maxsyncaccounts = 1
+pythonfile = ~/.offlineimap.py
+
+[Account Gmail]
+# Identifier for the local repository; e.g. the maildir to be synced via IMAP.
+localrepository = Gmail-local
+# Identifier for the remote repository; i.e. the actual IMAP, usually non-local.
+remoterepository = Gmail-remote
+
+# Sync every n minutes
+autorefresh = 1
+
+# Do n quick refreshes between every full refresh
+quick = 10
+
+# This is used to automatically re-index the emails in mu4e
+# postsynchook = emacsclient -e "(progn (require 'mu4e) (mu4e-update-index))"
+
+[Repository Gmail-local]
+type = Maildir
+localfolders = <<maildir>>/Gmail
+
+[Repository Gmail-remote]
+type = Gmail
+remoteusereval = get_pass("gmail")["user"]
+remotepasseval = get_pass("gmail")["password"]
+
+# Necessary as of OfflineIMAP 6.5.4
+sslcacertfile = /etc/ssl/certs/ca-certificates.crt
+folderfilter = lambda foldername: foldername in ["INBOX", "Sent"]
+#+end_src
+
+I use this python function to get my email passwords from my [[https://www.passwordstore.org/][Pass]] store
+
+#+begin_src python :tangle ~/.offlineimap.py
+from subprocess import check_output
+
+def get_pass(account):
+    data = check_output("pass email/" + account, shell=True).splitlines()
+    password = data[0]
+    tmp = [x for x in data if x.startswith('address:')]
+    user = ""
+    if len(tmp) > 0:
+        user = tmp[0].split(":", 1)[1]
+
+    return {"password": password, "user": user}
+#+end_src
+
 * Help
 ** Info
 | Command             | Key | Description                      |
