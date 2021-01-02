@@ -132,7 +132,7 @@ git clone https://github.com/hlissner/doom-emacs ~/.emacs.d
        fold              ; (nigh) universal code folding
        ;;(format +onsave)  ; automated prettiness
        ;;god               ; run Emacs commands without modifier keys
-       ;;lispy             ; vim for lisp, for people who don't like vim
+       lispy             ; vim for lisp, for people who don't like vim
        ;;multiple-cursors  ; editing in many places at once
        ;;objed             ; text object editing for the innocent
        ;;parinfer          ; turn lisp into python, sort of
@@ -208,7 +208,7 @@ git clone https://github.com/hlissner/doom-emacs ~/.emacs.d
        ;;idris             ; a language you can depend on
        json              ; At least it ain't XML
        ;;(java +meghanada) ; the poster child for carpal tunnel syndrome
-       ;;javascript        ; all(hope(abandon(ye(who(enter(here))))))
+       (javascript +lsp)        ; all(hope(abandon(ye(who(enter(here))))))
        ;;julia             ; a better, faster MATLAB
        ;;kotlin            ; a better, slicker Java(Script)
        ;;latex             ; writing papers in Emacs has never been so fun
@@ -224,7 +224,7 @@ git clone https://github.com/hlissner/doom-emacs ~/.emacs.d
        ;;php               ; perl's insecure younger brother
        plantuml          ; diagrams for confusing people more
        ;;purescript        ; javascript, but functional
-       python            ; beautiful is better than ugly
+       (python +lsp +poetry)            ; beautiful is better than ugly
        ;;qt                ; the 'cutest' gui framework ever
        ;;racket            ; a DSL for DSLs
        ;;raku              ; the artist formerly known as perl6
@@ -233,7 +233,7 @@ git clone https://github.com/hlissner/doom-emacs ~/.emacs.d
        ;;(ruby +rails)     ; 1.step {|i| p "Ruby is #{i.even? ? 'love' : 'life'}"}
        ;;rust              ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
        ;;scala             ; java, but good
-       ;;scheme            ; a fully conniving family of lisps
+       scheme            ; a fully conniving family of lisps
        sh                ; she sells {ba,z,fi}sh shells on the C xor
        ;;sml
        ;;solidity          ; do you need a blockchain? No.
@@ -902,7 +902,7 @@ demuxer-readahead-secs=300
 :PROPERTIES:
 :ID:       5fe33daf-9f01-4348-91fd-e438e4381e50
 :END:
-#+begin_src elisp :noweb-ref configs
+#+begin_src elisp :noweb-ref configs :results none
 (after! helm
   (defvar cookie-path (f-join dotfiles-directory "cookies")
     "Path to cookie dierectory")
@@ -1177,7 +1177,7 @@ templates"
 
 I'm only using =org-roam= on my Alpha machine at the moment
 
-#+begin_src elisp :noweb-ref alpha-configs
+#+begin_src elisp :noweb-ref alpha-configs :results none
 
 (setq org-roam-tag-sources '(prop last-directory)
       org-roam-capture-templates '(("d" "default"
