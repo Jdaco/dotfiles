@@ -366,7 +366,8 @@ These are ssytem specific settings
 (setq dotfiles-directory "~/dotfiles"
       org-directory "~/roam"
       org-roam-directory ""
-      inbox-file "~/inbox.org")
+      inbox-file "~/inbox.org"
+      scrot-directory "~/Downloads")
 #+end_src
 
 Configs for my arch laptop
@@ -374,7 +375,8 @@ Configs for my arch laptop
 #+begin_src elisp :noweb-ref archlinux-configs
 (setq inbox-file "~/sync/inbox.org"
       org-directory "~/sync"
-      org-roam-directory "~/sync")
+      org-roam-directory "~/sync"
+      scrot-directory "~/sync")
 #+end_src
 
 *** packages.el
@@ -791,10 +793,13 @@ demuxer-readahead-secs=300
 (defvar scrot-format "scrot-%Y-%m-%d-%H-%M-%S.png"
   "File name format to save screenshots with")
 
+(defvar scrot-directory "~"
+  "Directory to save screenshots to")
+
 (defun scrot ()
   (interactive)
   (with-temp-buffer
-    (shell-command (format "scrot --focused ~/%s" scrot-format) (current-buffer))))
+    (shell-command (format "scrot --focused %s" (f-join scrot-directory scrot-format)) (current-buffer))))
 
 (defun scrot-select ()
   (interactive)
