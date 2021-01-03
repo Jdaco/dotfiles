@@ -627,11 +627,8 @@ Can show completions at point for COMMAND using helm or ivy"
 
 (setq exwm-input-global-keys
           `(
-            ;; s-SPC - Switch to char mode
-            ;; ([8388640] . (lambda ()
-            ;;                (interactive)
-            ;;                (lookup-key exwm-mode-map (kbd ""))))
-
+            ([?\s-c] . scrot)
+            ([?\s-C] . scrot-select)
             ([?\s-w] . evil-window-up)
             ([?\s-s] . evil-window-down)
             ([?\s-a] . evil-window-left)
@@ -788,13 +785,29 @@ VGA-1 00ffffffffffff000472aa010db550032314010368301b78ca3585a656489a24125054b30d
 demuxer-readahead-secs=300
 #+end_src
 ** Images
-#+begin_src elisp :noweb-ref configs
+#+begin_src elisp :noweb-ref configs :results none
+; Screenshots
+
+(defvar scrot-format "scrot-%Y-%m-%d-%H-%M-%S.png"
+  "File name format to save screenshots with")
+
+(defun scrot ()
+  (interactive)
+  (with-temp-buffer
+    (shell-command (format "scrot --focused ~/%s" scrot-format) (current-buffer))))
+
+(defun scrot-select ()
+  (interactive)
+  (with-temp-buffer
+    (shell-command "scrot --select ~/scrot-%Y-%m-%d-%H-%M-%S.png" (current-buffer))))
+
 ; Image keybinds
 (map! :map image-mode-map
       "C-k" #'image-previous-file
       "C-j" #'image-next-file
       )
 #+end_src
+
 * Org
 #+begin_src elisp :noweb-ref configs
 (after! (helm org-agenda)
