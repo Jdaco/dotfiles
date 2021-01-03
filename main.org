@@ -1,4 +1,4 @@
-#+TITLE: Emacs
+#+TITLE: Dotfiles
 #+VISIBILITY: overview
 #+PROPERTY: header-args :mkdirp t :noweb yes
 
@@ -16,7 +16,8 @@
   + babel tangle
   + ~doom install~
   + Email
-  + GPG
+  + Pass - Symlink =~/.password-store=
+  + GPG - Symlink =~/.gnupg=
 
 
 
@@ -532,6 +533,15 @@ ln -s /mnt/key/passwords ~/.password-store
 :PROPERTIES:
 :ID:       391f2534-a448-40c7-a196-fdbaef3f9d1d
 :END:
+
+Symlink your main users ~/.gnupg directory
+
+#+begin_src shell
+ln -s ~/.gnupg /mnt/gpg
+#+end_src
+
+*Note*: If you don't want to symlink, you can also use ~gpg~ with your detached keyring using ~gpg --homedir /mnt/gpg~
+
 #+begin_src elisp :noweb-ref configs
 ;; Allow emacs to be used by GnuPG for pinentry
 ;; (setq epg-pinentry-mode 'loopback)
@@ -542,6 +552,61 @@ default-cache-ttl 3600
 # allow-loopback-pinentry
 # pinentry-program /usr/bin/pinentry-emacs
 # allow-emacs-pinentry
+#+end_src
+*** Config
+#+begin_src conf :tangle ~/.gnupg/gpg.conf
+# when outputting certificates, view user IDs distinctly from keys:
+fixed-list-mode
+
+# long keyids are more collision-resistant than short keyids (it's trivial to make a key with any desired short keyid)
+keyid-format 0xlong
+
+# List all keys with their fingerprints. This is the same output as --list-keys
+# but with the additional output of a line with the fingerprint. If this
+# command is given twice, the fingerprints of all secondary keys are listed too.
+with-fingerprint
+with-fingerprint
+
+# when multiple digests are supported by all recipients, choose the strongest one:
+personal-digest-preferences SHA512 SHA384 SHA256 SHA224
+
+# preferences chosen for new keys should prioritize stronger algorithms:
+default-preference-list SHA512 SHA384 SHA256 SHA224 AES256 AES192 AES CAST5 BZIP2 ZLIB ZIP Uncompressed
+
+# If you use a graphical environment (and even if you don't) you should be using an agent:
+use-agent
+
+# You should always know at a glance which User IDs gpg thinks are legitimately bound to the keys in your keyring:
+verify-options show-uid-validity
+list-options show-uid-validity
+
+# when making an OpenPGP certification, use a stronger digest than the default SHA1:
+cert-digest-algo SHA512
+digest-algo SHA256
+
+# prevent version string from appearing in your signatures/public keys
+no-emit-version
+
+# Prefer the best compression
+personal-compress-preferences ZLIB BZIP2 ZIP
+
+# Use name as the cipher algorithm for symmetric encryption with a passphrase
+# if --personal-cipher-preferences and --cipher-algo are not given. The
+# default is AES-128.
+s2k-cipher-algo AES256
+
+# Use name as the digest algorithm used to mangle the passphrases for symmetric
+# encryption. The default is SHA-1.
+s2k-digest-algo SHA512
+
+
+# Specify how many times the passphrases mangling for symmetric encryption is
+# repeated. This value may range between 1024 and 65011712 inclusive. The
+# default is inquired from gpg-agent. Note that not all values in the
+# 1024-65011712 range are legal and if an illegal value is selected, GnuPG will
+# round up to the nearest legal value. This option is only meaningful if
+# --s2k-mode is set to the default of 3.
+s2k-count 1015808
 #+end_src
 * Package Manager
 
@@ -1753,19 +1818,4 @@ def get_pass(account):
       "m" #'prodigy-mark
       "M" #'prodigy-mark-all
       )
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #+end_src
