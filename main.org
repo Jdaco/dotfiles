@@ -850,6 +850,7 @@ VGA-1 00ffffffffffff000472aa010db550032314010368301b78ca3585a656489a24125054b30d
 :END:
 #+begin_src text :tangle ~/.config/mpv/mpv.conf
 demuxer-readahead-secs=300
+ytdl-format=bestvideo[height<=?1080]+bestaudio/best
 #+end_src
 ** Images
 #+begin_src elisp :noweb-ref configs :results none
