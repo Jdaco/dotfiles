@@ -696,6 +696,7 @@ Can show completions at point for COMMAND using helm or ivy"
           `(
             ([?\s-c] . scrot)
             ([?\s-C] . scrot-select)
+            ([?\s-k] . +workspace/close-window-or-workspace)
             ([?\s-w] . evil-window-up)
             ([?\s-s] . evil-window-down)
             ([?\s-a] . evil-window-left)
