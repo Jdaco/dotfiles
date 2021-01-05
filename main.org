@@ -1388,11 +1388,16 @@ For example, an org-ql dynamic block header could look like:
       (org-table-align))))
 #+end_src
 *** Books
-**** Noter
-#+begin_src elisp :noweb-ref configs
+**** org-noter
+#+begin_src elisp :noweb-ref configs :results none
 (setq org-noter-always-create-frame nil
       org-noter-notes-search-path '("~/roam/books")
                 )
+
+(undefine-key! pdf-view-mode-map :n "i")
+(map! :after org-noter
+      :mode org-noter-doc-mode
+      :n "i" #'org-noter-insert-note)
 #+end_src
 
 #+begin_src elisp :noweb-ref packages
