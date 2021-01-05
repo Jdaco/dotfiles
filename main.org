@@ -1656,7 +1656,7 @@ ITEM is each book information."
 :PROPERTIES:
 :ID:       7d735640-e9da-4239-a84b-66b9bf630048
 :END:
-#+begin_src conf :tangle ~/.configs/htop/htoprc
+#+begin_src conf :tangle ~/.config/htop/htoprc
 # Beware! This file is rewritten by htop when settings are changed in the interface.
 # The parser is also very primitive, and not human-friendly.
 fields=0 48 17 18 38 39 40 2 46 47 49 1
