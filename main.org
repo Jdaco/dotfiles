@@ -978,7 +978,7 @@ ytdl-format=bestvideo[height<=?1080]+bestaudio/best
         org-outline-path-complete-in-steps nil
         org-refile-use-outline-path t
         org-attach-store-link-p t
-        org-modules '(org-drill org-crypt)
+        org-modules '(org-crypt)
         org-export-with-tags nil
         org-export-with-section-numbers nil
         org-refile-targets '((org-agenda-files :maxlevel . 6))
@@ -991,6 +991,7 @@ ytdl-format=bestvideo[height<=?1080]+bestaudio/best
 #+begin_src elisp :noweb-ref packages
 (package! org-sidebar)
 (package! org-picklink)
+(package! org-drill)
 #+end_src
 ** Capture
 :PROPERTIES:
