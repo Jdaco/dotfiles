@@ -520,15 +520,29 @@ I store my passwords on a USB drive, so symlink the =~/.password-store= to the p
 ln -s /mnt/key/passwords ~/.password-store
 #+end_src
 
-#+begin_src elisp :noweb-ref configs
+#+begin_src elisp :noweb-ref configs :results none
 (map! :after helm-pass
       :leader
       (:prefix ("!" . "Passwords")
        "!" #'helm-pass
        "l" #'pass
+       "i" #'password-store-insert
        )
       )
+
+(setq password-store-password-length 25)
+
 #+end_src
+
+#+begin_src elisp :noweb-ref packages
+(package! password-generator)
+#+end_src
+
+#+begin_src text
+# Arch linux packages
+lastpass-cli
+#+end_src
+
 ** GnuPG
 :PROPERTIES:
 :ID:       391f2534-a448-40c7-a196-fdbaef3f9d1d
