@@ -640,6 +640,95 @@ s2k-digest-algo SHA512
 # --s2k-mode is set to the default of 3.
 s2k-count 1015808
 #+end_src
+** SSH
+
+- Create one SSH key per *identity*
+  - And identity could be an online service you have an account with, or a role you service in a company
+- For work machines: Create one SSH key per machine
+  + Store them on the machine at =~/.ssh/keys=
+- SSH keys are stored under ~ssh~ on my USB key
+
+#+begin_src shell
+# -t ed25519 : Use the Ed25519 algorithm. The most secure right now
+# -a 100 : Do 100 key passes. Makes brute-forcing harder
+ssh-keygen -t ed25519 -a 100
+#+end_src
+
+#+begin_src shell :results none
+ln -s ~/.ssh/config /mnt/ssh_config
+#+end_src
+** USB Key
+:PROPERTIES:
+:ID:       a4c89b7f-15ab-4c34-b6d1-05d6d56b1804
+:END:
+#+begin_src conf :noweb-ref aliases
+alias cs "sudo cryptsetup $*"
+alias key "sudo cryptsetup luksOpen /dev/$1 $2"
+alias keyoff "sudo cryptsetup luksClose $1"
+#+end_src
+
+#+begin_src shell :shebang "#!/usr/bin/env bash" :tangle ~/.local/bin/key-init
+set -e
+
+if [[ -z $1 ]]; then
+    exit 1
+fi
+
+DEVICE=/dev/$1
+PARTITION=${DEVICE}1
+
+echo 'Overwriting with random data...'
+
+# dd will error saying 'No space left on device'. This is normal
+sudo dd if=/dev/random of=${DEVICE} status=progress || true
+sudo sync
+
+echo 'Creating partitions...'
+sudo sgdisk --typecode 8309 --new 0:0:+1GiB ${DEVICE}
+sudo sgdisk --change-name 1:"$2" ${DEVICE}
+
+sudo cryptsetup luksFormat \
+    --cipher aes-xts-plain64 \
+    --key-size 512 \
+    --hash sha512 \
+    --iter-time 5000 \
+    --use-random \
+    --verify-passphrase \
+    ${PARTITION}
+
+NAME=$(basename $(mktemp -u))
+sudo cryptsetup luksOpen ${PARTITION} ${NAME}
+
+echo 'Creating filesystem...'
+sudo mkfs.ext4 /dev/mapper/${NAME}
+sudo sync
+
+sudo cryptsetup luksClose ${NAME}
+echo 'Done!'
+#+end_src
+
+#+begin_src shell :shebang "#!/usr/bin/env bash" :tangle ~/.local/bin/key-backup
+set -e
+
+if [[ -z $1 || -z $2 ]]; then
+    exit 1
+fi
+
+FROM=$1
+FROM_PATH=$(mktemp -d)
+
+TO=$2
+TO_PATH=$(mktemp -d)
+
+sudo mount /dev/mapper/${FROM} ${FROM_PATH}
+sudo mount /dev/mapper/${TO} ${TO_PATH}
+
+sudo rsync -vrutlgp --delete ${FROM_PATH} ${TO_PATH}
+
+sudo umount ${FROM_PATH}
+sudo umount ${TO_PATH}
+#+end_src
+
 * Package Manager
 
 ** Guix
