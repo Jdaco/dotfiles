@@ -720,7 +720,7 @@ Can show completions at point for COMMAND using helm or ivy"
             ([?\s-A] . evil-window-move-far-left)
             ([?\s-D] . evil-window-move-far-right)
             ([?\s-f] . exwm-layout-toggle-fullscreen)
-            ([?\s-m] . exwm-workspace-move)
+            ([?\s-m] . exwm-workspace-move-window)
             ;; Launch application.
             ([?\s-r] . (lambda (command)
                          (interactive (list (read-shell-command "$ ")))
