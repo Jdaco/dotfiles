@@ -1295,6 +1295,11 @@ I'm only using =org-roam= on my Alpha machine at the moment
                                     :file-name "notes/%<%Y%m%d%H%M%S>-${slug}"
                                     :head "#+title: ${title}\n\n- tags :: "
                                     :unnarrowed t)
+                                   ("c" "conference"
+                                    plain #'org-roam--capture-get-point "%?"
+                                    :file-name "conferences/%<%Y%m%d%H%M%S>-${slug}"
+                                    :head "* ${title}\n\n- tags :: "
+                                    :unnarrowed t)
                                    ("s" "Store"
                                     plain #'org-roam--capture-get-point "%?"
                                     :file-name "stores/%<%Y%m%d%H%M%S>-${slug}"
