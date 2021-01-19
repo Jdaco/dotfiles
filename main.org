@@ -1646,10 +1646,17 @@ ITEM is each book information."
                          ("unbudget" "%(binary) -f %(ledger-file) bal -p 'this month' --unbudgeted ^Expenses ^Income"))
         )
   )
-(map! :after ledger
+(map! :after ledger-mode
       :mode ledger-mode
       :localleader
       :n "q" #'ledger-align-xact)
+
+(map! :after ledger-mode
+      :mode ledger-mode
+      "C-j" #'ledger-navigate-next-uncleared
+      "C-k" #'ledger-navigate-previous-uncleared
+      )
+
 #+end_src
 * Monitoring
 ** Htop
