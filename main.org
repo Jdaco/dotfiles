@@ -438,6 +438,47 @@ Configs for my arch laptop
 
 <<packages>>
 #+end_src
+* Shell
+| Command        | Key       |
+|----------------+-----------|
+| +eshell/toggle | ~SPC o e~ |
+| +eshell/here   | ~SPC o E~ |
+
+#+begin_src elisp :noweb-ref configs
+  ;; (defun sudo-run (command buffer)
+  ;;   (let ((default-directory "/sudo:root@localhost:"))
+  ;;     (process-file-shell-command command nil buffer)))
+
+  ;; (defun sudo-run-async (command buffer)
+  ;;   (let ((default-directory "/sudo:root@localhost:"))
+  ;;     (start-file-process-shell-command "sudo-run-async" buffer command)))
+#+end_src
+
+** Eshell
+*** Aliases
+:PROPERTIES:
+:ID:       d14e235d-95ff-4976-bed9-4c0253a576e3
+:END:
+
+
+
+#+begin_src text :tangle ~/.config/doom/eshell/aliases
+addpath ~/.local/bin
+
+alias doom ~/.emacs.d/bin/doom $*
+alias guixupdate sudo guix system reconfigure /etc/config.scm
+alias ls exa --long --color=always
+
+# Monitoring
+alias iostat iostat -hNs
+alias pstree pstree -U
+
+alias lsblk lsblk -o 'name,size,type,mountpoint,partlabel,uuid'
+
+<<aliases>>
+#+end_src
+
+* Filesystem
 ** Navigation
 #+begin_src elisp :noweb-ref configs
 ; Dired
@@ -483,35 +524,12 @@ Configs for my arch laptop
 
 #+end_src
 
-* Shell
-| Command        | Key       |
-|----------------+-----------|
-| +eshell/toggle | ~SPC o e~ |
-| +eshell/here   | ~SPC o E~ |
+** Archives
+You can use ~dired~ to manage archives
 
-#+begin_src elisp :noweb-ref configs
-  ;; (defun sudo-run (command buffer)
-  ;;   (let ((default-directory "/sudo:root@localhost:"))
-  ;;     (process-file-shell-command command nil buffer)))
-
-  ;; (defun sudo-run-async (command buffer)
-  ;;   (let ((default-directory "/sudo:root@localhost:"))
-  ;;     (start-file-process-shell-command "sudo-run-async" buffer command)))
-#+end_src
-
-** Eshell Aliases
-** Eshell
-#+begin_src elisp :noweb-ref configs
-
-#+end_src
-*** Aliases
-:PROPERTIES:
-:ID:       d14e235d-95ff-4976-bed9-4c0253a576e3
-:END:
-#+begin_src conf :tangle ~/.config/doom/eshell/aliases
-alias doom ~/.emacs.d/bin/doom $*
-alias guixupdate sudo guix system reconfigure /etc/config.scm
-#+end_src
+| Dired Key | Command           | Description                            |
+|-----------+-------------------+----------------------------------------|
+| ; Z       | dired-do-compress | Compress or Uncompress an archive file |
 
 * Security
 ** Passwords
