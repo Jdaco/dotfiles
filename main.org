@@ -943,7 +943,7 @@ ytdl-format=bestvideo[height<=?1080]+bestaudio/best
          (helm :sources
                (helm-build-sync-source "Places"
                  :candidates (org-map-entries
-                              '(join (org-get-outline-path t) "/")
+                              '(s-join "/" (org-get-outline-path t))
                               nil
                               `(,(f-join org-directory "other/places.org")))
                  :action '(("Search" . (lambda (place) (org-ql-search 'org-agenda-files `(children (property "Place" ,place)) :super-groups '((:auto-category t)))))
