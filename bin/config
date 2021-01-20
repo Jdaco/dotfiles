@@ -1,0 +1,24 @@
+#!/usr/bin/env -S emacs -Q --script # -*- mode: emacs-lisp; lexical-binding: t; -*-
+
+(defconst subcommands
+  '(install
+    tangle
+    update
+    test))
+
+
+(let ((subcommand (car argv)))
+  (when (and subcommand
+             (member subcommand subcommands))
+    (catch 'exit
+      (let* ((command (format "config-%s" subcommand))
+             (p (start-process command nil command)))
+        (set-process-sentinel p
+                              (lambda (process signal)
+                                (when (equal signal "finished\n")
+                                  (throw 'exit nil))))
+        (set-process-filter p (lambda (process output)
+                                (message "%s"
+                                         (replace-regexp-in-string "\n$" "" output))))
+        (while (member p (process-list))
+          (sleep-for 1))))))

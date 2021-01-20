@@ -1,0 +1,33 @@
+#!/usr/bin/env -S emacs -Q --script # -*- mode: emacs-lisp; lexical-binding: t; -*-
+
+(require 'ob-tangle)
+(require 'subr-x)
+
+(defconst config-directory "~/dotfiles")
+
+(defconst machines '((alpha . (personal))
+                     (fresh . ())))
+
+(defun get-system-name ()
+  (shell-command-to-string "hostname"))
+
+(defconst machine (string-trim (get-system-name)))
+
+(defun machine-featurep (machine feature)
+  (member feature (alist-get machine machines)))
+
+(setq org-babel-default-header-args `((:session         . "none")
+                                      (:noweb           . "yes")
+                                      (:mkdirp          . "yes")
+                                      (:tangle          . "no")))
+
+(print machine)
+(setq org-confirm-babel-evaluate nil)
+
+;; (org-babel-do-load-languages 'org-babel-load-languages
+;;     '((shell . t)
+;;       (emacs-lisp . t)))
+
+(org-babel-tangle-file (format "%s/main.org" config-directory))
+
+(kill-emacs 0)
