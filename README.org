@@ -1,5 +1,9 @@
-#+TITLE: Readme
-* Includes
-https://orgmode.org/manual/Include-Files.html
-* Macros
-https://orgmode.org/manual/Macro-Replacement.html
+* My Workstation Configurations
+
+This repository contains configurations for all of my workstations. I'm using Org-mode and a Literate Programming approach to storing my configurations
+
+- The =machines.org= file represents the configuration needs of each of my machines
+- Configuration files are separated into =.org= files in this for different categories
+- These categories can be [[https://orgmode.org/manual/Include-Files.html][included]] (or not) into the machine subheadings in =machines.org=
+- I use ~org-babel-tangle~ to then export these files into the correct place on your filesystem
+  + Any [[https://orgmode.org/manual/Macro-Replacement.html][org-export macros]] are replaced in the files before tangling
