@@ -1,4 +1,3 @@
-#+OPTIONS: -:t prop:t tags:t
 * Machines
 - Data files
   + Elfeed database
@@ -86,7 +85,8 @@ Configs for my arch laptop
       org-directory "~/sync"
       org-roam-directory "~/sync"
       scrot-directory "~/sync"
-      org-agenda-files '("~/sync/areas/fresh.org)"))
+      org-agenda-files '("~/sync/areas/fresh.org)")
+      dotfiles-directory "~/dotfiles")
 #+end_src
 
 *** X
