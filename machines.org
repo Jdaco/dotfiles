@@ -1,0 +1,187 @@
+#+OPTIONS: -:t prop:t tags:t
+* Machines
+:PROPERTIES:
+:name: Chaise Conn
+:email:    chaise.conn@protonmail.com
+:header-args:    :noweb yes :mkdirp true
+:END:
+- Data files
+  + Elfeed database
+  + Emails
+  + Org files (roam + inbox.org)
+  + Syncthing shares
+  + Project Repos
+
+
+These are ssytem specific settings
+
+
+** Alpha
+:PROPERTIES:
+:ID: alpha
+:END:
+
+Custom configurations for my main workstation
+
+#+include: ./base.org
+#+include: ./email.org
+#+include: ./finance.org
+#+include: ./rss.org
+#+include: ./brain.org
+
+#+begin_src elisp :noweb-ref configs
+(setq dotfiles-directory "~/dotfiles"
+      org-directory "~/roam"
+      org-roam-directory ""
+      inbox-file "~/inbox.org"
+      org-agenda-files `(,(f-join org-roam-directory "areas"))
+      scrot-directory "~/Downloads")
+#+end_src
+
+*** X
+**** Autorandr
+#+begin_src :tangle ~/.config/autorandr/desktop/config
+output VGA-1
+crtc 0
+mode 1920x1080
+pos 1080x0
+primary
+rate 60.00
+output DVI-D-1
+crtc 1
+mode 1920x1080
+pos 0x1080
+rate 60.00
+rotate right
+output DVI-D-2
+crtc 2
+mode 1920x1080
+pos 1080x1080
+rate 60.00
+output HDMI-3
+crtc 3
+mode 1920x1080
+pos 3000x1080
+rate 60.00
+rotate left
+#+end_src
+
+**** Monitors
+#+begin_src elisp :noweb-ref exwm-configs
+(setq exwm-randr-workspace-monitor-plist '(0 "VGA-1" 1 "DVI-D-1" 2 "DVI-D-2" 3 "HDMI-3"))
+#+end_src
+
+** Fresh
+:PROPERTIES:
+:email:    chaise.conn@freshconsulting.com
+:ID: archlinux
+:END:
+
+Configs for my arch laptop
+
+#+include: ./base.org
+
+#+begin_src elisp :noweb-ref configs
+(setq inbox-file "~/sync/inbox.org"
+      org-directory "~/sync"
+      org-roam-directory "~/sync"
+      scrot-directory "~/sync"
+      org-agenda-files '("~/sync/areas/fresh.org)"))
+#+end_src
+
+*** X
+#+begin_src conf
+# /usr/share/xsessions/exwm.desktop
+[Desktop Entry]
+Name=EXWM
+Comment=Emacs Window Manager
+Exec=exwm-start
+Type=Application
+#+end_src
+
+#+begin_src sh :shebang "#!/bin/bash"
+# this makes it work in Ubuntu
+# /usr/loca/bin/exwm-start
+xhost +
+## you might need to append the TTY you are working on
+xinit
+
+wmname LG3D
+
+# Set fallback cursor
+xsetroot -cursor_name left_ptr
+
+# If Emacs is started in server mode, `emacsclient` is a convenient way to edit
+# files in place (used by e.g. `git commit`)
+export VISUAL=emacsclient
+export EDITOR="$VISUAL"
+
+autorandr --change
+
+# Finally launch emacs and enable exwm
+exec emacs --eval '(cond ((file-exists-p "~/.exwm") (load-file "~/.exwm")) ((not (featurep (quote exwm))) (require (quote exwm)) (require (quote exwm-config)) (exwm-config-default) (message (concat "exwm configuration not found. " "Falling back to default configuration..."))))'
+#+end_src
+**** Monitors
+
+#+begin_src elisp :noweb-ref exwm-configs
+(setq exwm-randr-workspace-monitor-plist '(0 "eDP1" 1 "eDP1" 2 "HDMI2" 3 "HDMI2"))
+#+end_src
+
+*** Security
+**** Lastpass
+
+We use Lastpass at work to manage passwords
+
+#+begin_src text :noweb-ref arch-packages
+# Arch linux packages
+lastpass-cli
+#+end_src
+*** Networking
+
+On Arch Linux I use ~netctl~ to configure networking profiles
+
+#+begin_src elisp :noweb-ref configs
+(after! helm
+  (defun interfaces () (interactive)
+         (helm :sources
+               (helm-build-async-source "*interfaces*"
+                 :candidates-process
+                 (lambda () (start-process "ip" nil "ip" "--brief" "link" "show" "up")))))
+
+
+
+  (defun netctl-start()
+    (interactive)
+    (helm :sources (helm-build-sync-source "Networks"
+                     :candidates (mapcar #'file-name-base (seq-filter (-not #'file-directory-p) (directory-files "/etc/netctl" t)))
+                     :action (lambda (network) (sudo-run-async (concat "netctl start " network) "*netctl*"))
+                     :fuzzy-match t)))
+  (defun netctl-stop-all()
+    (interactive)
+    (sudo-run-async "netctl stop-all" "*netctl*")
+    (message "Stopped all networks"))
+
+
+  (map! :leader
+        (:prefix ("N" . "Network")
+         :n "n" #'netctl-start
+         :n "S" #'netctl-stop-all
+         :n "i" #'interfaces))
+
+  )
+
+#+end_src
+**** Bluetooth
+#+begin_src elisp :noweb-ref configs
+(defun bluetooth ()
+    (interactive)
+    (helm :sources (helm-build-sync-source "Bluetooth Devices"
+                     :candidates (mapcar 'car bluetooth-devices)
+                     :action (lambda (device)
+                               (process-file-shell-command
+                                (concat "bluetoothctl connect " (cdr (assoc device bluetooth-devices))))))))
+
+  (map! :leader
+        (:prefix "N"
+         :n "B" #'bluetooth))
+#+end_src

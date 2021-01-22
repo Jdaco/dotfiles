@@ -1,0 +1,14 @@
+* Networking
+** File Sharing
+*** Syncthing
+
+I use [[https://syncthing.net/][Syncthing]] to sync data between my different devices
+
+**** Services
+#+begin_src elisp :noweb-ref prodigy-services
+(prodigy-define-service
+    :name "Syncthing"
+    :command "syncthing"
+    :port "8384"
+    :kill-process-buffer-on-stop t)
+#+end_src

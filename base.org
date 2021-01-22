@@ -1,0 +1,17 @@
+* Base
+
+These are the base layers that will be installed on every system
+
+#+name: machine-prop
+#+begin_src elisp
+(org-entry-get nil prop t)
+#+end_src
+
+#+INCLUDE: ./emacs.org
+#+INCLUDE: ./security.org
+#+INCLUDE: ./media.org
+#+INCLUDE: ./networking.org
+#+INCLUDE: ./git.org
+#+INCLUDE: ./x.org
+#+INCLUDE: ./guix.org
+#+INCLUDE: ./org.org

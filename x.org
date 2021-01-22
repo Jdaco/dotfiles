@@ -1,0 +1,161 @@
+* X
+
+Settings to configure monitors, window managers and X11
+
+** .Xmodmap
+:PROPERTIES:
+:ID:       a21ede96-424c-4e23-8cea-df612295bfd0
+:END:
+
+Changes to my key mapping:
+
+- Swap =Caps_Lock= and =Control=
+- Let the left and right =Alt= keys behave independently
+
+#+begin_src conf :tangle ~/.Xmodmap
+clear Mod1
+
+keysym Alt_R = Super_L
+
+add Mod1 = Alt_L
+
+remove Lock = Caps_Lock
+remove Control = Control_L
+keysym Control_L = Caps_Lock
+keysym Caps_Lock = Control_L
+add Lock = Caps_Lock
+add Control = Control_L
+#+end_src
+** Locking
+
+Screen locking
+
+#+begin_src elisp :noweb-ref configs
+; X Lock Screen
+(defvar lock-command "dm-tool lock")
+
+(defun lock () (interactive) (shell-command lock-command))
+#+end_src
+
+#+begin_src elisp :noweb-ref exwm-keys
+([?\s-c] . lock)
+#+end_src
+** Screenshots
+#+begin_src elisp
+; Screenshots
+(defvar scrot-format "scrot-%Y-%m-%d-%H-%M-%S.png"
+  "File name format to save screenshots with")
+
+(defvar scrot-directory "~"
+  "Directory to save screenshots to")
+
+(defun scrot ()
+  (interactive)
+  (with-temp-buffer
+    (shell-command (format "scrot --focused %s" (f-join scrot-directory scrot-format)) (current-buffer))))
+
+(defun scrot-select ()
+  (interactive)
+  (with-temp-buffer
+    (shell-command "scrot --select ~/scrot-%Y-%m-%d-%H-%M-%S.png" (current-buffer))))
+#+end_src
+
+#+begin_src elisp :noweb-ref exwm-keys
+([?\s-c] . scrot)
+([?\s-C] . scrot-select)
+#+end_src
+
+
+Packages for Arch linux
+
+#+begin_src text :noweb-ref arch-packages
+scrot
+#+end_src
+
+** EXWM
+:PROPERTIES:
+:ID:       adb6de39-b7dd-4359-a026-c5b8c5c6a029
+:END:
+
+[[https://github.com/ch11ng/exwm][EXWM]] is my chosen window manager.
+
+#+begin_src elisp :tangle ~/.exwm :results none
+(require 'exwm)
+(require 'exwm-config)
+(require 'exwm-randr)
+
+(defvar exwm-app-launcher--prompt "$ "
+  "Prompt for the EXWM application launcher")
+
+(defun exwm/app-launcher (command)
+  "Launches an application in your PATH.
+Can show completions at point for COMMAND using helm or ivy"
+  (interactive (list (read-shell-command exwm-app-launcher--prompt)))
+  (exwm/run-program-in-home command))
+
+(defun exwm/run-program-in-home (command)
+  (let ((default-directory (expand-file-name "~")))
+    (start-process-shell-command command nil command)))
+
+(setq exwm-workspace-number 4)
+
+;; Make the alternate doom leader key work in EXWM buffers
+(exwm-input-set-key (kbd doom-leader-alt-key) doom-leader-map)
+
+(setq exwm-input-global-keys
+          `(
+            <<exwm-keys>>
+            ([?\s-k] . +workspace/close-window-or-workspace)
+            ([?\s-w] . evil-window-up)
+            ([?\s-s] . evil-window-down)
+            ([?\s-a] . evil-window-left)
+            ([?\s-d] . evil-window-right)
+            ([?\s-W] . evil-window-move-very-top)
+            ([?\s-S] . evil-window-move-very-bottom)
+            ([?\s-A] . evil-window-move-far-left)
+            ([?\s-D] . evil-window-move-far-right)
+            ([?\s-f] . exwm-layout-toggle-fullscreen)
+            ([?\s-m] . exwm-workspace-move-window)
+            ;; Launch application.
+            ([?\s-r] . (lambda (command)
+                         (interactive (list (read-shell-command "$ ")))
+                         (start-process-shell-command command nil command)))
+            ;; 's-N': Switch to certain workspace.
+            ,@(mapcar (lambda (i)
+                        `(,(kbd (format "s-%d" (1+ i))) .
+                          (lambda ()
+                            (interactive)
+                            (exwm-workspace-switch ,i))))
+                      (number-sequence 0 exwm-workspace-number))))
+
+;; (setq exwm-manage-configuration '(((string-match-p )))
+
+;; The following snippet can be used to completely disable mode-specific keys:
+(define-key exwm-mode-map (kbd "C-c") nil)
+
+<<exwm-configs>>
+
+(add-hook 'exwm-randr-screen-change-hook
+          (lambda ()
+            (start-process-shell-command
+             "autorandr" nil "autorandr --change")))
+
+(add-hook 'exwm-update-class-hook
+          (lambda ()
+            (exwm-workspace-rename-buffer exwm-class-name)))
+
+
+(add-hook 'exwm-update-title-hook
+        (lambda ()
+            (when (not exwm-instance-name)
+              (exwm-workspace-rename-buffer exwm-title))))
+
+
+(exwm-randr-enable)
+(exwm-enable)
+(exwm-config-misc)
+#+end_src
+
+#+begin_src elisp :noweb-ref packages
+(package! helm-exwm)
+#+end_src

@@ -1,33 +1,99 @@
 #!/usr/bin/env -S emacs -Q --script # -*- mode: emacs-lisp; lexical-binding: t; -*-
 
 (require 'ob-tangle)
+(require 'ox)
 (require 'subr-x)
+
+(defun org-macro-replace-all (templates)
+  "Replace all macros in current buffer by their expansion.
+
+This is a customization of the built-in org-macro-replace-all
+function with the following changes:
+
+- Replace macros in all contexts
+
+TEMPLATES is an alist of templates used for expansion.  See
+`org-macro-templates' for a buffer-local default value.
+
+Return an error if a macro in the buffer cannot be associated to
+a definition in TEMPLATES."
+  (org-with-wide-buffer
+   (goto-char (point-min))
+   (let (record)
+     (while (re-search-forward "{{{[-A-Za-z0-9_]" nil t)
+       (let* ((datum (save-match-data (org-element-context)))
+              (type (org-element-type datum))
+              (macro
+               (cond
+                ((eq type 'macro) datum)
+                ;; In parsed keywords and associated node
+                ;; properties, force macro recognition.
+                (t
+                 (save-excursion
+                   (goto-char (match-beginning 0))
+                   (org-element-macro-parser))))))
+         (when macro
+           (let* ((key (org-element-property :key macro))
+                  (value (org-macro-expand macro templates))
+                  (begin (org-element-property :begin macro))
+                  (signature (list begin
+                                   macro
+                                   (org-element-property :args macro))))
+             ;; Avoid circular dependencies by checking if the same
+             ;; macro with the same arguments is expanded at the
+             ;; same position twice.
+             (cond ((member signature record)
+                    (error "Circular macro expansion: %s" key))
+                   (value
+                    (push signature record)
+                    (delete-region
+                     begin
+                     ;; Preserve white spaces after the macro.
+                     (progn (goto-char (org-element-property :end macro))
+                            (skip-chars-backward " \t")
+                            (point)))
+                    ;; Leave point before replacement in case of
+                    ;; recursive expansions.
+                    (save-excursion (insert value)))
+                   ;; Special "results" macro: if it is not defined,
+                   ;; simply leave it as-is.  It will be expanded in
+                   ;; a second phase.
+                   ((equal key "results"))
+                   (t
+                    (error "Undefined Org macro: %s; aborting"
+                           (org-element-property :key macro)))))))))))
 
 (defconst config-directory "~/dotfiles")
 
-(defconst machines '((alpha . (personal))
-                     (fresh . ())))
+(defconst export-file (format "%s/.machine-tangle.org" config-directory))
 
 (defun get-system-name ()
   (shell-command-to-string "hostname"))
 
 (defconst machine (string-trim (get-system-name)))
 
-(defun machine-featurep (machine feature)
-  (member feature (alist-get machine machines)))
-
 (setq org-babel-default-header-args `((:session         . "none")
                                       (:noweb           . "yes")
                                       (:mkdirp          . "yes")
                                       (:tangle          . "no")))
 
-(print machine)
 (setq org-confirm-babel-evaluate nil)
 
 ;; (org-babel-do-load-languages 'org-babel-load-languages
 ;;     '((shell . t)
 ;;       (emacs-lisp . t)))
 
-(org-babel-tangle-file (format "%s/main.org" config-directory))
+
+(find-file (format "%s/machines.org" config-directory))
+(goto-char (org-find-entry-with-id machine))
+(org-narrow-to-subtree)
+(copy-to-buffer export-file (point-min) (point-max))
+
+(with-current-buffer export-file
+  (write-file export-file)
+  (org-export-expand-include-keyword)
+  (org-macro-replace-all (append org-macro-templates org-export-global-macros))
+  (org-babel-tangle)
+  )
 
 (kill-emacs 0)

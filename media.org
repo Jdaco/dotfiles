@@ -1,0 +1,32 @@
+* Media
+** Video
+*** mpv
+
+[[https://wiki.archlinux.org/index.php/Mpv][MPV]] is my preferred video player. I use it in as many scenarios as I can
+
+#+begin_src conf :tangle ~/.config/mpv/mpv.conf
+demuxer-readahead-secs=300
+ytdl-format=bestvideo[height<=?1080]+bestaudio/best
+#+end_src
+*** Webcam
+
+Use ~mpv~ to view your webcam
+
+#+begin_src elisp :noweb-ref configs
+(defun webcam ()
+  (interactive)
+  (exwm/run-program-in-home "mpv /dev/video0"))
+
+(map! :leader
+      (:prefix ("M" . "Media")
+      "v" #'webcam))
+#+end_src
+
+** Images
+#+begin_src elisp :noweb-ref configs :results none
+; Image keybinds
+(map! :map image-mode-map
+      "C-k" #'image-previous-file
+      "C-j" #'image-next-file
+      )
+#+end_src

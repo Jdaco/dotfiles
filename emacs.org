@@ -1,0 +1,538 @@
+* Emacs
+
+Emacs is my preferred environment for everything. I use it for as many things that I can
+
+I do prefer the [[https://github.com/emacs-evil/evil][EVIL]] keybindings over the default Emacs ones
+
+I use the [[https://github.com/hlissner/doom-emacs][Doom Emacs]] configuration framework. I agree with most of it's decisions out of the box, but I like that it stays out of your way so you can configure things your way
+
+** Editing
+#+begin_src elisp :noweb-ref configs
+;; Evil
+(setq evil-escape-key-sequence ";a"
+      evil-escape-unordered-key-sequence t)
+
+;; Files
+(map! :leader
+      :nv "f S" #'evil-write-all)
+
+;; buffers
+#+end_src
+
+*** Snippets
+
+I use the [[https://github.com/joaotavora/yasnippet][yasnippet]] emacs package for snippets
+
+#+begin_src elisp :noweb-ref configs
+(map! :i "M-a" #'yas-previous-field
+      :i "M-;" #'yas-next-field)
+#+end_src
+** Doom
+
+Doom Emacs configuration is broken into 3 files:
+
+1. =init.el=
+   + This defines the doom modules that you want to enable
+2. =config.el=
+   + This is all of the other elisp to configure your emacs (variables, keybindings, etc)
+3. =packages.el=
+   + This is where you define the emacs packages that doom will install
+
+When these files are changed, you need to do ~doom sync~ to pull down new packages and restart emacs for the changes to take effect
+
+*** Installation
+#+begin_src sh
+# Download doom source code
+COMMIT="0c9256411d6bdb6cfc920bcce2216d99ff28a0c5"
+
+git clone https://github.com/hlissner/doom-emacs ~/.emacs.d
+(cd ~/.emacs.d && git checkout $COMMIT)
+
+# Initial install of doom
+~/.emacs.d/bin/doom install
+#+end_src
+*** init.el
+:PROPERTIES:
+:ID:       2e3b632f-315d-4026-aea7-1fb176106422
+:END:
+#+begin_src elisp :tangle ~/.config/doom/init.el
+;;; init.el -*- lexical-binding: t; -*-
+
+;; This file controls what Doom modules are enabled and what order they load
+;; in. Remember to run 'doom sync' after modifying it!
+
+;; NOTE Press 'SPC h d h' (or 'C-h d h' for non-vim users) to access Doom's
+;;      documentation. There you'll find a "Module Index" link where you'll find
+;;      a comprehensive list of Doom's modules and what flags they support.
+
+;; NOTE Move your cursor over a module's name (or its flags) and press 'K' (or
+;;      'C-c c k' for non-vim users) to view its documentation. This works on
+;;      flags as well (those symbols that start with a plus).
+;;
+;;      Alternatively, press 'gd' (or 'C-c c d') on a module to browse its
+;;      directory (for easy access to its source code).
+
+(doom! :input
+       ;;chinese
+       ;;japanese
+       ;;layout            ; auie,ctsrnm is the superior home row
+
+       :completion
+       company           ; the ultimate code completion backend
+       helm              ; the *other* search engine for love and life
+       ;;ido               ; the other *other* search engine...
+       ;;ivy               ; a search engine for love and life
+
+       :ui
+       deft              ; notational velocity for Emacs
+       doom              ; what makes DOOM look the way it does
+       doom-dashboard    ; a nifty splash screen for Emacs
+       doom-quit         ; DOOM quit-message prompts when you quit Emacs
+       ;;(emoji +unicode)  ; 🙂
+       ;;fill-column       ; a `fill-column' indicator
+       hl-todo           ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
+       hydra
+       indent-guides     ; highlighted indent columns
+       ;;ligatures         ; ligatures and symbols to make your code pretty again
+       ;;minimap           ; show a map of the code on the side
+       modeline          ; snazzy, Atom-inspired modeline, plus API
+       nav-flash         ; blink cursor line after big motions
+       ;; neotree           ; a project drawer, like NERDTree for vim
+       ophints           ; highlight the region an operation acts on
+       (popup +defaults)   ; tame sudden yet inevitable temporary windows
+       ;;tabs              ; a tab bar for Emacs
+       treemacs          ; a project drawer, like neotree but cooler
+       unicode           ; extended unicode support for various languages
+       vc-gutter         ; vcs diff in the fringe
+       vi-tilde-fringe   ; fringe tildes to mark beyond EOB
+       ;;window-select     ; visually switch windows
+       workspaces        ; tab emulation, persistence & separate workspaces
+       zen               ; distraction-free coding or writing
+
+       :editor
+       (evil +everywhere); come to the dark side, we have cookies
+       file-templates    ; auto-snippets for empty files
+       fold              ; (nigh) universal code folding
+       ;;(format +onsave)  ; automated prettiness
+       ;;god               ; run Emacs commands without modifier keys
+       lispy             ; vim for lisp, for people who don't like vim
+       ;;multiple-cursors  ; editing in many places at once
+       ;;objed             ; text object editing for the innocent
+       ;;parinfer          ; turn lisp into python, sort of
+       ;;rotate-text       ; cycle region at point between text candidates
+       snippets          ; my elves. They type so I don't have to
+       ;;word-wrap         ; soft wrapping with language-aware indent
+
+       :emacs
+       (dired +ranger +icons)             ; making dired pretty [functional]
+       electric          ; smarter, keyword-based electric-indent
+       ;;ibuffer         ; interactive buffer management
+       undo              ; persistent, smarter undo for your inevitable mistakes
+       vc                ; version-control and Emacs, sitting in a tree
+
+       :term
+       eshell            ; the elisp shell that works everywhere
+       shell             ; simple shell REPL for Emacs
+       term              ; basic terminal emulator for Emacs
+       vterm             ; the best terminal emulation in Emacs
+
+       :checkers
+       syntax              ; tasing you for every semicolon you forget
+       ;;spell             ; tasing you for misspelling mispelling
+       ;;grammar           ; tasing grammar mistake every you make
+
+       :tools
+       ansible
+       ;;debugger          ; FIXME stepping through code, to help you add bugs
+       ;;direnv
+       docker
+       ;;editorconfig      ; let someone else argue about tabs vs spaces
+       ;;ein               ; tame Jupyter notebooks with emacs
+       (eval +overlay)     ; run code, run (also, repls)
+       ;;gist              ; interacting with github gists
+       (lookup +docsets)              ; navigate your code and its documentation
+       lsp
+       magit             ; a git porcelain for Emacs
+       make              ; run make tasks from Emacs
+       pass              ; password manager for nerds
+       pdf               ; pdf enhancements
+       prodigy           ; FIXME managing external services & code builders
+       ;;rgb               ; creating color strings
+       ;;taskrunner        ; taskrunner for all your projects
+       terraform         ; infrastructure as code
+       ;;tmux              ; an API for interacting with tmux
+       ;;upload            ; map local to remote projects via ssh/ftp
+
+       :os
+       ;;tty               ; improve the terminal Emacs experience
+
+       :lang
+       ;;agda              ; types of types of types of types...
+       ;;cc                ; C/C++/Obj-C madness
+       ;;clojure           ; java with a lisp
+       ;;common-lisp       ; if you've seen one lisp, you've seen them all
+       ;;coq               ; proofs-as-programs
+       ;;crystal           ; ruby at the speed of c
+       ;;csharp            ; unity, .NET, and mono shenanigans
+       data              ; config/data formats
+       ;;(dart +flutter)   ; paint ui and not much else
+       ;;elixir            ; erlang done right
+       ;;elm               ; care for a cup of TEA?
+       emacs-lisp        ; drown in parentheses
+       ;;erlang            ; an elegant language for a more civilized age
+       ;;ess               ; emacs speaks statistics
+       ;;faust             ; dsp, but you get to keep your soul
+       ;;fsharp            ; ML stands for Microsoft's Language
+       ;;fstar             ; (dependent) types and (monadic) effects and Z3
+       ;;gdscript          ; the language you waited for
+       ;;(go +lsp)         ; the hipster dialect
+       ;;(haskell +dante)  ; a language that's lazier than I am
+       ;;hy                ; readability of scheme w/ speed of python
+       ;;idris             ; a language you can depend on
+       json              ; At least it ain't XML
+       ;;(java +meghanada) ; the poster child for carpal tunnel syndrome
+       (javascript +lsp)        ; all(hope(abandon(ye(who(enter(here))))))
+       ;;julia             ; a better, faster MATLAB
+       ;;kotlin            ; a better, slicker Java(Script)
+       ;;latex             ; writing papers in Emacs has never been so fun
+       ;;lean
+       ;;factor
+       ledger            ; an accounting system in Emacs
+       ;;lua               ; one-based indices? one-based indices
+       markdown          ; writing docs for people to ignore
+       ;;nim               ; python + lisp at the speed of c
+       ;;nix               ; I hereby declare "nix geht mehr!"
+       ;;ocaml             ; an objective camel
+       (org +noter +pandoc +roam)               ; organize your plain life in plain text
+       ;;php               ; perl's insecure younger brother
+       plantuml          ; diagrams for confusing people more
+       ;;purescript        ; javascript, but functional
+       (python +lsp +poetry)            ; beautiful is better than ugly
+       ;;qt                ; the 'cutest' gui framework ever
+       ;;racket            ; a DSL for DSLs
+       ;;raku              ; the artist formerly known as perl6
+       ;;rest              ; Emacs as a REST client
+       ;;rst               ; ReST in peace
+       ;;(ruby +rails)     ; 1.step {|i| p "Ruby is #{i.even? ? 'love' : 'life'}"}
+       ;;rust              ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
+       ;;scala             ; java, but good
+       scheme            ; a fully conniving family of lisps
+       sh                ; she sells {ba,z,fi}sh shells on the C xor
+       ;;sml
+       ;;solidity          ; do you need a blockchain? No.
+       ;;swift             ; who asked for emoji variables?
+       ;;terra             ; Earth and Moon in alignment for performance.
+       ;;web               ; the tubes
+       yaml              ; JSON, but readable
+
+       :email
+       (mu4e +gmail)
+       ;;notmuch
+       ;;(wanderlust +gmail)
+
+       :app
+       ;;calendar
+       ;;irc               ; how neckbeards socialize
+       (rss +org)        ; emacs as an RSS reader
+       ;;twitter           ; twitter client https://twitter.com/vnought
+
+       :config
+       ;;literate
+       (default +bindings +smartparens))
+#+end_src
+*** config.el
+:PROPERTIES:
+:ID:       197382ca-b112-444f-90a0-f38e5b3ad0f4
+:END:
+#+begin_src elisp :tangle ~/.config/doom/config.el
+;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
+
+;; Place your private configuration here! Remember, you do not need to run 'doom
+;; sync' after modifying this file!
+
+
+;; Some functionality uses this to identify you, e.g. GPG configuration, email
+;; clients, file templates and snippets.
+(setq user-full-name "Chaise Conn"
+      user-mail-address "chaisecanz@gmail.com")
+
+;; Doom exposes five (optional) variables for controlling fonts in Doom. Here
+;; are the three important ones:
+;;
+;; + `doom-font'
+;; + `doom-variable-pitch-font'
+;; + `doom-big-font' -- used for `doom-big-font-mode'; use this for
+;;   presentations or streaming.
+;;
+;; They all accept either a font-spec, font string ("Input Mono-12"), or xlfd
+;; font string. You generally only need these two:
+;; (setq doom-font (font-spec :family "monospace" :size 12 :weight 'semi-light)
+;;       doom-variable-pitch-font (font-spec :family "sans" :size 13))
+
+
+   ;; dotspacemacs-default-font '("Victor Mono"
+   ;;                             :size 14
+   ;;                             :weight normal
+   ;;                             :width normal
+   ;;                             :powerline-scale 1.0)
+
+;; (setq doom-font (font-spec :family "monospace" :size 12 :weight 'semi-light)
+
+;; There are two ways to load a theme. Both assume the theme is installed and
+;; available. You can either set `doom-theme' or manually load a theme with the
+;; `load-theme' function. This is the default:
+(setq doom-theme 'doom-sourcerer)
+
+
+;; If you use `org' and don't want your org files in the default location below,
+;; change `org-directory'. It must be set before org loads!
+    ;; (setq org-directory "~/roam/")
+
+;; This determines the style of line numbers in effect. If set to `nil', line
+;; numbers are disabled. For relative line numbers, set this to `relative'.
+(setq display-line-numbers-type 'relative)
+
+
+;; Here are some additional functions/macros that could help you configure Doom:
+;;
+;; - `load!' for loading external *.el files relative to this one
+;; - `use-package!' for configuring packages
+;; - `after!' for running code after a package has loaded
+;; - `add-load-path!' for adding directories to the `load-path', relative to
+;;   this file. Emacs searches the `load-path' when you load packages with
+;;   `require' or `use-package'.
+;; - `map!' for binding new keys
+;;
+;; To get information about any of these functions/macros, move the cursor over
+;; the highlighted symbol at press 'K' (non-evil users must press 'C-c c k').
+;; This will open documentation for it, including demos of how they are used.
+;;
+;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
+;; they are implemented.
+
+(setq doom-localleader-key ",")
+
+;; Set an additional leader to use in EXWM buffers
+(setq doom-leader-alt-key "s-SPC")
+
+(undefine-key! doom-leader-map
+  ; make-frame
+  "o f"
+  )
+
+(recentf-mode 0)
+
+(map! :leader
+      :desc "M-x" "SPC" #'helm-M-x)
+
+(defun url-to-string (url)
+  (with-current-buffer (url-retrieve-synchronously url)
+    (set-buffer-multibyte t)
+    (prog1 (buffer-substring (1+ url-http-end-of-headers)
+                             (point-max))
+      (kill-buffer))))
+
+<<configs>>
+#+end_src
+
+*** packages.el
+:PROPERTIES:
+:ID:       aed1d1c4-b001-4775-a391-b30a05095d2e
+:END:
+#+begin_src elisp :tangle ~/.config/doom/packages.el
+;; -*- no-byte-compile: t; -*-
+;;; $DOOMDIR/packages.el
+
+;; To install a package with Doom you must declare them here and run 'doom sync'
+;; on the command line, then restart Emacs for the changes to take effect -- or
+;; use 'M-x doom/reload'.
+
+
+;; To install SOME-PACKAGE from MELPA, ELPA or emacsmirror:
+;(package! some-package)
+
+;; To install a package directly from a remote git repo, you must specify a
+;; `:recipe'. You'll find documentation on what `:recipe' accepts here:
+;; https://github.com/raxod502/straight.el#the-recipe-format
+;(package! another-package
+;  :recipe (:host github :repo "username/repo"))
+
+;; If the package you are trying to install does not contain a PACKAGENAME.el
+;; file, or is located in a subdirectory of the repo, you'll need to specify
+;; `:files' in the `:recipe':
+;(package! this-package
+;  :recipe (:host github :repo "username/repo"
+;           :files ("some-file.el" "src/lisp/*.el")))
+
+;; If you'd like to disable a package included with Doom, you can do so here
+;; with the `:disable' property:
+;(package! builtin-package :disable t)
+
+;; You can override the recipe of a built in package without having to specify
+;; all the properties for `:recipe'. These will inherit the rest of its recipe
+;; from Doom or MELPA/ELPA/Emacsmirror:
+;(package! builtin-package :recipe (:nonrecursive t))
+;(package! builtin-package-2 :recipe (:repo "myfork/package"))
+
+;; Specify a `:branch' to install a package from a particular branch or tag.
+;; This is required for some packages whose default branch isn't 'master' (which
+;; our package manager can't deal with; see raxod502/straight.el#279)
+;(package! builtin-package :recipe (:branch "develop"))
+
+;; Use `:pin' to specify a particular commit to install.
+;(package! builtin-package :pin "1a2b3c4d5e")
+
+
+;; Doom's packages are pinned to a specific commit and updated from release to
+;; release. The `unpin!' macro allows you to unpin single packages...
+;(unpin! pinned-package)
+;; ...or multiple packages
+;(unpin! pinned-package another-pinned-package)
+;; ...Or *all* packages (NOT RECOMMENDED; will likely break things)
+;(unpin! t)
+
+<<packages>>
+#+end_src
+
+** Help
+*** Info
+
+
+| Command             | Key | Description                      |
+|---------------------+-----+----------------------------------|
+| Info-top-node       | g t |                                  |
+| info-next-reference | g j | Next link on the page            |
+| info-forward-node   | C-j | Next node (down / forward level) |
+
+#+begin_src elisp :noweb-ref configs
+; Help
+(map! :leader
+      :prefix "h"
+      "I" #'helm-info)
+#+end_src
+
+*** Man
+
+Man pages are reference manuals for the programs on your system
+
+#+begin_src elisp :noweb-ref configs
+(map! :leader
+      :prefix "h"
+      "h" #'man)
+#+end_src
+
+** Services
+I use [[https://github.com/rejeep/prodigy.el][Prodigy]] to manage user-level background processes
+
+*** Prodigy
+#+begin_src elisp :noweb-ref configs
+(after! prodigy
+  <<prodigy-services>>
+  )
+
+(map! :leader
+      "o y" #'prodigy)
+
+(map! :after prodigy
+      :mode prodigy-mode
+      "q" #'quit-window
+      "j" #'prodigy-next
+      "k" #'prodigy-prev
+      "g g" #'prodigy-first
+      "G" #'prodigy-last
+      "s" #'prodigy-start
+      "S" #'prodigy-stop
+      "R" #'prodigy-restart
+      "<RET>" #'prodigy-display-process
+      "o" #'prodigy-browse
+      "m" #'prodigy-mark
+      "M" #'prodigy-mark-all
+      )
+#+end_src
+
+** Shell
+
+I use [[https://www.gnu.org/software/emacs/manual/html_mono/eshell.html][Eshell]] as my primary shell. For certain uses I use ~ansi-term~ instead. For some ncurses programs I'll use ~bash~ in the ~termite~ terminal emulator
+
+*** Eshell
+**** Aliases
+:PROPERTIES:
+:ID:       d14e235d-95ff-4976-bed9-4c0253a576e3
+:END:
+
+#+begin_src shell :tangle ~/.config/doom/eshell/aliases
+addpath ~/.local/bin ~/dotfiles/bin
+
+alias doom ~/.emacs.d/bin/doom $*
+alias guixupdate sudo guix system reconfigure /etc/config.scm
+alias ls exa --long --color=always $*
+
+# Monitoring
+alias iostat iostat -hNs
+alias pstree pstree -U
+
+alias lsblk lsblk -o 'name,size,type,mountpoint,partlabel,uuid'
+
+<<aliases>>
+#+end_src
+
+** Filesystem
+*** Navigation
+
+**** Treemacs
+[[https://github.com/Alexander-Miller/treemacs][Treemacs]] gives you a tree-style overview of your current project or directory
+
+**** Projectile
+
+[[https://github.com/bbatsov/projectile][Projectile]] is an emacs package that provides helpful commands for search, navigating, and executing commands within a project. Projectile recognizes a project as a directory containing a =.git= directory
+
+#+begin_src elisp noweb-ref configs
+(defun projectile-find-makefile () (interactive)
+       (let ((fpath (projectile-expand-root "Makefile")))
+         (if (file-exists-p fpath)
+             (find-file fpath)
+           (message "Makefile doesn't exist"))))
+
+(defun projectile-find-readme () (interactive)
+         (let ((fpaths (append
+                        (file-expand-wildcards (projectile-expand-root "*.org"))
+                        (file-expand-wildcards (projectile-expand-root "*.md")))))
+           (if (and (not (seq-empty-p fpaths))
+                    (file-exists-p (car fpaths)))
+               (find-file (car fpaths))
+             (message "README doesn't exist"))))
+
+(setq projectile-project-root-files '())
+
+
+(map! :leader
+      (:prefix "p"
+      "C" #'projectile-configure-project
+      "r" #'projectile-run-project
+      "m" #'projectile-find-makefile
+      "/" #'projectile-find-readme)
+      )
+
+
+#+end_src
+**** Ranger
+In the terminal I've always loved the [[https://github.com/ranger/ranger][ranger]] file manager. In emacs you have [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Dired.html][dired]] which handles a lot of the ranger functionality. And to get the full 3-column view of ranger I use the [[https://github.com/ralesi/ranger.el][ranger.el]] emacs package
+
+#+begin_src elisp :noweb-ref configs
+; Dired
+(map! :leader
+      "f -" #'dired-jump)
+
+; Ranger settings
+(setq ranger-clieanup-eagerly t
+      ranger-show-literal nil
+      ranger-show-dotfiles nil
+      ranger-parent-depth 2)
+#+end_src
+
+*** Archives
+You can use ~dired~ to manage archives
+
+| Dired Key | Command           | Description                            |
+|-----------+-------------------+----------------------------------------|
+| ; Z       | dired-do-compress | Compress or Uncompress an archive file |

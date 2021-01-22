@@ -1,0 +1,218 @@
+* Security
+** Passwords
+
+I use [[https://www.passwordstore.org/][Pass]] to manage my passwords
+
+#+begin_src elisp :noweb-ref configs
+(map! :leader
+      (:prefix ("!" . "Passwords")
+       "!" #'helm-pass
+       "l" #'pass
+       "i" #'password-store-insert
+       )
+      )
+
+(setq password-store-password-length 25)
+#+end_src
+
+Emacs packages
+
+#+begin_src elisp :noweb-ref packages
+(package! password-generator)
+#+end_src
+
+*** Installation
+
+I store my passwords on a USB drive, so symlink the =~/.password-store= to the path that I mount the key
+
+#+begin_src sh :noweb-ref install-user
+ln -s /mnt/key/passwords ~/.password-store
+#+end_src
+
+Arch Linux packages
+
+#+begin_src text :noweb-ref arch-packages
+pass
+#+end_src
+
+** GnuPG
+*** gpg-agent
+
+Config
+
+#+begin_src conf :tangle ~/.gnupg/gpg-agent.conf
+default-cache-ttl 3600
+# allow-loopback-pinentry
+# pinentry-program /usr/bin/pinentry-emacs
+# allow-emacs-pinentry
+#+end_src
+
+*** Config
+:PROPERTIES:
+:ID:       a570d0db-3330-48e5-bd20-e760f63da457
+:END:
+#+begin_src conf :tangle ~/.gnupg/gpg.conf
+# when outputting certificates, view user IDs distinctly from keys:
+fixed-list-mode
+
+# long keyids are more collision-resistant than short keyids (it's trivial to make a key with any desired short keyid)
+keyid-format 0xlong
+
+# List all keys with their fingerprints. This is the same output as --list-keys
+# but with the additional output of a line with the fingerprint. If this
+# command is given twice, the fingerprints of all secondary keys are listed too.
+with-fingerprint
+with-fingerprint
+
+# when multiple digests are supported by all recipients, choose the strongest one:
+personal-digest-preferences SHA512 SHA384 SHA256 SHA224
+
+# preferences chosen for new keys should prioritize stronger algorithms:
+default-preference-list SHA512 SHA384 SHA256 SHA224 AES256 AES192 AES CAST5 BZIP2 ZLIB ZIP Uncompressed
+
+# If you use a graphical environment (and even if you don't) you should be using an agent:
+use-agent
+
+# You should always know at a glance which User IDs gpg thinks are legitimately bound to the keys in your keyring:
+verify-options show-uid-validity
+list-options show-uid-validity
+
+# when making an OpenPGP certification, use a stronger digest than the default SHA1:
+cert-digest-algo SHA512
+digest-algo SHA256
+
+# prevent version string from appearing in your signatures/public keys
+no-emit-version
+
+# Prefer the best compression
+personal-compress-preferences ZLIB BZIP2 ZIP
+
+# Use name as the cipher algorithm for symmetric encryption with a passphrase
+# if --personal-cipher-preferences and --cipher-algo are not given. The
+# default is AES-128.
+s2k-cipher-algo AES256
+
+# Use name as the digest algorithm used to mangle the passphrases for symmetric
+# encryption. The default is SHA-1.
+s2k-digest-algo SHA512
+
+
+# Specify how many times the passphrases mangling for symmetric encryption is
+# repeated. This value may range between 1024 and 65011712 inclusive. The
+# default is inquired from gpg-agent. Note that not all values in the
+# 1024-65011712 range are legal and if an illegal value is selected, GnuPG will
+# round up to the nearest legal value. This option is only meaningful if
+# --s2k-mode is set to the default of 3.
+s2k-count 1015808
+#+end_src
+*** Installation
+
+I store my GPG keys on my external USB key, so symlink the config directory
+
+#+begin_src sh
+ln -s ~/.gnupg /mnt/gpg
+#+end_src
+
+*Note*: If you don't want to symlink, you can also use ~gpg~ with your detached keyring using ~gpg --homedir /mnt/gpg~
+
+Arch Linux packages
+
+#+begin_src text :noweb-ref arch-packages
+gnupg
+pinentry
+#+end_src
+** SSH
+
+- Create one SSH key per *identity*
+  - And identity could be an online service you have an account with, or a role you service in a company
+- For work machines: Create one SSH key per machine
+  + Store them on the machine at =~/.ssh/keys=
+- SSH keys are stored under ~ssh~ on my USB key
+
+*** Installation
+
+I store my SSH keys and config on my external USB key, so symlinux to the ssh_config
+
+#+begin_src shell :results none
+ln -s ~/.ssh/config /mnt/ssh_config
+#+end_src
+*** Shell aliases
+#+begin_src shell :noweb-ref aliases
+# -t ed25519 : Use the Ed25519 algorithm. The most secure right now
+# -a 100 : Do 100 key passes. Makes brute-forcing harder
+alias ssh-keygen ssh-keygen -t ed25519 -a 100 $*
+#+end_src
+
+** USB Key
+:PROPERTIES:
+:ID:       a4c89b7f-15ab-4c34-b6d1-05d6d56b1804
+:END:
+
+*** Shell aliases
+#+begin_src conf :noweb-ref aliases
+alias cs "sudo cryptsetup $*"
+alias key "sudo cryptsetup luksOpen /dev/$1 $2"
+alias keyoff "sudo cryptsetup luksClose $1"
+#+end_src
+
+#+begin_src sh :shebang "#!/usr/bin/env bash" :tangle ~/.local/bin/key-init
+set -e
+
+if [[ -z $1 ]]; then
+    exit 1
+fi
+
+DEVICE=/dev/$1
+PARTITION=${DEVICE}1
+
+echo 'Overwriting with random data...'
+
+# dd will error saying 'No space left on device'. This is normal
+sudo dd if=/dev/random of=${DEVICE} status=progress || true
+sudo sync
+
+echo 'Creating partitions...'
+sudo sgdisk --typecode 8309 --new 0:0:+1GiB ${DEVICE}
+sudo sgdisk --change-name 1:"$2" ${DEVICE}
+
+sudo cryptsetup luksFormat \
+    --cipher aes-xts-plain64 \
+    --key-size 512 \
+    --hash sha512 \
+    --iter-time 5000 \
+    --use-random \
+    --verify-passphrase \
+    ${PARTITION}
+
+NAME=$(basename $(mktemp -u))
+sudo cryptsetup luksOpen ${PARTITION} ${NAME}
+
+echo 'Creating filesystem...'
+sudo mkfs.ext4 /dev/mapper/${NAME}
+sudo sync
+
+sudo cryptsetup luksClose ${NAME}
+echo 'Done!'
+#+end_src
+
+#+begin_src sh :shebang "#!/usr/bin/env bash" :tangle ~/.local/bin/key-backup
+set -e
+
+if [[ -z $1 || -z $2 ]]; then
+    exit 1
+fi
+
+FROM=$1
+FROM_PATH=$(mktemp -d)
+
+TO=$2
+TO_PATH=$(mktemp -d)
+
+sudo mount /dev/mapper/${FROM} ${FROM_PATH}
+sudo mount /dev/mapper/${TO} ${TO_PATH}
+
+sudo rsync -vrutlgp --delete ${FROM_PATH} ${TO_PATH}
+
+sudo umount ${FROM_PATH}
+sudo umount ${TO_PATH}
+#+end_src

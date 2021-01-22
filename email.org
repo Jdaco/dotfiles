@@ -1,0 +1,105 @@
+* Email
+
+I prefer to interact with my emails inside of Emacs using [[https://github.com/djcb/mu][mu4e]], but not all emails read well in text format. So sometimes I'll have to read my emails in the web client of my chosen email providers
+
+The directory that I store my emails in
+
+#+begin_src :noweb-ref maildir
+~/mail
+#+end_src
+
+Once you have ~offlineimap~ and ~mu~ installed you'll need to run the below commands to download and index your emails
+
+#+BEGIN_SRC sh
+offlineimap -o
+mu init --maildir <<maildir>> --my-address email@example.com
+mu index
+#+END_SRC
+
+** offlineimap
+:PROPERTIES:
+:ID:       ae10fc0b-f364-48e3-8b4a-922b3134ee24
+:END:
+
+[[https://www.offlineimap.org/][Offlineimap]] will download your emails and sync changes you make back to your online mailbox
+
+#+begin_src conf :tangle ~/.offlineimaprc
+[general] # List of accounts to be synced, separated by a comma.
+accounts = Gmail
+maxsyncaccounts = 1
+pythonfile = ~/.offlineimap.py
+
+[Account Gmail]
+# Identifier for the local repository; e.g. the maildir to be synced via IMAP.
+localrepository = Gmail-local
+# Identifier for the remote repository; i.e. the actual IMAP, usually non-local.
+remoterepository = Gmail-remote
+
+# Sync every n minutes
+autorefresh = 1
+
+# Do n quick refreshes between every full refresh
+quick = 10
+
+# This is used to automatically re-index the emails in mu4e
+# postsynchook = emacsclient -e "(progn (require 'mu4e) (mu4e-update-index))"
+
+[Repository Gmail-local]
+type = Maildir
+localfolders = <<maildir>>/Gmail
+
+[Repository Gmail-remote]
+type = Gmail
+remoteusereval = get_pass("gmail")["user"]
+remotepasseval = get_pass("gmail")["password"]
+
+# Necessary as of OfflineIMAP 6.5.4
+sslcacertfile = /etc/ssl/certs/ca-certificates.crt
+folderfilter = lambda foldername: foldername in ["INBOX", "Sent"]
+#+end_src
+
+I use this python function to get my email passwords from my [[https://www.passwordstore.org/][Pass]] store
+
+#+begin_src python :tangle ~/.offlineimap.py
+from subprocess import check_output
+
+def get_pass(account):
+    data = check_output("pass email/" + account, shell=True).splitlines()
+    password = data[0]
+    tmp = [x for x in data if x.startswith('address:')]
+    user = ""
+    if len(tmp) > 0:
+        user = tmp[0].split(":", 1)[1]
+
+    return {"password": password, "user": user}
+#+end_src
+
+*** Services
+#+begin_src elisp :noweb-ref prodigy-services
+(prodigy-define-service
+    :name "Email"
+    :command "offlineimap"
+    :kill-process-buffer-on-stop t)
+#+end_src
+*** Installation
+
+Arch Linux packages
+
+#+begin_src text :noweb-ref archlinux-packages
+offlineimap
+#+end_src
+** mu
+#+begin_src elisp :noweb-ref alpha-configs :results none
+;; This might be needed on some distros
+;; (add-to-list 'load-path "~/.guix-profile/share/emacs/site-lisp/mu4e")
+
+(setq +mu4e-backend 'offlineimap
+      mu4e-maildir "<<maildir>>"
+      mu4e-enable-async-operation t
+      mu4e-get-mail-command "offlineimap -o -q"
+      mu4e-view-show-images t)
+
+(map! :after mu4e
+      :mode mu4e-headers-mode
+      :n "i" #'mu4e-update-index)
+#+end_src

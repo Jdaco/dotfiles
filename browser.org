@@ -1,0 +1,13 @@
+* Browser
+** Extensions
+https://addons.mozilla.org/en-US/firefox/addon/darkreader/
+https://addons.mozilla.org/en-US/firefox/addon/clearurls/
+https://addons.mozilla.org/en-US/firefox/addon/foxyproxy-standard/
+https://addons.mozilla.org/en-US/firefox/addon/export-tabs-urls-and-titles/
+https://addons.mozilla.org/en-US/firefox/addon/privacy-badger17/
+https://addons.mozilla.org/en-US/firefox/addon/random_user_agent/
+https://addons.mozilla.org/en-US/firefox/addon/tree-style-tab/
+https://addons.mozilla.org/en-US/firefox/addon/ublock-origin/
+https://addons.mozilla.org/en-US/firefox/addon/temporary-containers/
+https://addons.mozilla.org/en-US/firefox/addon/multi-account-containers/
+https://addons.mozilla.org/en-US/firefox/addon/canvasblocker/

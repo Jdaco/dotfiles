@@ -1,0 +1,54 @@
+* RSS
+
+I use [[https://en.wikipedia.org/wiki/RSS][RSS]] to consume news and updates.
+
+The [[https://github.com/skeeto/elfeed][Elfeed]] emacs package is my preferred feed reader
+
+** Config
+#+begin_src elisp :noweb-ref alpha-configs
+(after! elfeed
+  (require 'elfeed)
+  (require 'elfeed-org)
+
+  (setq elfeed-search-filter "@6-months-ago +unread"
+    rmh-elfeed-org-files (list "~/roam/other/feeds.org")
+    elfeed-db-directory "~/.elfeed"
+    elfeed-search-title-min-width 32)
+
+  (defun elfeed-mpv (url)
+    "Watch a video from URL in MPV"
+    (start-process "elfeed-mpv" "elfeed-mpv" "mpv" "--demuxer-readahead-secs=300" url))
+
+  (defun elfeed-view-mpv (&optional use-generic-p)
+    "Youtube-feed link"
+    (interactive "P")
+    (let ((entries (elfeed-search-selected)))
+      (cl-loop for entry in entries
+               do (elfeed-untag entry 'unread)
+               when (elfeed-entry-link entry)
+               do (elfeed-mpv it))
+      (mapc #'elfeed-search-update-entry entries)
+      (unless (use-region-p) (forward-line))))
+
+  (defun elfeed-download-video ()
+    (interactive)
+    (elfeed-search-yank)
+    (ytdl-download))
+)
+
+
+
+
+(map! :leader
+      "o x" #'elfeed)
+
+(map! :after elfeed
+      (:map elfeed-search-mode-map
+       :n "B" #'elfeed-view-mpv
+       :n "D" #'elfeed-download-video
+       )
+      (:map elfeed-show-mode-map
+       "C-g" #'elfeed-show-visit
+       )
+      )
+#+end_src

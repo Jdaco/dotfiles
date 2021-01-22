@@ -1,0 +1,10 @@
+#+TITLE: Install
+
+- Manual install steps
+  + Install user packages
+  + ~git clone~
+  + babel tangle
+  + ~doom install~
+  + Email
+  + Pass - Symlink =~/.password-store=
+  + GPG - Symlink =~/.gnupg=

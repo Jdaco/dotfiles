@@ -1,0 +1,292 @@
+* Org
+
+I use [[https://orgmode.org/][Org mode]] for:
+- Notes
+- Agenda
+- Project tmeplates
+- Literate Programming (like this repo!)
+- Flash Cards
+- Keeping track of books that I read
+- Storing my contacts
+
+- Note :: The configurations for someof these are stored in =brain.org=
+
+#+begin_src elisp :noweb-ref configs
+(after! (helm org-agenda)
+
+  (defun goto-or-create-heading (heading &optional level)
+    (find-areas)
+    (let ((existing (org-ql-select (current-buffer)
+                      `(and (level ,(or level 1)) (heading ,heading))
+                      :action #'point)))
+      (if existing
+          (goto-char (car existing))
+        (progn
+          (end-of-buffer)
+          (insert (format "\n* %s)" heading))))))
+
+
+  (map! :map org-mode-map
+        "C-<return>" #'evil-org-org-insert-heading-respect-contents-below
+        "M-l" #'org-demote-subtree
+        "M-h" #'org-promote-subtree
+        "M-k" #'org-move-subtree-up
+        "M-j" #'org-move-subtree-down
+        )
+
+  (map! :map org-mode-map
+        :localleader
+        "v E" #'org-edit-src-code
+        )
+
+(map!
+   (:leader
+    :prefix ("o o" . "Org")
+    :prefix ("S" . "org-sidebar")
+     "s" #'org-sidebar-toggle
+     "t" #'org-sidebar-tree-toggle
+    ))
+
+
+(setq org-id-link-to-org-use-id t
+      org-outline-path-complete-in-steps nil
+      org-refile-use-outline-path t
+      org-attach-store-link-p t
+      org-modules '(org-drill org-crypt)
+      org-export-with-tags nil
+      org-export-with-section-numbers nil
+      org-refile-targets '((org-agenda-files :maxlevel . 6))
+      org-tags-exclude-from-inheritance '(storage book certification assistant recipe)
+      )
+)
+
+#+end_src
+
+#+begin_src elisp :noweb-ref packages
+(package! org-sidebar)
+(package! org-picklink)
+#+end_src
+** Capture
+:PROPERTIES:
+:ID:       5fe33daf-9f01-4348-91fd-e438e4381e50
+:END:
+
+Org-mode comes with a [[https://orgmode.org/manual/Capture.html][capture]] system for quickly storing information. I use capture for two things:
+1. Quickly filing thoughts, links and information into the correct file or to review later.
+   - I've found that [[https://github.com/progfolio/doct][doct]] provides a much cleaner way to specify your capture templates
+2. Initializing project templates.
+   - This is possible thanks to org-capture, [[https://orgmode.org/manual/Extracting-Source-Code.html][org-babel-tangle]] and some custom ELisp code
+   - I used to use [[https://cookiecutter.readthedocs.io/en/1.7.2/][cookiecutter]] for this, but org-mode gives me much more flexibility. [[https://yeoman.io/][Yeoman]] is another popular option
+
+#+begin_src elisp :noweb-ref configs :results none
+(after! helm
+  (defvar cookie-path (f-join dotfiles-directory "cookies")
+    "Path to cookie dierectory")
+
+  (defun choose (prompt choices)
+    "Choose an option from CHOICES using helm"
+    (helm :sources (helm-build-sync-source prompt :candidates choices)))
+
+  (defun cookie-get-path ()
+    "Generate the path to tangle src block to
+Intended to be used in the form of `:tangle (cookie-get-path) on files that are meant
+to be tangled'"
+    (apply 'f-join (cons (file-name-directory (buffer-file-name (marker-buffer (org-capture-get :cookie-mark))))
+                         (cdr (org-get-outline-path t)))))
+
+  (defun cookie-root ()
+    (f-dirname
+     (buffer-file-name (marker-buffer (org-capture-get :cookie-mark)))))
+
+  (defun cookie-git ()
+    (when (doct-get :git)
+      (let ((root (cookie-root)))
+        (save-window-excursion
+          (magit-init root)
+          (magit-stage-file root)))))
+
+  (defun cookie-visit-file ()
+    (let ((path (expand-file-name (doct-get :visit-file) (cookie-root))))
+      (find-file path)
+      (magit-status)))
+
+  (defun cookie-gitignore ()
+    "Generate a gitignore from https://gitignore.io"
+    (when (doct-get :gitignore)
+      (with-current-buffer (find-file-noselect (expand-file-name ".gitignore" (cookie-root)))
+        (end-of-buffer)
+        (insert "\n.project.org\n"
+                (url-to-string (helm-gitignore--generate-url (doct-get :gitignore))))
+        (save-buffer))))
+
+  (defun cookie-new-project (&optional directory)
+    "Find the staring place for the capture process
+
+Info is stored in a .project.org file
+
+Prompts the user for a directory to use
+
+Looks for `.project.org' in the projectile root, not the selected directory
+
+If the project root isn't the selected directory, make sub headings to match the
+path relative to the project root
+"
+    (let* ((project-dir (read-directory-name "Project Directory: "))
+           (root (projectile-project-root project-dir))
+           (relative-to-root (f-relative  project-dir (or root project-dir))))
+      (find-file (concat (or root project-dir) ".project.org"))
+      (beginning-of-buffer)
+      (when (eq 0 (buffer-size))
+        (org-insert-heading)
+        (insert (f-base (f-dirname (buffer-file-name))))
+        (org-entry-put nil "VISIBILITY" "contents")
+        (org-entry-put nil "header-args" ":noweb yes :mkdirp yes"))
+      (unless (string= "./" relative-to-root)
+        (let ((path (list (org-get-heading t t))))
+          (dolist (segment (f-split relative-to-root))
+            (setq path (append path (list segment)))
+            (let ((found (org-ql-select (current-buffer) (cons 'outline-path-segment path) :action #'point)))
+              (if found
+                  (goto-char (car found))
+                (progn
+                  (org-insert-subheading '(4))
+                  (insert segment)))))
+          ))
+      (org-capture-put :cookie-mark (point-marker))))
+
+  (defun process-cookie ()
+    "Generate the project files from the cookie"
+    (org-babel-tangle)
+    (org-map-entries
+     (lambda ()
+       (progn
+         (let* ((path (cookie-get-path))
+                (dir (file-name-directory path))
+                (contents (org-get-entry)))
+           (unless (file-directory-p dir) (mkdir dir t))
+           (with-current-buffer (find-file-noselect path)
+             ;; (org-paste-subtree nil contents)
+             (save-buffer)))))
+     "TAGS={export}" nil))
+
+  (defun cookie-get (prop)
+    "Get PROP from the projects `.project.org' file
+
+Intended to be used as `%(cookie-get PROP)' from the cookie templates"
+    (or (org-entry-get (org-capture-get :cookie-mark) prop t) ""))
+
+  (defun cookie-prompt (var &optional initial)
+    "Prompt the user for a value and save it in `.project.org'
+
+Returns an empty string
+Intended to be used as `%(cookie-prompt PROP INITIAL)' from the cookie templates"
+    (org-entry-put (org-capture-get :cookie-mark) var (read-string (format "%s: " var) initial))
+    "")
+
+  (defun cookie-choice (var &rest choices)
+    "Prompt the user to choose a value and save it in `.project.org'
+
+Returns an empty string
+Intended to be used as `%(cookie-choice PROP CHOICE CHOICE ...)' from the cookie
+templates"
+    (org-entry-put (org-capture-get :cookie-mark) var (choose (format "%s: " var) choices))
+    "")
+
+
+  (setq org-capture-templates
+        (doct `(("Inbox" :keys "i" :file inbox-file :template "* %?")
+                ("Task" :keys "t" :file (lambda () (find-areas #'car)) :olp ("Tasks") :template "* TODO %?")
+                ("Recipe" :keys "r" :function (lambda () (goto-or-create-heading "Recipe")) :template "* %?     :recipe:")
+                ("New Cookie" :keys "C"
+                 :function (lambda() (find-file (f-join cookie-path (format "%s.org" (read-string "Cookie Name: ")))))
+                 :template-file ,(f-join cookie-path "cookie.org"))
+                ("Cookies" :keys "c"
+                 :function cookie-new-project
+                 :immediate-finish t
+                 :kill-buffer nil
+                 :prepare-finalize (lambda () (process-cookie))
+                 :after-finalize (lambda () (cookie-gitignore) (cookie-git) (cookie-visit-file))
+                 :git t
+                 :visit-file "Makefile"
+                 :children (
+                            ("Mkosi" :keys "m" :template-file ,(f-join cookie-path "mkosi.org"))
+                            ("Terraform" :keys "t"
+                             :children (("Environment"
+                                         :keys "e"
+                                         :template-file ,(f-join cookie-path "terraform/environment.org" )
+                                         :git nil)
+                                        ("Project" :keys "p"
+                                         :gitignore ("terraform" "terragrunt")
+                                         ;; :template-file ,(f-join cookie-path "terraform/project.org")
+                                         :children (("Azure"
+                                                     :keys "a"
+                                                     :template-file ,(f-join cookie-path "terraform/project/azure.org"))))
+                                        ("Module"
+                                         :keys "m"
+                                         :template-file ,(f-join cookie-path "terraform/module.org")
+                                         :git nil)
+                                        ("Remote State" :keys "r" :git nil
+                                         :children (("AWS"
+                                                     :keys "w"
+                                                     :template-file ,(f-join cookie-path "terraform/remote-state/aws.org"))
+                                                    ("Azure"
+                                                     :keys "a"
+                                                     :template-file ,(f-join cookie-path "terraform/remote-state/azure.org" ))))))))
+                <<capture-templates>>
+
+                )))
+  )
+
+#+end_src
+
+#+begin_src elisp :noweb-ref packages
+(package! doct)
+(package! gitignore-templates)
+(package! helm-gitignore)
+#+end_src
+** Agenda
+#+begin_src elisp :noweb-ref configs
+(use-package! org-super-agenda
+  :after org-agenda
+  :init
+  (setq org-super-agenda-mode t
+        org-agenda-span 1
+        holiday-bahai-holidays nil
+        holiday-hebrew-holidays nil
+        holiday-islamic-holidays nil
+        org-log-into-drawer t
+        org-highest-priority 65
+        org-lowest-priority 68
+        org-default-priority 68
+
+        ; The evil keys aren't working on super-agenda headings
+        ; https://github.com/alphapapa/org-super-agenda/issues/50
+        org-super-agenda-header-map (make-sparse-keymap)
+        org-todo-keyword-faces '(("SCHEDULED" . (:foreground "YELLOW" :weight bold)))
+        org-todo-keywords '((sequence "TODO(t)" "PROGRESS(p!)" "WAITING(w!)" "|" "DONE(d!)" "CANCELLED(c@/!)")
+                            (sequence "SCHEDULED(s)" "|" "DONE(d!)" "CANCELLED(c@/!)")
+                            (sequence "WISH(W)" "SHIPPING(S)" "|" "OWNED(o!)" "TRASHED(T!)" "RETURNED(r!)"))
+        org-super-agenda-groups '((:time-grid)
+                                  (:deadline (past))
+                                  (:todo "WAITING")
+                                  (:todo "SHIPPING")
+                                  (:tag "assistant")
+                                  (:tag "maintenance")
+                                  (:deadline (future))
+                                  (:auto-category))
+
+        org-clock-clocktable-default-properties '(:scope agenda-with-archives
+                                                  :fileskip0 t
+                                                  :block today
+                                                  :compact t
+                                                  :link t)
+        )
+  :config
+  (org-super-agenda-mode)
+  )
+
+#+end_src
+
+#+begin_src elisp :noweb-ref packages
+(package! org-super-agenda)
+#+end_src
