@@ -150,9 +150,9 @@ alias ssh-keygen ssh-keygen -t ed25519 -a 100 $*
 
 *** Shell aliases
 #+begin_src conf :noweb-ref aliases
-alias cs "sudo cryptsetup $*"
-alias key "sudo cryptsetup luksOpen /dev/$1 $2"
-alias keyoff "sudo cryptsetup luksClose $1"
+alias cs sudo cryptsetup $*
+alias key sudo cryptsetup luksOpen /dev/$1 $2
+alias keyoff sudo cryptsetup luksClose $1
 #+end_src
 
 #+begin_src sh :shebang "#!/usr/bin/env bash" :tangle ~/.local/bin/key-init
