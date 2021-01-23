@@ -217,7 +217,6 @@ templates"
                                          :git nil)
                                         ("Project" :keys "p"
                                          :gitignore ("terraform" "terragrunt")
-                                         ;; :template-file ,(f-join cookie-path "terraform/project.org")
                                          :children (("Azure"
                                                      :keys "a"
                                                      :template-file ,(f-join cookie-path "terraform/project/azure.org"))))
@@ -225,13 +224,7 @@ templates"
                                          :keys "m"
                                          :template-file ,(f-join cookie-path "terraform/module.org")
                                          :git nil)
-                                        ("Remote State" :keys "r" :git nil
-                                         :children (("AWS"
-                                                     :keys "w"
-                                                     :template-file ,(f-join cookie-path "terraform/remote-state/aws.org"))
-                                                    ("Azure"
-                                                     :keys "a"
-                                                     :template-file ,(f-join cookie-path "terraform/remote-state/azure.org" ))))))))
+                                        ))))
                 <<capture-templates>>
 
                 )))
