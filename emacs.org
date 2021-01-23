@@ -466,6 +466,7 @@ addpath ~/.local/bin ~/dotfiles/bin
 alias doom ~/.emacs.d/bin/doom $*
 alias guixupdate sudo guix system reconfigure /etc/config.scm
 alias ls exa --long --color=always $*
+alias lsr exa --long --color=always --tree $*
 
 # Monitoring
 alias iostat iostat -hNs
