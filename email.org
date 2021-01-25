@@ -4,7 +4,8 @@ I prefer to interact with my emails inside of Emacs using [[https://github.com/d
 
 The directory that I store my emails in
 
-#+begin_src :noweb-ref maildir
+#+name: maildir
+#+begin_src conf
 ~/mail
 #+end_src
 
