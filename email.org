@@ -90,7 +90,7 @@ Arch Linux packages
 offlineimap
 #+end_src
 ** mu
-#+begin_src elisp :noweb-ref alpha-configs :results none
+#+begin_src elisp :noweb-ref configs :results none
 ;; This might be needed on some distros
 ;; (add-to-list 'load-path "~/.guix-profile/share/emacs/site-lisp/mu4e")
 

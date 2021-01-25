@@ -63,7 +63,7 @@ I use [[https://jblevins.org/projects/deft/][Deft]] to search my org files using
 
 **** Customized dblock
 
-#+begin_src elisp :noweb-ref alpha-configs
+#+begin_src elisp :noweb-ref configs
 (cl-defun org-dblock-write:org-ql (params)
   "Insert content for org-ql dynamic block at point according to PARAMS.
 Valid parameters include:
@@ -244,7 +244,7 @@ For example, an org-ql dynamic block header could look like:
 
 [[https://www.orgroam.com/][org-roam]] applies the [[https://zettelkasten.de/posts/overview/][Zettelkasten Method]] to Emacs and Org mode. The idea is that you have many small note files with no strict structure, that link use hyperlinks to relate to each other. Org-roam helps in this by keeping track of the *backlinks* so you can easily see which notes link to the note that you're currently looking at.
 
-#+begin_src elisp :noweb-ref alpha-configs :results none
+#+begin_src elisp :noweb-ref configs :results none
 
 (setq org-roam-tag-sources '(prop last-directory)
       org-roam-capture-templates '(("d" "default"
@@ -295,7 +295,7 @@ I use [[https://github.com/weirdNox/org-noter][org-noter]] when I'm taking notes
 (package! org-noter-pdftools)
 #+end_src
 *** Bibtex
-#+begin_src elisp :noweb-ref alpha-configs
+#+begin_src elisp :noweb-ref configs
 (setq
           bibtex-completion-bibliography "~/roam/books/books.bib"
           bibtex-completion-library-path "~/roam/books"
@@ -339,7 +339,7 @@ I use [[https://github.com/weirdNox/org-noter][org-noter]] when I'm taking notes
 #+end_src
 
 *** helm-books
-#+begin_src elisp :noweb-ref alpha-configs
+#+begin_src elisp :noweb-ref configs
 (after! helm
   (defun helm-books--get-bibtex (candidate)
     (alist-get 'id candidate)
