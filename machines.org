@@ -29,7 +29,7 @@ Custom configurations for my main workstation
 #+begin_src elisp :noweb-ref configs
 (setq dotfiles-directory "~/dotfiles"
       org-directory "~/roam"
-      org-roam-directory ""
+      org-roam-directory "~/roam"
       inbox-file "~/inbox.org"
       org-agenda-files `(,(f-join org-roam-directory "areas"))
       scrot-directory "~/Downloads")
