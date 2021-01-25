@@ -12,7 +12,6 @@ I use [[https://www.ledger-cli.org/][Ledger]] for my financial bookkeeping. I lo
         ledger-binary-path "ledger"
         ledger-report-auto-width t
         ledger-report-use-strict t
-        ledger-report-auto-width nil
         ledger-reports '(("bal" "%(binary) -f %(ledger-file) bal --cleared ^Assets ^Liabilities")
                          ("income" "%(binary) -f %(ledger-file) bal ^Income")
                          ("reg" "%(binary) -f %(ledger-file) reg")
