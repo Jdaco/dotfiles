@@ -40,7 +40,7 @@ pass
 
 Config
 
-#+begin_src conf :tangle ~/.gnupg/gpg-agent.conf
+#+begin_src conf
 default-cache-ttl 3600
 # allow-loopback-pinentry
 # pinentry-program /usr/bin/pinentry-emacs
@@ -51,7 +51,7 @@ default-cache-ttl 3600
 :PROPERTIES:
 :ID:       a570d0db-3330-48e5-bd20-e760f63da457
 :END:
-#+begin_src conf :tangle ~/.gnupg/gpg.conf
+#+begin_src conf
 # when outputting certificates, view user IDs distinctly from keys:
 fixed-list-mode
 
@@ -135,6 +135,15 @@ I store my SSH keys and config on my external USB key, so symlinux to the ssh_co
 
 #+begin_src shell :results none
 ln -s ~/.ssh/config /mnt/ssh_config
+#+end_src
+*** Hosts
+
+#+begin_src conf :tangle (when (string= machine "alpha") "~/.ssh/config")
+Host github
+    hostname github.com
+    user git
+    port 22
+    identityfile "/mnt/ssh/github/jdaco"
 #+end_src
 *** Shell aliases
 #+begin_src shell :noweb-ref aliases
