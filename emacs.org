@@ -27,6 +27,22 @@ I use the [[https://github.com/joaotavora/yasnippet][yasnippet]] emacs package f
 (map! :i "M-a" #'yas-previous-field
       :i "M-;" #'yas-next-field)
 #+end_src
+** Bookmarks
+[[https://www.gnu.org/software/emacs/manual/html_node/emacs/Bookmarks.html][Bookmarks]] let you save your position in commonly used files
+
+#+begin_src elisp :noweb-ref configs
+(setq bookmark-default-file "~/.emacs.d/.local/etc/bookmarks")
+#+end_src
+
+#+begin_src elisp :tangle ~/.emacs.d/.local/etc/bookmarks
+;;;; Emacs Bookmark Format Version 1 ;;;; -*- coding: utf-8-emacs -*-
+;;; This format is meant to be slightly human-readable;
+;;; nevertheless, you probably don't want to edit it.
+;;; -*- End Of Bookmark File Format Version Stamp -*-
+(
+<<bookmarks>>
+)
+#+end_src
 ** Doom
 
 Doom Emacs configuration is broken into 3 files:

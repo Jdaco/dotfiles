@@ -5,7 +5,7 @@ I use [[https://en.wikipedia.org/wiki/RSS][RSS]] to consume news and updates.
 The [[https://github.com/skeeto/elfeed][Elfeed]] emacs package is my preferred feed reader
 
 ** Config
-#+begin_src elisp :noweb-ref alpha-configs
+#+begin_src elisp :noweb-ref configs
 (after! elfeed
   (require 'elfeed)
   (require 'elfeed-org)
@@ -51,4 +51,23 @@ The [[https://github.com/skeeto/elfeed][Elfeed]] emacs package is my preferred f
        "C-g" #'elfeed-show-visit
        )
       )
+#+end_src
+
+#+begin_src elisp :noweb-ref bookmarks
+("elfeed-video"
+  (location . "+unread +video")
+  (tags "video" "unread")
+  (handler . elfeed-search-bookmark-handler))
+("elfeed-image"
+  (location . "+unread +image")
+  (tags "image" "unread")
+  (handler . elfeed-search-bookmark-handler))
+("elfeed-reddit"
+  (location . "@2-years-ago--1-month-ago +unread +reddit")
+  (tags "reddit" "unread")
+  (handler . elfeed-search-bookmark-handler))
+("elfeed-other"
+  (location . "+unread -image -video -reddit")
+  (tags "unread")
+  (handler . elfeed-search-bookmark-handler))
 #+end_src
