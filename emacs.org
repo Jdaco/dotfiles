@@ -320,6 +320,8 @@ git clone https://github.com/hlissner/doom-emacs ~/.emacs.d
   "o f"
   )
 
+(require 'f)
+
 (recentf-mode 0)
 
 (map! :leader
