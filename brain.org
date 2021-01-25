@@ -57,7 +57,7 @@ I use [[https://jblevins.org/projects/deft/][Deft]] to search my org files using
     ))
 #+end_src
 
-#+begin_src elisp :noweb-ref configs
+#+begin_src elisp :noweb-ref packages
 (package! org-ql)
 #+end_src
 
