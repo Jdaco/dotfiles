@@ -95,7 +95,7 @@ Valid parameters include:
 
 For example, an org-ql dynamic block header could look like:
 
-  #+BEGIN: org-ql :query (todo \"UNDERWAY\") :columns (priority todo heading) :sort (priority date) :ts-format \"%Y-%m-%d %H:%M\""
+#+BEGIN: org-ql :query (todo \"UNDERWAY\") :columns (priority todo heading) :sort (priority date) :ts-format \"%Y-%m-%d %H:%M\""
   (-let* (((&plist :query :columns :sort :ts-format :take :file) params)
           (query (cl-etypecase query
                    (string (org-ql--plain-query query))
@@ -108,8 +108,14 @@ For example, an org-ql dynamic block header could look like:
            (list (cons 'todo (lambda (element)
                                (org-element-property :todo-keyword element)))
                  (cons 'heading (lambda (element)
-                                  (org-make-link-string (format "file:%s::%s" file (org-element-property :raw-value element))
+                                  (org-make-link-string (format "id:%s" (org-element-property :ID element))
                                                         (org-element-property :raw-value element))))
+
+                 (cons 'category (lambda (element)
+                                   (let* ((location (org-id-find (org-element-property :ID element)))
+                                          (marker (make-marker)))
+                                     (set-marker marker (cdr location) (find-file-noselect (car location)))
+                                     (org-entry-get marker "CATEGORY" t))))
                  (cons 'priority (lambda (element)
                                    (--when-let (org-element-property :priority element)
                                      (char-to-string it))))
@@ -123,7 +129,7 @@ For example, an org-ql dynamic block header could look like:
                                    (org-element-property (intern (concat ":" (upcase property))) element)))))
           (elements (org-ql-query :from (or file (current-buffer))
                                   :where query
-                                  :select '(org-element-headline-parser (line-end-position))
+                                  :select '(progn (org-id-get-create) (org-element-headline-parser (line-end-position)))
                                   :order-by sort)))
     (when take
       (setf elements (cl-etypecase take
@@ -155,14 +161,10 @@ For example, an org-ql dynamic block header could look like:
 #+end_src
 
 ** org-ql
-#+begin_src elisp
-(setq org-ql-views (("Visions"
+#+begin_src elisp :noweb-ref configs
+(setq org-ql-views '(("Visions"
                      :buffers-files org-agenda-files
                      :query (tags-local "vision")
-                     :super-groups ((:auto-category)))
-                    ("Rules"
-                     :buffers-files org-agenda-files
-                     :query (tags-local "rule" "test")
                      :super-groups ((:auto-category)))
                     ("Recipes"
                      :buffers-files org-agenda-files
@@ -218,9 +220,8 @@ For example, an org-ql dynamic block header could look like:
                         :query (tags-local "certification")
                         :super-groups ((:name "In Progress" :todo "PROGRESS")
                                        (:name "Done" :todo "DONE")
-                                       (:auto-category)))  )
+                                       (:auto-category)))  ))
 #+end_src
-
 
 ** Flash Cards
 
