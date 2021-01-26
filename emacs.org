@@ -487,8 +487,9 @@ alias ls exa --long --color=always $*
 alias lsr exa --long --color=always --tree $*
 
 # Monitoring
-alias iostat iostat -hNs
-alias pstree pstree -U
+alias iostat iostat -hNs $*
+alias pstree pstree -U $*
+alias df df -h $*
 
 alias lsblk lsblk -o 'name,size,type,mountpoint,partlabel,uuid'
 
