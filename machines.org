@@ -20,12 +20,6 @@ These are ssytem specific settings
 
 Custom configurations for my main workstation
 
-#+include: ./base.org
-#+include: ./email.org
-#+include: ./finance.org
-#+include: ./rss.org
-#+include: ./brain.org
-
 #+begin_src elisp :noweb-ref configs
 (setq dotfiles-directory "~/dotfiles"
       org-directory "~/roam"
@@ -34,6 +28,12 @@ Custom configurations for my main workstation
       org-agenda-files `(,(f-join org-roam-directory "areas"))
       scrot-directory "~/Downloads")
 #+end_src
+
+#+include: ./base.org
+#+include: ./email.org
+#+include: ./finance.org
+#+include: ./rss.org
+#+include: ./brain.org
 
 *** X
 **** Autorandr
