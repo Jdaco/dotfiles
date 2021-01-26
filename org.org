@@ -56,7 +56,7 @@ I use [[https://orgmode.org/][Org mode]] for:
       org-export-with-tags nil
       org-export-with-section-numbers nil
       org-refile-targets '((org-agenda-files :maxlevel . 6))
-      org-tags-exclude-from-inheritance '(storage book certification assistant recipe)
+      org-tags-exclude-from-inheritance '(storage book certification assistant recipe goal)
       )
 )
 
