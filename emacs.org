@@ -491,7 +491,7 @@ alias iostat iostat -hNs $*
 alias pstree pstree -U $*
 alias df df -h $*
 
-alias lsblk lsblk -o 'name,size,type,mountpoint,partlabel,uuid'
+alias lsblk lsblk -o 'name,size,type,mountpoint,partlabel,uuid' $*
 
 <<aliases>>
 #+end_src
