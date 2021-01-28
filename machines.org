@@ -67,7 +67,52 @@ rotate left
 #+begin_src elisp :noweb-ref exwm-configs
 (setq exwm-randr-workspace-monitor-plist '(0 "VGA-1" 1 "DVI-D-1" 2 "DVI-D-2" 3 "HDMI-3"))
 #+end_src
+*** Disks
+**** Data
 
+
+***** Preparation
+Shred the disk
+
+#+begin_src sh
+sudo shred -n 1 -v --random-source /dev/random /dev/sda
+#+end_src
+
+Create the partition
+
+#+begin_src sh :dir /sudo::/ :results output replace
+#!/usr/bin/env bash
+DEV=/dev/sda
+
+parted --script ${DEV} mktable gpt
+parted --script --align optimal ${DEV} mkpart Data 0% 100%
+#+end_src
+
+Create the encryption key
+
+#+begin_src sh :dir /sudo::/ :results output replace
+exec 2>&1
+dd bs=512 count=4 if=/dev/random of=/mnt/machines/alpha/sda
+#+end_src
+
+Encrypt the partition
+
+#+begin_src sh :dir /sudo::/
+# --sectore-size: Increasing sector size from 512 bytes to 4096 bytes can provide better performance on most of the modern storage devices and also with some hw encryption accelerators
+# --use-random : Block until entropy is available instead of using weak entropy (like /dev/urandom)
+cryptsetup luksFormat --use-random --batch-mode --key-file /mnt/machines/alpha/sda /dev/sda1
+#+end_src
+
+Create the filesystem
+
+#+begin_src sh :async :dir /sudo::/
+exec 2>&1
+TEMP_NAME=$(basename $(mktemp -q))
+
+cryptsetup luksOpen --key-file /mnt/machines/alpha/sda /dev/sda1 ${TEMP_NAME}
+mkfs.ext4 /dev/mapper/${TEMP_NAME}
+cryptsetup luksClose ${TEMP_NAME}
+#+end_src
 ** Fresh
 :PROPERTIES:
 :name: Chaise Conn
