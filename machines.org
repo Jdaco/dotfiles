@@ -181,15 +181,6 @@ exec emacs --eval '(cond ((file-exists-p "~/.exwm") (load-file "~/.exwm")) ((not
 (setq exwm-randr-workspace-monitor-plist '(0 "eDP1" 1 "eDP1" 2 "HDMI2" 3 "HDMI2"))
 #+end_src
 
-*** Security
-**** Lastpass
-
-We use Lastpass at work to manage passwords
-
-#+begin_src text :noweb-ref arch-packages
-# Arch linux packages
-lastpass-cli
-#+end_src
 *** Networking
 
 On Arch Linux I use ~netctl~ to configure networking profiles
