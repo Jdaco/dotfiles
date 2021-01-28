@@ -283,3 +283,15 @@ templates"
 #+begin_src elisp :noweb-ref packages
 (package! org-super-agenda)
 #+end_src
+** Babel
+#+begin_src elisp :noweb-ref configs
+; Allow links to info pages
+(require 'ol-info)
+
+;; Allows src blocks to be executed asynchronously
+(require 'ob-async)
+#+end_src
+
+#+begin_src elisp :noweb-ref packages
+(package! ob-async)
+#+end_src
