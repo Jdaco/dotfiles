@@ -7,7 +7,7 @@
   + Project Repos
 
 
-These are ssytem specific settings
+These are system specific settings for each of my machines
 
 
 ** Alpha
@@ -18,7 +18,7 @@ These are ssytem specific settings
 :ID: alpha
 :END:
 
-Custom configurations for my main workstation
+My primary workstation
 
 #+begin_src elisp :noweb-ref configs
 (setq dotfiles-directory "~/dotfiles"
@@ -68,8 +68,18 @@ rotate left
 (setq exwm-randr-workspace-monitor-plist '(0 "VGA-1" 1 "DVI-D-1" 2 "DVI-D-2" 3 "HDMI-3"))
 #+end_src
 *** Disks
-**** Data
 
+| Drive                                | Size  | Encrypted? | Filesystem | Purpose |
+|--------------------------------------+-------+------------+------------+---------|
+| [[id:4c8f7bbc-fcef-419e-b7c3-c7fa335ada0d][Seagate Barracuda ST2000DM001-1CH164]] | 2TB   | Yes        | ext4       | Data    |
+| Samsung SSD 850 PRO                  | 256GB | No         | btrfs      | Root    |
+
+**** Data
+:PROPERTIES:
+:ID:       4c8f7bbc-fcef-419e-b7c3-c7fa335ada0d
+:END:
+
+GNU Guix currently does not support unencrypting LUKS devices with a keyfile at boot, so for now I have unlock and mound the drive manually after boot.
 
 ***** Preparation
 Shred the disk
@@ -128,7 +138,6 @@ Configs for my arch laptop
 #+begin_src elisp :noweb-ref configs
 (setq inbox-file "~/sync/inbox.org"
       org-directory "~/sync"
-      org-roam-directory "~/sync"
       scrot-directory "~/sync"
       org-agenda-files '("~/sync/areas/fresh.org")
       dotfiles-directory "~/dotfiles")
