@@ -2,9 +2,10 @@
 
 General security shell aliases
 
-#+begin_src sh
+#+begin_src sh :noweb-ref aliases
 alias shred --iterations 3 --random-source /dev/random  --verbose --zero $*
 alias shreddisk --iterations 1 --random-source /dev/random --verbose $*
+alias entropy cat /proc/sys/kernel/random/entropy_avail
 #+end_src
 
 ** Passwords
