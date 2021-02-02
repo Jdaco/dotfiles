@@ -63,14 +63,16 @@ a definition in TEMPLATES."
                     (error "Undefined Org macro: %s; aborting"
                            (org-element-property :key macro)))))))))))
 
-(defconst config-directory "~/dotfiles")
-
-(defconst export-file (format "%s/.machine-tangle.org" config-directory))
-
 (defun get-system-name ()
   (shell-command-to-string "hostname"))
 
-(defconst machine (string-trim (get-system-name)))
+(defconst config-directory (or (nth 0 argv) "~/dotfiles"))
+
+(defconst export-directory (or (nth 1 argv) "~"))
+
+(defconst machine (or (nth 2 argv) (string-trim (get-system-name))))
+
+(defconst export-file (format "%s/.machine-tangle.org" config-directory))
 
 (setq org-babel-default-header-args `((:session         . "none")
                                       (:noweb           . "yes")
@@ -83,8 +85,9 @@ a definition in TEMPLATES."
 ;;     '((shell . t)
 ;;       (emacs-lisp . t)))
 
-
+(cd-absolute config-directory)
 (find-file (format "%s/machines.org" config-directory))
+
 (goto-char (org-find-entry-with-id machine))
 (org-narrow-to-subtree)
 (copy-to-buffer export-file (point-min) (point-max))
@@ -93,7 +96,10 @@ a definition in TEMPLATES."
   (write-file export-file)
   (org-export-expand-include-keyword)
   (org-macro-replace-all (append org-macro-templates org-export-global-macros))
-  (org-babel-tangle)
+  (write-file (format "%s/.machine-tangle.org" export-directory))
   )
+
+(with-current-buffer (find-file-noselect (format "%s/.machine-tangle.org" export-directory))
+  (org-babel-tangle))
 
 (kill-emacs 0)

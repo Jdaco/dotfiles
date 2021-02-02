@@ -37,7 +37,7 @@ My primary workstation
 
 *** X
 **** Autorandr
-#+begin_src :tangle ~/.config/autorandr/desktop/config
+#+begin_src :tangle config/autorandr/desktop/config
 output VGA-1
 crtc 0
 mode 1920x1080

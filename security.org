@@ -173,7 +173,7 @@ alias key sudo cryptsetup luksOpen /dev/$1 $2
 alias keyoff sudo cryptsetup luksClose $1
 #+end_src
 
-#+begin_src sh :shebang "#!/usr/bin/env bash" :tangle ~/.local/bin/key-init
+#+begin_src sh :shebang "#!/usr/bin/env bash" :tangle .local/bin/key-init
 set -e
 
 if [[ -z $1 ]]; then
@@ -213,7 +213,7 @@ sudo cryptsetup luksClose ${NAME}
 echo 'Done!'
 #+end_src
 
-#+begin_src sh :shebang "#!/usr/bin/env bash" :tangle ~/.local/bin/key-backup
+#+begin_src sh :shebang "#!/usr/bin/env bash" :tangle .local/bin/key-backup
 set -e
 
 if [[ -z $1 || -z $2 ]]; then

@@ -34,7 +34,7 @@ I use the [[https://github.com/joaotavora/yasnippet][yasnippet]] emacs package f
 (setq bookmark-default-file "~/.emacs.d/.local/etc/bookmarks")
 #+end_src
 
-#+begin_src elisp :tangle ~/.emacs.d/.local/etc/bookmarks
+#+begin_src elisp :tangle .emacs.d/.local/etc/bookmarks
 ;;;; Emacs Bookmark Format Version 1 ;;;; -*- coding: utf-8-emacs -*-
 ;;; This format is meant to be slightly human-readable;
 ;;; nevertheless, you probably don't want to edit it.
@@ -71,7 +71,7 @@ git clone https://github.com/hlissner/doom-emacs ~/.emacs.d
 :PROPERTIES:
 :ID:       2e3b632f-315d-4026-aea7-1fb176106422
 :END:
-#+begin_src elisp :tangle ~/.config/doom/init.el
+#+begin_src elisp :tangle .config/doom/init.el
 ;;; init.el -*- lexical-binding: t; -*-
 
 ;; This file controls what Doom modules are enabled and what order they load
@@ -260,7 +260,7 @@ git clone https://github.com/hlissner/doom-emacs ~/.emacs.d
 :PROPERTIES:
 :ID:       197382ca-b112-444f-90a0-f38e5b3ad0f4
 :END:
-#+begin_src elisp :tangle ~/.config/doom/config.el
+#+begin_src elisp :tangle .config/doom/config.el
 ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
 
 ;; Place your private configuration here! Remember, you do not need to run 'doom
@@ -357,7 +357,7 @@ git clone https://github.com/hlissner/doom-emacs ~/.emacs.d
 :PROPERTIES:
 :ID:       aed1d1c4-b001-4775-a391-b30a05095d2e
 :END:
-#+begin_src elisp :tangle ~/.config/doom/packages.el
+#+begin_src elisp :tangle .config/doom/packages.el
 ;; -*- no-byte-compile: t; -*-
 ;;; $DOOMDIR/packages.el
 
@@ -478,7 +478,7 @@ I use [[https://www.gnu.org/software/emacs/manual/html_mono/eshell.html][Eshell]
 :ID:       d14e235d-95ff-4976-bed9-4c0253a576e3
 :END:
 
-#+begin_src shell :tangle ~/.config/doom/eshell/aliases
+#+begin_src shell :tangle .config/doom/eshell/aliases
 addpath ~/.local/bin ~/dotfiles/bin
 
 alias doom ~/.emacs.d/bin/doom $*

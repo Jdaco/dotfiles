@@ -12,7 +12,7 @@ Changes to my key mapping:
 - Swap =Caps_Lock= and =Control=
 - Let the left and right =Alt= keys behave independently
 
-#+begin_src conf :tangle ~/.Xmodmap
+#+begin_src conf :tangle .Xmodmap
 clear Mod1
 
 keysym Alt_R = Super_L
@@ -79,7 +79,7 @@ scrot
 
 [[https://github.com/ch11ng/exwm][EXWM]] is my chosen window manager.
 
-#+begin_src elisp :tangle ~/.exwm :results none
+#+begin_src elisp :tangle .exwm :results none
 (require 'exwm)
 (require 'exwm-config)
 (require 'exwm-randr)

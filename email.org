@@ -24,7 +24,7 @@ mu index
 
 [[https://www.offlineimap.org/][Offlineimap]] will download your emails and sync changes you make back to your online mailbox
 
-#+begin_src conf :tangle ~/.offlineimaprc
+#+begin_src conf :tangle .offlineimaprc
 [general] # List of accounts to be synced, separated by a comma.
 accounts = Gmail
 maxsyncaccounts = 1
@@ -61,7 +61,7 @@ folderfilter = lambda foldername: foldername in ["INBOX", "Sent"]
 
 I use this python function to get my email passwords from my [[https://www.passwordstore.org/][Pass]] store
 
-#+begin_src python :tangle ~/.offlineimap.py
+#+begin_src python :tangle .offlineimap.py
 from subprocess import check_output
 
 def get_pass(account):

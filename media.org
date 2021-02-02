@@ -4,7 +4,7 @@
 
 [[https://wiki.archlinux.org/index.php/Mpv][MPV]] is my preferred video player. I use it in as many scenarios as I can
 
-#+begin_src conf :tangle ~/.config/mpv/mpv.conf
+#+begin_src conf :tangle .config/mpv/mpv.conf
 demuxer-readahead-secs=300
 ytdl-format=bestvideo[height<=?1080]+bestaudio/best
 #+end_src
