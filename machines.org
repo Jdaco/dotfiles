@@ -123,6 +123,62 @@ cryptsetup luksOpen --key-file /mnt/machines/alpha/sda /dev/sda1 ${TEMP_NAME}
 mkfs.ext4 /dev/mapper/${TEMP_NAME}
 cryptsetup luksClose ${TEMP_NAME}
 #+end_src
+** USB
+:PROPERTIES:
+:name: Chaise Conn
+:email:    chaise.conn@protonmail.com
+:header-args:    :noweb yes :mkdirp true
+:ID: usb
+:END:
+This is a version of my configuration for use as a bootable medium.
+
+#+begin_src elisp :noweb-ref configs
+(setq dotfiles-directory "~/dotfiles"
+      inbox-file "~/inbox.org"
+      scrot-directory "~/Downloads")
+#+end_src
+
+#+include: ./base.org
+
+*** Build
+
+You can build a disk image of the OS using:
+
+#+begin_src sh
+guix system image dotfiles/machines/usb/config.scm
+#+end_src
+
+It will print the path to the image file when it's done
+*** Installation
+
+1. Burn the OS to the USB drive
+   #+begin_src sh
+dd if=/path/to/image of=/dev/sdx bs=256k status=progress
+   #+end_src
+2. Create home partition
+   #+begin_src sh
+parted --script --align optimal /dev/sdg mkpart primary 5850M 100%
+mkfs.ext4 /dev/sdx3
+   #+end_src
+3. Install doom
+   #+begin_src sh
+git clone 'https://github.com/hlissner/doom-emacs' /mnt/guest/.emacs.d
+HOME=/mnt/guest /mnt/guest/.emacs.d/bin/doom install --no-config --no-env
+   #+end_src
+
+4. Copy dotfiles into home partition
+   #+begin_src sh
+mount /dev/sdx3 /mnt
+mkdir -p /mnt/guest
+cd /mnt/guest
+git clone https://github.com/Jdaco/dotfiles
+   #+end_src
+
+5. Expand dotfiles
+#+begin_src sh
+/mnt/guest/dotfiles/bin/config-tangle ~/dotfiles /mnt/guest usb
+#+end_src
+
 ** Fresh
 :PROPERTIES:
 :name: Chaise Conn
