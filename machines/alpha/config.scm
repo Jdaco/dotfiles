@@ -32,6 +32,10 @@
             (specification->package "emacs-exwm")
             (specification->package "emacs-pdf-tools")
             (specification->package "emacs-desktop-environment")
+            (specification->package "emacs-emacsql-sqlite3")
+            (specification->package "emacs-all-the-icons")
+            (specification->package "emacs-all-the-icons-dired")
+            (specification->package "adwaita-icon-theme")
             ; Required by org-roam
             (specification->package "sqlite")
             (specification->package "xrandr")
@@ -48,6 +52,7 @@
             (specification->package "cryptsetup")
             (specification->package "rng-tools")
             (specification->package "pinentry-qt")
+            (specification->package "ovmf")
 
             ;; This needs to be installed at the same level
             ;; as emacs so that mu4e gets installed
