@@ -1,0 +1,18 @@
+* NodeJS
+
+Configurations for NodeJS
+
+** Config
+#+begin_src sh :tangle .npmrc
+prefix = ${HOME}/.npm-packages
+#+end_src
+
+** Eshell PATH
+#+begin_src elisp :noweb-ref configs
+(add-to-list 'exec-path (expand-file-name "~/.npm-packages/bin"))
+#+end_src
+
+** Packages
+#+begin_src fundamental
+yarn
+#+end_src

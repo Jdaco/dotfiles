@@ -34,6 +34,8 @@ My primary workstation
 #+include: ./finance.org
 #+include: ./rss.org
 #+include: ./brain.org
+#+include: ./npm.org
+#+include: ./vm.org
 
 *** X
 **** Autorandr

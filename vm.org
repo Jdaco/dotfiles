@@ -1,0 +1,4 @@
+* Vm
+#+begin_src sh :noweb-ref aliases
+alias qemu-guix sudo qemu-system-x86_64 -enable-kvm -m 1024 -vga std -drive if=pflash,format=raw,readonly,file=.guix-profile/share/firmware/ovmf_x64.bin -drive file=$1,if=virtio
+#+end_src
