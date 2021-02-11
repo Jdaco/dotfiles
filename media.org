@@ -33,5 +33,6 @@ Use ~mpv~ to view your webcam
 ** Audio
 *** Pulsemixer
 #+begin_src elisp :noweb-ref configs
-(add-to-list 'eshell-visual-commands "pulsemixer")
+(after! eshell
+  (add-to-list 'eshell-visual-commands "pulsemixer"))
 #+end_src
