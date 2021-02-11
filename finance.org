@@ -12,15 +12,71 @@ I use [[https://www.ledger-cli.org/][Ledger]] for my financial bookkeeping. I lo
         ledger-binary-path "ledger"
         ledger-report-auto-width t
         ledger-report-use-strict t
-        ledger-reports '(("bal" "%(binary) -f %(ledger-file) bal --cleared ^Assets ^Liabilities")
+        ledger-budget-format "%(justify(scrub(get_at(display_total, 0 )), 20, 0, true, color)) %(justify(get_at(display_total, 1) ? -scrub(get_at(display_total, 1)) : 0.0, 20, 20 + 1 + 20, true, color)) %(justify(get_at(display_total, 1) ? (get_at(display_total, 0) ? -(scrub(get_at(display_total, 1) + get_at(display_total, 0))) : -(scrub(get_at(display_total, 1)))) : -(scrub(get_at(display_total, 0))), 20, 20 + 1 + 20 + 1 + 20, true, color)) %(ansify_if(justify((get_at(display_total, 1) ? (100% * (get_at(display_total, 0) ? scrub(get_at(display_total, 0)) : 0.0)) / -scrub(get_at(display_total, 1)) : 0), 5, -1, true, false), magenta if (color and get_at(display_total, 1) and (abs(quantity(scrub(get_at(display_total, 0))) / quantity(scrub(get_at(display_total, 1)))) >= 1)))) %(justify((get_at(display_total, 1) ? (100% * (get_at(display_total, 0) ? scrub(get_at(display_total, 1)) : 0.0)) / -%(month-income) : 0), 5, -1, true, false)) %(!options.flat ? depth_spacer : \"\") %(ansify_if(partial_account(options.flat), blue if color))
+%/%$1 %$2 %$3 %$4 %$5
+%/%(\"-\" * 20) %(\"-\" * 20) %(\"-\" * 20) %(\"-\" * 5) %(\"-\" * 5)
+"
+
+        ledger-report-format-specifiers '(("ledger-file" . ledger-report-ledger-file-format-specifier)
+                                          ("binary" . ledger-report-binary-format-specifier)
+                                          ("payee" . ledger-report-payee-format-specifier)
+                                          ("account" . ledger-report-account-format-specifier)
+                                          ("month" . ledger-report-month-format-specifier)
+                                          ("tagname" . ledger-report-tagname-format-specifier)
+                                          ("tagvalue" . ledger-report-tagvalue-format-specifier)
+                                          ("month-income" . ledger-report-month-income-format-specifier)
+                                          ("budget-format" . ledger-report-budget-format-specifier))
+        ledger-reports `(("bal" "%(binary) -f %(ledger-file) bal --cleared ^Assets ^Liabilities")
                          ("income" "%(binary) -f %(ledger-file) bal ^Income")
                          ("reg" "%(binary) -f %(ledger-file) reg")
                          ("payee" "%(binary) -f %(ledger-file) reg @%(payee)")
                          ("account" "%(binary) -f %(ledger-file) reg %(account)")
-                         ("budget" "%(binary) -f %(ledger-file) budget -p 'this month' ^Expenses ^Income")
-                         ("unbudget" "%(binary) -f %(ledger-file) bal -p 'this month' --unbudgeted ^Expenses ^Income"))
+                         ("budget" ,(concat "%(binary) -f %(ledger-file) budget -F '" ledger-budget-format "' ^Assets:Savings ^Income ^Expenses --add-budget --price -p %(month)"))
+                         ("unbudget" "%(binary) -f %(ledger-file) bal -p %(month) --unbudgeted ^Expenses ^Income"))
         )
+  (defun ledger-report-budget-format-specifier ()
+      ledger-budget-format)
+  (defun ledger-report-month-income-format-specifier ()
+    (let ((income-buffer (ledger-exec-ledger nil nil
+                                      "budget" "^Income" "--depth" "1"
+                                      "-p" (ledger-report-month-format-specifier)
+                                      "-F" "%(quantity(get_at(display_total, 1)))")))
+      (with-current-buffer income-buffer
+        (buffer-string))))
   )
+(after! ledger-report-mode
+  (defun ledger-report-toggle-real ()
+    (interactive)
+    (unless (derived-mode-p 'ledger-report-mode)
+      (user-error "Not a ledger report buffer"))
+
+    (save-match-data
+      (if (string-match "--real" ledger-report-cmd)
+          (setq ledger-report-cmd (replace-match "" nil nil ledger-report-cmd))
+        (setq ledger-report-cmd (concat ledger-report-cmd " --real "))))
+    (ledger-report-redo))
+
+  (defun ledger-report-toggle-unbudgeted ()
+    (interactive)
+    (unless (derived-mode-p 'ledger-report-mode)
+      (user-error "Not a ledger report buffer"))
+
+    (save-match-data
+      (if (string-match "--add-budget" ledger-report-cmd)
+          (setq ledger-report-cmd (replace-match "" nil nil ledger-report-cmd))
+        (setq ledger-report-cmd (concat ledger-report-cmd " --add-budget "))))
+    (ledger-report-redo))
+
+  (map! :mode ledger-report-mode
+        "C-c C-v" #'ledger-report-toggle-real
+        "C-c C-u" #'ledger-report-toggle-unbudgeted
+        "C-c C-n" #'ledger-report-next-month
+        "C-c C-p" #'ledger-report-previous-month
+        )
+)
+
+
+
 (map! :after ledger-mode
       :mode ledger-mode
       :localleader
