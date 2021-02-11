@@ -48,7 +48,7 @@ The [[https://github.com/skeeto/elfeed][Elfeed]] emacs package is my preferred f
        :n "D" #'elfeed-download-video
        )
       (:map elfeed-show-mode-map
-       "C-g" #'elfeed-show-visit
+       "C-l" #'elfeed-show-visit
        )
       )
 #+end_src

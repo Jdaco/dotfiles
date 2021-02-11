@@ -47,6 +47,9 @@ I use [[https://orgmode.org/][Org mode]] for:
      "t" #'org-sidebar-tree-toggle
     ))
 
+(map! :leader
+      "A" #'org-archive-to-archive-sibling)
+
 
 (setq org-id-link-to-org-use-id t
       org-outline-path-complete-in-steps nil
