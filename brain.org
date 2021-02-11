@@ -23,7 +23,7 @@ These are my configurations needed to work with my main notes and agendas. These
 
 
   (defun org-dblock-write:contacts (params)
-    (org-dblock-write:org-ql `(:file (f-join org-directory "other/contacts.org")
+    (org-dblock-write:org-ql `(:file ,(f-join org-directory "other/contacts.org")
                                :columns (heading todo ((property "Place") "Place"))
                                :query (children (and (heading "Services") (children (heading ,(plist-get params :service))))))))
 
