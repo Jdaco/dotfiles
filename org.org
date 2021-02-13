@@ -41,6 +41,7 @@ I use [[https://orgmode.org/][Org mode]] for:
 
 (map!
    (:leader
+    "o i" (lambda () (interactive) (find-file inbox-file))
     :prefix ("o o" . "Org")
     :prefix ("S" . "org-sidebar")
      "s" #'org-sidebar-toggle
