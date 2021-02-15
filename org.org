@@ -53,6 +53,7 @@ I use [[https://orgmode.org/][Org mode]] for:
 
 
 (setq org-id-link-to-org-use-id t
+      org-hide-emphasis-markers t
       org-outline-path-complete-in-steps nil
       org-refile-use-outline-path t
       org-attach-store-link-p t
