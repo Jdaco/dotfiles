@@ -44,7 +44,7 @@ I use [[https://www.ledger-cli.org/][Ledger]] for my financial bookkeeping. I lo
       (with-current-buffer income-buffer
         (buffer-string))))
   )
-(after! ledger-report-mode
+(after! ledger
   (defun ledger-report-toggle-real ()
     (interactive)
     (unless (derived-mode-p 'ledger-report-mode)
