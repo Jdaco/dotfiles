@@ -1,3 +1,5 @@
+\%(cookie-prompt "project")
+
 * Makefile
 #+BEGIN_SRC makefile :tangle (cookie-get-path)
 CONTAINER := \%(cookie-prompt "project")
