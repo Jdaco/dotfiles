@@ -167,10 +167,13 @@ path relative to the project root
        (progn
          (let* ((path (cookie-get-path))
                 (dir (file-name-directory path))
-                (contents (org-get-entry)))
+                (contents (org-get-entry))
+                (level (org-current-level)))
            (unless (file-directory-p dir) (mkdir dir t))
            (with-current-buffer (find-file-noselect path)
-             ;; (org-paste-subtree nil contents)
+             (insert contents)
+             (save-buffer)
+             (org-map-entries (lambda () (--dotimes level (org-promote))))
              (save-buffer)))))
      "TAGS={export}" nil))
 
@@ -197,6 +200,10 @@ templates"
     (org-entry-put (org-capture-get :cookie-mark) var (choose (format "%s: " var) choices))
     "")
 
+  (defun cookie-copy-assets ()
+    (when (doct-get :assets)
+      (let ((assets (f-join cookie-path (doct-get :assets) "*")))
+        (shell-command (format "cp %s %s" assets (cookie-root))))))
 
   (setq org-capture-templates
         (doct `(("Inbox" :keys "i" :file inbox-file :template "* %?")
@@ -211,12 +218,14 @@ templates"
                  :function cookie-new-project
                  :immediate-finish t
                  :kill-buffer nil
-                 :prepare-finalize (lambda () (process-cookie))
+                 :prepare-finalize (lambda () (cookie-copy-assets) (process-cookie))
                  :after-finalize (lambda () (cookie-gitignore) (cookie-git) (cookie-visit-file))
                  :git t
                  :visit-file "Makefile"
                  :children (
                             ("Mkosi" :keys "m" :template-file ,(f-join cookie-path "mkosi.org"))
+                            ("Presentation" :keys "p" :assets "presentation"
+                             :template-file ,(f-join cookie-path "presentation.org") )
                             ("Terraform" :keys "t"
                              :children (("Environment"
                                          :keys "e"
