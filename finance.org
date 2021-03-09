@@ -43,8 +43,7 @@ I use [[https://www.ledger-cli.org/][Ledger]] for my financial bookkeeping. I lo
                                       "-F" "%(quantity(get_at(display_total, 1)))")))
       (with-current-buffer income-buffer
         (buffer-string))))
-  )
-(after! ledger
+
   (defun ledger-report-toggle-real ()
     (interactive)
     (unless (derived-mode-p 'ledger-report-mode)
@@ -67,28 +66,53 @@ I use [[https://www.ledger-cli.org/][Ledger]] for my financial bookkeeping. I lo
         (setq ledger-report-cmd (concat ledger-report-cmd " --add-budget "))))
     (ledger-report-redo))
 
-  (map! :mode ledger-report-mode
-        "C-c C-v" #'ledger-report-toggle-real
-        "C-c C-u" #'ledger-report-toggle-unbudgeted
-        "C-c C-n" #'ledger-report-next-month
-        "C-c C-p" #'ledger-report-previous-month
-        )
-)
+(map! :mode ledger-report-mode
+      "C-c C-v" #'ledger-report-toggle-real
+      "C-c C-u" #'ledger-report-toggle-unbudgeted
+      "C-c C-n" #'ledger-report-next-month
+      "C-c C-p" #'ledger-report-previous-month)
 
-
-
-(map! :after ledger-mode
-      :mode ledger-mode
+(map! :mode ledger-mode
       :localleader
       :n "q" #'ledger-align-xact)
 
-(map! :after ledger-mode
-      :mode ledger-mode
+(map! :mode ledger-mode
       "C-j" #'ledger-navigate-next-uncleared
       "C-k" #'ledger-navigate-previous-uncleared
       )
 
+  )
 #+end_src
+
+I put my ledger configuration data (everthing in ledger besides actual transacitons) into org files that make up my [[file:brain.org][brain]]. This tangles all of those org files into a single ledger file
+
+#+begin_src elisp :noweb-ref configs
+(defun finance-tangle ()
+  (interactive)
+
+  ;; Concat all agenda files together
+  (let* ((content-list (mapcar (lambda (fname)
+                                 (with-current-buffer (find-file-noselect fname) (buffer-string)))
+                               (org-agenda-files)))
+         (content (apply #'s-concat content-list)))
+
+    (with-current-buffer (find-file-noselect "/tmp/chaise-finance.org")
+      ;; Insert into concatenated agenda files into temp buffer
+      (delete-region (point-min) (point-max))
+      (insert content)
+      ;; Tangle the src block that defines where to tangle to
+      (org-babel-goto-named-src-block "ledger")
+      (save-buffer)
+      (org-babel-tangle '(4))
+      (save-buffer)
+      (kill-buffer))
+    ))
+
+(map! :leader
+      "o o f" #'finance-tangle)
+
+#+end_src
+
 ** Installation
 
 Arch Linux packages
