@@ -267,6 +267,8 @@ templates"
         org-highest-priority 65
         org-lowest-priority 68
         org-default-priority 68
+        org-log-done "time"
+        org-log-done-with-time t
 
         ; The evil keys aren't working on super-agenda headings
         ; https://github.com/alphapapa/org-super-agenda/issues/50
