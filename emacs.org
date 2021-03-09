@@ -560,3 +560,9 @@ You can use ~dired~ to manage archives
 | Dired Key | Command           | Description                            |
 |-----------+-------------------+----------------------------------------|
 | ; Z       | dired-do-compress | Compress or Uncompress an archive file |
+** History
+I don't having a log of the commands I run
+
+#+begin_src elisp :noweb-ref configs
+(setq history-length 0)
+#+end_src
