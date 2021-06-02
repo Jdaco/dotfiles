@@ -534,7 +534,8 @@ alias lsblk lsblk -o 'name,size,type,mountpoint,partlabel,uuid' $*
       "C" #'projectile-configure-project
       "r" #'projectile-run-project
       "m" #'projectile-find-makefile
-      "/" #'projectile-find-readme)
+      "/" #'projectile-find-readme
+      "'" #'projectile-run-eshell)
       )
 
 
