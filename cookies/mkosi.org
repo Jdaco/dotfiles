@@ -324,7 +324,7 @@ end
 
 *** Users
     - root
-        - Default password: %(cookie-get "rootpass")
+        - Default password: %(cookie-get "root-pass")
     - %(cookie-get "user-name")
         - Default password: %(cookie-get "user-pass")
 

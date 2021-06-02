@@ -421,7 +421,7 @@ ITEM is each book information."
 
 Used to capture books I want to read into the right category
 
-#+begin_src elisp :noweb-ref capture-template
+#+begin_src elisp :noweb-ref capture-templates
 ("Book" :keys "b" :function (lambda () (goto-or-create-heading "Books"))
                  :template (lambda () (bibtex-completion-fill-template
                                        (bibtex-completion-get-entry (helm-bibtex-find-key))

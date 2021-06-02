@@ -1,4 +1,9 @@
+#+STARTUP: overview
+
 * Machines
+:PROPERTIES:
+:VISIBILITY: children
+:END:
 - Data files
   + Elfeed database
   + Emails
