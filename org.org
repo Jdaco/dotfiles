@@ -264,6 +264,15 @@ templates"
 #+end_src
 ** Agenda
 #+begin_src elisp :noweb-ref configs
+(defun ccc/org-remove-priority (state)
+  (let ((position (plist-get state :position))
+      (state-to (plist-get state :to))
+      (type (plist-get state :type)))
+  (when (and (string= type "todo-state-change")
+             (member state-to org-done-keywords))
+    (org-entry-put position "PRIORITY" nil))
+  ))
+
 (use-package! org-super-agenda
   :after org-agenda
   :init
@@ -301,10 +310,16 @@ templates"
                                                   :compact t
                                                   :link t)
         )
+  (add-hook 'org-trigger-hook 'ccc/org-remove-priority)
   :config
   (org-super-agenda-mode)
   )
 
+(evil-set-initial-state 'org-agenda-mode 'emacs)
+(map! :map org-agenda-mode-map
+      "j" #'org-agenda-next-item
+      "k" #'org-agenda-previous-item
+      "!" #'org-agenda-toggle-deadlines)
 #+end_src
 
 #+begin_src elisp :noweb-ref packages
@@ -321,4 +336,11 @@ templates"
 
 #+begin_src elisp :noweb-ref packages
 (package! ob-async)
+#+end_src
+** Drills
+
+#+begin_src elisp :noweb-ref configs
+(require 'org-drill)
+
+(setq org-drill-maximum-items-per-session 40)
 #+end_src
