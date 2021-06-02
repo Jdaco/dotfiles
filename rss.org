@@ -34,7 +34,38 @@ The [[https://github.com/skeeto/elfeed][Elfeed]] emacs package is my preferred f
     (interactive)
     (elfeed-search-yank)
     (ytdl-download))
-)
+
+  (defun elfeed-save-db-and-bury ()
+    "Wrapper to save the elfeed db to disk before burying buffer"
+    (interactive)
+    (elfeed-db-save)
+    (quit-window))
+
+  (defvar elfeed--update-timer nil
+    "Timer returned by `run-at-time`")
+
+  (defun elfeed-delayed-update ()
+    (when elfeed--update-timer (cancel-timer elfeed--update-timer))
+    (setq elfeed--update-timer
+          (run-at-time 10 nil
+                       (lambda ()
+                         (elfeed-db-save)
+                         (setq elfeed--update-timer nil)))))
+
+  (add-to-list 'elfeed-untag-hooks (lambda (entries tags) (elfeed-delayed-update)))
+  (add-to-list 'elfeed-tag-hooks (lambda (entries tags) (elfeed-delayed-update)))
+
+  (map! :after elfeed
+        (:map elfeed-search-mode-map
+         :n "B" #'elfeed-view-mpv
+         :n "D" #'elfeed-download-video
+         :n "q" #'elfeed-save-db-and-bury
+         :n "C-l" #'elfeed-search-browse-url
+         )
+        (:map elfeed-show-mode-map
+         "C-l" #'elfeed-show-visit
+         )
+        ))
 
 
 
@@ -42,15 +73,6 @@ The [[https://github.com/skeeto/elfeed][Elfeed]] emacs package is my preferred f
 (map! :leader
       "o x" #'elfeed)
 
-(map! :after elfeed
-      (:map elfeed-search-mode-map
-       :n "B" #'elfeed-view-mpv
-       :n "D" #'elfeed-download-video
-       )
-      (:map elfeed-show-mode-map
-       "C-l" #'elfeed-show-visit
-       )
-      )
 #+end_src
 
 #+begin_src elisp :noweb-ref bookmarks
