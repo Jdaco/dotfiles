@@ -1,0 +1,39 @@
+* %^{Name}
+- Location :: %^{Location}
+- Remote :: %^{Remote? |Yes|No}
+- Job Description :: %^{Job Description}
+
+
+
+- [ ] Copy over interview and offer data
+- [ ] Fill in budget
+- [ ] Fill in plans
+- [ ] Update resume + LinkedIn
+** Joined %\1  :event:
+:PROPERTIES:
+:Date:     %^{Join Date}t
+:END:
+
+** Compensation
+
+- Starting Salary :: %^{Starting Salary}
+
+#+begin_src ledger :noweb-ref accounts
+account Income:NewJob:Salary
+account Income:NewJob:HSA
+account Income:NewJob:401k
+#+end_src
+** Plans
+*** Work
+**** What do I hope to accomplish?
+**** What do you hope to learn?
+**** How will I keep an eye on the health of the company?
+1. Keep an eye on their burn down chart
+2. Keep an eye on key deliverables
+   a. Major techical goals
+   b. New clients
+*** Exit
+**** What kinds of things could make you want to leave the company?
+1. Company running out of money
+2. No long learning anything
+3. Not making enough money

@@ -71,6 +71,8 @@ I use [[https://orgmode.org/][Org mode]] for:
 (package! org-sidebar)
 (package! org-picklink)
 #+end_src
+
+
 ** Capture
 :PROPERTIES:
 :ID:       5fe33daf-9f01-4348-91fd-e438e4381e50
@@ -211,6 +213,10 @@ templates"
                 ("Event" :keys "e" :file (lambda () (find-areas #'car)) :olp ("Events")
                  :template-file ,(f-join dotfiles-directory "templates" "org" "event.org"))
                 ("Recipe" :keys "r" :function (lambda () (goto-or-create-heading "Recipe")) :template "* %?     :recipe:")
+                ("New Job" :keys "j"
+                 :file ,(f-join org-directory "areas/career.org")
+                 :olp ("Plans" "Employers")
+                 :template-file ,(f-join dotfiles-directory "templates" "org" "new-job.org"))
                 ("New Cookie" :keys "C"
                  :function (lambda() (find-file (f-join cookie-path (format "%s.org" (read-string "Cookie Name: ")))))
                  :template-file ,(f-join cookie-path "cookie.org"))
