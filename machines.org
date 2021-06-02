@@ -186,15 +186,15 @@ git clone https://github.com/Jdaco/dotfiles
 /mnt/guest/dotfiles/bin/config-tangle ~/dotfiles /mnt/guest usb
 #+end_src
 
-** Fresh
+** Iontra
 :PROPERTIES:
 :name: Chaise Conn
-:email:    chaise.conn@freshconsulting.com
+:email:    chaise.conn@iontra.com
 :header-args:    :noweb yes :mkdirp true
-:ID: archlinux
+:ID: beta
 :END:
 
-Configs for my arch laptop
+Configs for my Iontra laptop
 
 #+include: ./base.org
 
@@ -204,92 +204,4 @@ Configs for my arch laptop
       scrot-directory "~/sync"
       org-agenda-files '("~/sync/areas/fresh.org")
       dotfiles-directory "~/dotfiles")
-#+end_src
-
-*** X
-#+begin_src conf
-# /usr/share/xsessions/exwm.desktop
-[Desktop Entry]
-Name=EXWM
-Comment=Emacs Window Manager
-Exec=exwm-start
-Type=Application
-#+end_src
-
-#+begin_src sh :shebang "#!/bin/bash"
-# this makes it work in Ubuntu
-# /usr/loca/bin/exwm-start
-xhost +
-## you might need to append the TTY you are working on
-xinit
-
-wmname LG3D
-
-# Set fallback cursor
-xsetroot -cursor_name left_ptr
-
-# If Emacs is started in server mode, `emacsclient` is a convenient way to edit
-# files in place (used by e.g. `git commit`)
-export VISUAL=emacsclient
-export EDITOR="$VISUAL"
-
-autorandr --change
-
-# Finally launch emacs and enable exwm
-exec emacs --eval '(cond ((file-exists-p "~/.exwm") (load-file "~/.exwm")) ((not (featurep (quote exwm))) (require (quote exwm)) (require (quote exwm-config)) (exwm-config-default) (message (concat "exwm configuration not found. " "Falling back to default configuration..."))))'
-#+end_src
-**** Monitors
-
-#+begin_src elisp :noweb-ref exwm-configs
-(setq exwm-randr-workspace-monitor-plist '(0 "eDP1" 1 "eDP1" 2 "HDMI2" 3 "HDMI2"))
-#+end_src
-
-*** Networking
-
-On Arch Linux I use ~netctl~ to configure networking profiles
-
-#+begin_src elisp :noweb-ref configs
-(after! helm
-  (defun interfaces () (interactive)
-         (helm :sources
-               (helm-build-async-source "*interfaces*"
-                 :candidates-process
-                 (lambda () (start-process "ip" nil "ip" "--brief" "link" "show" "up")))))
-
-
-
-  (defun netctl-start()
-    (interactive)
-    (helm :sources (helm-build-sync-source "Networks"
-                     :candidates (mapcar #'file-name-base (seq-filter (-not #'file-directory-p) (directory-files "/etc/netctl" t)))
-                     :action (lambda (network) (sudo-run-async (concat "netctl start " network) "*netctl*"))
-                     :fuzzy-match t)))
-  (defun netctl-stop-all()
-    (interactive)
-    (sudo-run-async "netctl stop-all" "*netctl*")
-    (message "Stopped all networks"))
-
-
-  (map! :leader
-        (:prefix ("N" . "Network")
-         :n "n" #'netctl-start
-         :n "S" #'netctl-stop-all
-         :n "i" #'interfaces))
-
-  )
-
-#+end_src
-**** Bluetooth
-#+begin_src elisp :noweb-ref configs
-(defun bluetooth ()
-    (interactive)
-    (helm :sources (helm-build-sync-source "Bluetooth Devices"
-                     :candidates (mapcar 'car bluetooth-devices)
-                     :action (lambda (device)
-                               (process-file-shell-command
-                                (concat "bluetoothctl connect " (cdr (assoc device bluetooth-devices))))))))
-
-  (map! :leader
-        (:prefix "N"
-         :n "B" #'bluetooth))
 #+end_src
