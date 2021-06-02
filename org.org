@@ -241,7 +241,10 @@ templates"
                                          :gitignore ("terraform" "terragrunt")
                                          :children (("Azure"
                                                      :keys "a"
-                                                     :template-file ,(f-join cookie-path "terraform/project/azure.org"))))
+                                                     :template-file ,(f-join cookie-path "terraform/project/azure.org"))
+                                                    ("AWS"
+                                                     :keys "w"
+                                                     :template-file ,(f-join cookie-path "terraform/project/aws.org"))))
                                         ("Module"
                                          :keys "m"
                                          :template-file ,(f-join cookie-path "terraform/module.org")
