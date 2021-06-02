@@ -230,8 +230,6 @@ templates"
                  :visit-file "Makefile"
                  :children (
                             ("Mkosi" :keys "m" :template-file ,(f-join cookie-path "mkosi.org"))
-                            ("Presentation" :keys "p" :assets "presentation"
-                             :template-file ,(f-join cookie-path "presentation.org") )
                             ("Terraform" :keys "t"
                              :children (("Environment"
                                          :keys "e"
