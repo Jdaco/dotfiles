@@ -205,3 +205,8 @@ Configs for my Iontra laptop
       org-agenda-files '("~/sync/areas/fresh.org")
       dotfiles-directory "~/dotfiles")
 #+end_src
+
+#+begin_src elisp :noweb-ref packages
+(package! exwm)
+(package! org-drill)
+#+end_src
