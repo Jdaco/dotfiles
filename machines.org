@@ -204,6 +204,8 @@ Configs for my Iontra laptop
       scrot-directory "~/sync"
       org-agenda-files '("~/sync/areas/fresh.org")
       dotfiles-directory "~/dotfiles")
+
+(add-to-list 'exec-path "~/.guix-profile/bin")
 #+end_src
 
 #+begin_src elisp :noweb-ref packages
