@@ -212,3 +212,10 @@ Configs for my Iontra laptop
 (package! exwm)
 (package! org-drill)
 #+end_src
+
+#+begin_src elisp :noweb-ref prodigy-services
+(prodigy-define-service
+    :name "Teams"
+    :command "teams"
+    :kill-process-buffer-on-stop t)
+#+end_src
