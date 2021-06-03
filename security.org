@@ -18,6 +18,7 @@ I use [[https://www.passwordstore.org/][Pass]] to manage my passwords
        "!" #'helm-pass
        "l" #'pass
        "i" #'password-store-insert
+       "g" #'password-store-generate
        )
       )
 
