@@ -216,6 +216,7 @@ Configs for my Iontra laptop
 #+begin_src elisp :noweb-ref prodigy-services
 (prodigy-define-service
     :name "Teams"
-    :command "teams"
+    :command "/usr/share/teams/teams"
+    :args '("--disable-namespace-sandbox" "--disable-setuid-sandbox")
     :kill-process-buffer-on-stop t)
 #+end_src
