@@ -57,7 +57,7 @@ I use [[https://orgmode.org/][Org mode]] for:
       org-outline-path-complete-in-steps nil
       org-refile-use-outline-path t
       org-attach-store-link-p t
-      org-modules '(org-drill org-crypt)
+      org-modules '(org-crypt)
       org-export-with-tags nil
       org-export-with-section-numbers nil
       org-refile-targets '((org-agenda-files :maxlevel . 6))
@@ -334,11 +334,4 @@ templates"
 
 #+begin_src elisp :noweb-ref packages
 (package! ob-async)
-#+end_src
-** Drills
-
-#+begin_src elisp :noweb-ref configs
-(require 'org-drill)
-
-(setq org-drill-maximum-items-per-session 40)
 #+end_src

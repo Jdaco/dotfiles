@@ -210,7 +210,6 @@ Configs for my Iontra laptop
 
 #+begin_src elisp :noweb-ref packages
 (package! exwm)
-(package! org-drill)
 #+end_src
 
 #+begin_src elisp :noweb-ref prodigy-services

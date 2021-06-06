@@ -235,6 +235,9 @@ For example, an org-ql dynamic block header could look like:
      "c" #'org-drill-cram
     ))
 
+(require 'org-drill)
+
+(setq org-drill-maximum-items-per-session 40)
 #+end_src
 
 #+begin_src elisp :noweb-ref packages
