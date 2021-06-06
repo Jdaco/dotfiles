@@ -42,6 +42,7 @@ Most of my git work is done in Emacs's [[https://magit.vc/][Magit]] interface, b
 
 [commit]
     verbose = yes
+    gpgsign = yes
 
 [log]
     graphcolors = red,blue,magenta
