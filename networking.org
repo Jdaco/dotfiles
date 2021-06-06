@@ -10,6 +10,6 @@ I use [[https://syncthing.net/][Syncthing]] to sync data between my different de
     :name "Syncthing"
     :command "syncthing"
     :port "8384"
-    :url "localhost:8384"
+    :url "http://localhost:8384"
     :kill-process-buffer-on-stop t)
 #+end_src
