@@ -289,11 +289,15 @@ I use [[https://github.com/weirdNox/org-noter][org-noter]] when I'm taking notes
 (map! :after org-noter
       :mode org-noter-doc-mode
       :n "i" #'org-noter-insert-note)
+
+; Autoload helm-bibtex so capture template works on startup
+(require 'helm-bibtex)
 #+end_src
 
 #+begin_src elisp :noweb-ref packages
 (package! org-noter-pdftools)
 #+end_src
+
 *** Bibtex
 #+begin_src elisp :noweb-ref configs
 (setq
@@ -310,6 +314,8 @@ I use [[https://github.com/weirdNox/org-noter][org-noter]] when I'm taking notes
                 )
 
 (defun helm-bibtex-find-key ()
+    (require 'bibtex-completion)
+    (bibtex-completion-init)
     (helm :sources (helm-build-sync-source "*helm-bibtex*"
                      :candidates (bibtex-completion-candidates)
                      :filtered-candidate-transformer #'helm-bibtex-candidates-formatter)))
@@ -332,6 +338,7 @@ I use [[https://github.com/weirdNox/org-noter][org-noter]] when I'm taking notes
       "o B" #'helm-bibtex)
 
 #+end_src
+
 #+begin_src elisp :noweb-ref packages
 (package! org-roam-bibtex)
 (package! helm-bibtex)
