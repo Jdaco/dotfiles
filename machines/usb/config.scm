@@ -71,6 +71,7 @@
          (specification->package "exa")
          (specification->package "alacritty")
          (specification->package "btrfs-progs")
+         (specification->package "dosfstools")
          )
    %base-packages))
  (services
