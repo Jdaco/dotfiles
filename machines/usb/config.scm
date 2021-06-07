@@ -46,9 +46,8 @@
          (specification->package "rng-tools")
          (specification->package "pinentry-qt")
          (specification->package "wpa-supplicant-minimal")
-         (specification->package "wicd")
-         ;; (specification->package "ath9k-htc-firmware")
-                                        ; Required by org-roam
+
+         ; Required by org-roam
          (specification->package "sqlite")
 
          ;;  User programs
