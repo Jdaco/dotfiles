@@ -8,6 +8,17 @@
 demuxer-readahead-secs=300
 ytdl-format=bestvideo[height<=?1080]+bestaudio/best
 #+end_src
+
+#+begin_src conf :tangle .config/mpv/input.conf
+Ctrl+o script_message locate-current-file
+#+end_src
+
+**** Scripts
+
+- [[https://github.com/torque/mpv-progressbar][progressbar]] :: [[file:stow/.config/mpv/scripts/progressbar.lua][.config/mpv/scripts/progressbar.lua]]
+- [[https://github.com/jgreco/mpv-youtube-quality][youtube-quality]] :: [[file:stow/.config/mpv/scripts/youtube-quality.lua][.config/mpv/scripts/youtube-quality.lua]]
+- [[https://github.com/nimatrueway/mpv-locatefile-lua-script][locatefile]] :: [[file:stow/.config/mpv/scripts/locatefile.lua][.config/mpv/scripts/locatefile.lua]]
+
 *** Webcam
 
 Use ~mpv~ to view your webcam
