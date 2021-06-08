@@ -335,13 +335,3 @@ templates"
 #+begin_src elisp :noweb-ref packages
 (package! ob-async)
 #+end_src
-** Presentations
-#+begin_src elisp :noweb-ref configs
-(require 'org-tree-slide)
-(setq org-tree-slide-activate-message "Presentation started!"
-      org-tree-slide-activate-message "Presentation finished!")
-#+end_src
-
-#+begin_src elisp :noweb-ref packages
-(package! org-tree-slide)
-#+end_src
