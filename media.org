@@ -18,6 +18,23 @@ Ctrl+o script_message locate-current-file
 - [[https://github.com/torque/mpv-progressbar][progressbar]] :: [[file:stow/.config/mpv/scripts/progressbar.lua][.config/mpv/scripts/progressbar.lua]]
 - [[https://github.com/jgreco/mpv-youtube-quality][youtube-quality]] :: [[file:stow/.config/mpv/scripts/youtube-quality.lua][.config/mpv/scripts/youtube-quality.lua]]
 - [[https://github.com/nimatrueway/mpv-locatefile-lua-script][locatefile]] :: [[file:stow/.config/mpv/scripts/locatefile.lua][.config/mpv/scripts/locatefile.lua]]
+**** Org
+Open org-mode link in MPV
+
+#+begin_src elisp :noweb-ref configs
+(defun run-mpv (url)
+  "Watch a video from URL in MPV"
+  (start-process "mpv" "mpv" "mpv" "--demuxer-readahead-secs=300" url))
+
+(defun org-open-at-point-in-mpv ()
+  (interactive)
+  (let ((browse-url-browser-function (lambda (url &optional new_window) (run-mpv url))))
+        (org-open-at-point)))
+
+(map! :map org-mode-map
+      "C-c RET" #'org-open-at-point-in-mpv
+      )
+#+end_src
 
 *** Webcam
 
