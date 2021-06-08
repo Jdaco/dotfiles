@@ -452,25 +452,18 @@ I use [[https://github.com/rejeep/prodigy.el][Prodigy]] to manage user-level bac
       "o y" #'prodigy)
 
 (map! :after prodigy
-      :mode prodigy-mode
-      "q" #'quit-window
-      "j" #'prodigy-next
-      "k" #'prodigy-prev
-      "g g" #'prodigy-first
-      "G" #'prodigy-last
+      :mode prodigy-view-mode
       "s" #'prodigy-start
       "S" #'prodigy-stop
-      "R" #'prodigy-restart
-      "<RET>" #'prodigy-display-process
-      "o" #'prodigy-browse
-      "m" #'prodigy-mark
-      "M" #'prodigy-mark-all
       )
+
+(add-hook! prodigy-mode
+           (evil-snipe-local-mode 0))
 #+end_src
 
 ** Shell
 
-I use [[https://www.gnu.org/software/emacs/manual/html_mono/eshell.html][Eshell]] as my primary shell. For certain uses I use ~ansi-term~ instead. For some ncurses programs I'll use ~bash~ in the ~termite~ terminal emulator
+I use [[https://www.gnu.org/software/emacs/manual/html_mono/eshell.html][Eshell]] as my primary shell. For certain uses I use ~ansi-term~ instead. For some ncurses programs I'll use ~bash~ in the ~alacritty~ terminal emulator
 
 *** Eshell
 **** Aliases
