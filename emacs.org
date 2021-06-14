@@ -560,3 +560,8 @@ I don't having a log of the commands I run
 #+begin_src elisp :noweb-ref configs
 (setq history-length 0)
 #+end_src
+** Lisp
+#+begin_src elisp :noweb-ref packages
+(package! geiser)
+(package! geiser-guile)
+#+end_src
