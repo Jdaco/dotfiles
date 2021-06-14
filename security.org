@@ -179,10 +179,11 @@ PARTITION=${DEVICE}1
 echo 'Overwriting with random data...'
 
 # dd will error saying 'No space left on device'. This is normal
-sudo dd if=/dev/random of=${DEVICE} status=progress || true
+sudo dd if=/dev/random of=${DEVICE} bs=4K status=progress || true
 sudo sync
 
 echo 'Creating partitions...'
+sudo sgdisk --clear ${DEVICE}
 sudo sgdisk --typecode 8309 --new 0:0:+1GiB ${DEVICE}
 sudo sgdisk --change-name 1:"$2" ${DEVICE}
 
