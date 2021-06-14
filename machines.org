@@ -310,7 +310,7 @@ Configs for my Iontra laptop
       org-agenda-files '("~/sync/areas/fresh.org")
       dotfiles-directory "~/dotfiles")
 
-(add-to-list 'exec-path "~/.guix-profile/bin")
+(add-to-list 'exec-path (expand-file-name "~/.guix-profile/bin"))
 #+end_src
 
 #+begin_src elisp :noweb-ref packages

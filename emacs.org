@@ -489,8 +489,8 @@ alias lsblk lsblk -o 'name,size,type,mountpoint,partlabel,uuid' $*
 #+end_src
 **** PATH
 #+begin_src elisp :noweb-ref configs
-(add-to-list 'exec-path "~/.local/bin")
-(add-to-list 'exec-path "~/dotfiles/bin")
+(add-to-list 'exec-path (expand-file-name "~/.local/bin"))
+(add-to-list 'exec-path (expand-file-name "~/dotfiles/bin"))
 #+end_src
 
 ** Filesystem
