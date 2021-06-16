@@ -69,3 +69,65 @@ variable "${1:name}" {
   ${2:default = "$3"}
 }
 #+END_SRC
+
+** AWS
+*** bucket
+#+BEGIN_SRC snippet :tangle (get-snippet-path)
+# name: bucket
+# key: bucket
+# --
+resource "aws_s3_bucket" "${1:name}" {
+  bucket = "$2"
+  acl = "private"
+
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        sse_algorithm = "AES256"
+      }
+    }
+  }
+}
+#+END_SRC
+
+*** role
+#+BEGIN_SRC snippet :tangle (get-snippet-path)
+# name: bucket
+# key: bucket
+# --
+resource "aws_iam_role" "${1:name}" {
+  name = "$2"
+
+  assume_role_policy = data.aws_iam_policy_document.$3.json
+}
+
+data "aws_iam_policy_document" "${3:$1-assume-role}" {
+  statement {
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type = "${4:Service}"
+      identifiers = []
+    }
+  }
+}
+
+resource "aws_iam_role_policy" "$1-policy" {
+  name = "$5"
+  role = aws.iam_role.$1.id
+
+  policy = data.aws_iam_policy_document.$1-policy.json
+}
+
+data "aws_iam_policy_document" "$1-policy" {
+  statement {
+    actions = []
+
+    principals {
+      type = "${6:Service}"
+      identifiers = []
+    }
+  }
+}
+
+#+END_SRC
