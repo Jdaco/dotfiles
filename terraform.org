@@ -1,0 +1,71 @@
+#+TITLE: Terraform
+
+* Snippets
+:PROPERTIES:
+:snippet_mode: terraform-mode
+:END:
+
+** data
+#+BEGIN_SRC snippet :tangle (get-snippet-path)
+# name: data
+# key: data
+# --
+data "${1:type}" "${2:name}" {
+  $0
+}
+#+END_SRC
+** locals
+#+BEGIN_SRC snippet :tangle (get-snippet-path)
+# name: locals
+# key: locals
+# --
+locals {
+  {$1:name} = ${2:value}
+}
+#+END_SRC
+** module
+#+BEGIN_SRC snippet :tangle (get-snippet-path)
+# name: module
+# key: mod
+# --
+module "${1:name}" {
+  source = "${2:location}"
+  $0
+}
+#+END_SRC
+** output
+#+BEGIN_SRC snippet :tangle (get-snippet-path)
+# name: output
+# key: output
+# --
+output "${1:name}" {
+  value = ${2:value}
+}
+#+END_SRC
+** provider
+#+BEGIN_SRC snippet :tangle (get-snippet-path)
+# name: provider
+# key: prov
+# --
+provider "${1:name}" {
+  $0
+}
+#+END_SRC
+** resource
+#+BEGIN_SRC snippet :tangle (get-snippet-path)
+# name: resource
+# key: res
+# --
+resource "${1:type}" "${2:name}" {
+         $0
+}
+#+END_SRC
+** variable
+#+BEGIN_SRC snippet :tangle (get-snippet-path)
+# name: variable
+# key: var
+# --
+variable "${1:name}" {
+  ${2:default = "$3"}
+}
+#+END_SRC

@@ -565,3 +565,6 @@ I don't having a log of the commands I run
 (package! geiser)
 (package! geiser-guile)
 #+end_src
+** Snippets
+
+#+include: ./terraform.org

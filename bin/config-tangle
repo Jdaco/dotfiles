@@ -66,6 +66,14 @@ a definition in TEMPLATES."
 (defun get-system-name ()
   (shell-command-to-string "hostname"))
 
+(defun get-snippet-path ()
+  "Create a path to tangle the current snippet to."
+  (let* ((snippet-path "~/.config/doom/snippets")
+         (mode (org-entry-get (point) "snippet_mode" t))
+         (heading (org-get-heading)))
+    (concat snippet-path "/" mode "/" heading)
+    ))
+
 (defconst config-directory (or (nth 0 argv) "~/dotfiles"))
 
 (defconst export-directory (or (nth 1 argv) "~"))
