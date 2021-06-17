@@ -66,7 +66,9 @@ resource "${1:type}" "${2:name}" {
 # key: var
 # --
 variable "${1:name}" {
-  ${2:default = "$3"}
+  type = ${2:string}
+  ${3:default = "$4"}
+  $0
 }
 #+END_SRC
 
@@ -123,11 +125,18 @@ data "aws_iam_policy_document" "$1-policy" {
   statement {
     actions = []
 
-    principals {
-      type = "${6:Service}"
-      identifiers = []
-    }
+    resources = []
   }
 }
 
 #+END_SRC
+*** policy
+#+begin_src snippet :tangle (get-snippet-path)
+data "aws_iam_policy_document" "$1" {
+  statement {
+    actions = ["$2"]
+
+    resources = [$3]
+  }
+}
+#+end_src
