@@ -40,6 +40,7 @@ module "${1:name}" {
 # --
 output "${1:name}" {
   value = ${2:value}
+  description = "$3"
 }
 #+END_SRC
 ** provider
