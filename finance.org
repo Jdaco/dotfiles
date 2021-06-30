@@ -120,3 +120,16 @@ Arch Linux packages
 #+begin_src text :noweb-ref arch-packages
 ledger
 #+end_src
+** Snippets
+:PROPERTIES:
+:snippet_mode: ledger-mode
+:END:
+*** transaction
+#+begin_src snippet :tangle (get-snippet-path)
+# name: transaction
+# key: tr
+# --
+`(ledger-read-transaction)`
+    Expenses:$1
+    $0
+#+end_src
