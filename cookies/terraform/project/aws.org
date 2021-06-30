@@ -83,6 +83,12 @@ RUN wget -O /tmp/saml2aws.tar.gz "https://github.com/Versent/saml2aws/releases/d
 
 RUN echo "${SAML2AWS_SHA512}  /tmp/saml2aws.tar.gz" | sha512sum -c -
 
+#tflint
+RUN wget -O /usr/bin/tflint.zip 'https://github.com/terraform-linters/tflint/releases/download/v0.29.1/tflint_linux_amd64.zip'
+RUN echo '797ad3cc1d29c0e6a19885c24c00cecc9def53fa4ab418583a82891cc36a979a  /usr/bin/tflint.zip' | sha256sum -c -
+RUN unzip -d /usr/bin /usr/bin/tflint.zip && rm /usr/bin/tflint.zip
+RUN chmod +x /usr/bin/tflint
+
 RUN tar -xzvf /tmp/saml2aws.tar.gz -C /usr/bin
 RUN chmod +x /usr/bin/saml2aws
 
