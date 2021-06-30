@@ -250,6 +250,7 @@ For example, an org-ql dynamic block header could look like:
 #+begin_src elisp :noweb-ref configs :results none
 
 (setq org-roam-tag-sources '(prop last-directory)
+      org-roam-file-exclude-regexp (concat (expand-file-name org-roam-directory) "areas")
       org-roam-capture-templates '(("d" "default"
                                     plain #'org-roam--capture-get-point "%?"
                                     :file-name "notes/%<%Y%m%d%H%M%S>-${slug}"
