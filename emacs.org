@@ -25,7 +25,8 @@ I use the [[https://github.com/joaotavora/yasnippet][yasnippet]] emacs package f
 
 #+begin_src elisp :noweb-ref configs
 (map! :i "M-a" #'yas-previous-field
-      :i "M-;" #'yas-next-field)
+      :i "M-;" #'yas-next-field
+      :i "M-:" #'yas-expand)
 #+end_src
 ** Bookmarks
 [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Bookmarks.html][Bookmarks]] let you save your position in commonly used files
