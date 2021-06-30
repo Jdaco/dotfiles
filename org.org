@@ -48,9 +48,18 @@ I use [[https://orgmode.org/][Org mode]] for:
      "t" #'org-sidebar-tree-toggle
     ))
 
+(map! :map calendar-mode-map
+      "M-h" #'calendar-backward-day
+      "M-l" #'calendar-forward-day
+      "M-j" #'calendar-backward-week
+      "M-k" #'calendar-forward-day
+      )
+
 (map! :leader
       "A" #'org-archive-to-archive-sibling)
 
+;; Strike through org-done tasks to intensify the sense of achievement
+(set-face-attribute 'org-headline-done nil :strike-through t)
 
 (setq org-id-link-to-org-use-id t
       org-hide-emphasis-markers t
