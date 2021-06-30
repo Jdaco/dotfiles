@@ -266,6 +266,11 @@ For example, an org-ql dynamic block header could look like:
                                     :file-name "stores/%<%Y%m%d%H%M%S>-${slug}"
                                     :head "#+title: ${title}\n#+roam_key: \n\n- tags :: "
                                     :unnarrowed t)
+                                   ("r" "Recipe"
+                                    plain #'org-roam--capture-get-point "%?"
+                                    :file-name "recipes/%<%Y%m%d%H%M%S>-${slug}"
+                                    :head "#+title: ${title}\n\n- tags :: "
+                                    :unnarrowed t)
                                    ("p" "Programming Language"
                                     plain #'org-roam--capture-get-point
                                     (file "~/roam/areas/software/templates/programming_language.org")
