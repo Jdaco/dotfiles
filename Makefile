@@ -52,7 +52,7 @@ $(USB_IMAGE): $(BUILD_DIR) $(ROOT_MOUNT) $(HOME_FS)
 	@chmod 755 $(USB_IMAGE)
 	@dd if=/dev/zero bs=1M count=1024 >> $(USB_IMAGE)
 	@sudo kpartx -av $(USB_IMAGE)
-	@sudo parted --script --align optimal /dev/loop0 mkpart primary 7000MB 100%
+	@sudo parted --script --align optimal /dev/loop0 mkpart primary 7600MB 100%
 	@sudo kpartx -uv $(USB_IMAGE)
 	@sudo mkfs.ext4 -v -U "$(USB_HOME_UUID)" /dev/mapper/loop0p3
 	@sudo mount /dev/mapper/loop0p3 $(ROOT_MOUNT)
