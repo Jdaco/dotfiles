@@ -77,11 +77,14 @@
  (services
   (append
    (list (service gdm-service-type (gdm-configuration
-                                    (auto-login? #f)
+                                    (auto-login? #t)
                                     (default-user "guest")
                                     (xorg-configuration (xorg-configuration (keyboard-layout keyboard-layout)))))
          )
    (remove (lambda (service) (eq? (service-kind service) gdm-service-type)) %desktop-services)))
+ (sudoers-file (plain-file "sudoers" "\
+root ALL=(ALL) ALL
+%wheel ALL=(ALL) NOPASSWD:ALL\n"))
  (bootloader
   (bootloader-configuration
    (bootloader grub-efi-bootloader)
