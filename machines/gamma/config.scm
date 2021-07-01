@@ -26,6 +26,12 @@
             (specification->package "emacs-exwm")
             (specification->package "emacs-pdf-tools")
             (specification->package "emacs-desktop-environment")
+            (specification->package "emacs-pdf-tools")
+            (specification->package "emacs-desktop-environment")
+            (specification->package "emacs-emacsql-sqlite3")
+            (specification->package "emacs-all-the-icons")
+            (specification->package "emacs-all-the-icons-dired")
+            (specification->package "adwaita-icon-theme")
             ; Required by org-roam
             (specification->package "sqlite")
             (specification->package "xrandr")
@@ -43,6 +49,7 @@
             (specification->package "rng-tools")
             (specification->package "pinentry-qt")
             (specification->package "wpa-supplicant")
+            (specification->package "ovmf")
 
             ;; This needs to be installed at the same level
             ;; as emacs so that mu4e gets installed
@@ -64,16 +71,16 @@
   (swap-devices '("/swapfile"))
   (mapped-devices
    (list (mapped-device
-          (source (uuid "e9f22d24-573b-49c1-9db2-4915e92d501b"))
-          (target "system-root")
+          (source (uuid "d2706825-09fb-4564-6a17c88d2758"))
+          (target "cryptroot")
           (type luks-device-mapping))))
   (file-systems
     (cons* (file-system
             (mount-point "/boot/efi")
-            (device (uuid "2F4D-3557" 'fat32))
+            (device (uuid "5E06-132C" 'fat32))
             (type "vfat"))
            (file-system
             (mount-point "/")
-            (device "/dev/mapper/system-root")
+            (device "/dev/mapper/cryptroot")
             (type "btrfs"))
            %base-file-systems)))
