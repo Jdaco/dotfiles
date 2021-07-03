@@ -4,11 +4,9 @@
     "qemu"
     "virt-manager"
     "libvirt"
-    "dockercli"
     ;;  Fonts
     "font-linuxlibertine"
     "font-liberation"
-    "font-ubuntu"
     ;;  Disk Utilities
     "gparted"
     "nvme-cli"
