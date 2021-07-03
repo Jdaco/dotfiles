@@ -120,7 +120,7 @@ s2k-count 1015808
 I store my GPG keys on my external USB key, so symlink the config directory
 
 #+begin_src sh
-ln -s ~/.gnupg /mnt/gpg
+ln -s /mnt/gpg ~/.gnupg
 #+end_src
 
 *Note*: If you don't want to symlink, you can also use ~gpg~ with your detached keyring using ~gpg --homedir /mnt/gpg~
