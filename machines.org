@@ -233,7 +233,31 @@ cryptsetup luksOpen --key-file /mnt/machines/alpha/sda /dev/sda1 ${TEMP_NAME}
 mkfs.ext4 /dev/mapper/${TEMP_NAME}
 cryptsetup luksClose ${TEMP_NAME}
 #+end_src
+**** Swap
 
+I use a swap file on the encrypted root partition
+
+#+begin_src shell
+SUBVOLUME=/swap
+SWAPFILE=${SUBVOLUME}/swapfile
+
+# Create a dedicated Btrfs subvolume for swap in order to exclude the swapfile from snapshots.
+btrfs subvolume create ${SUBVOLUME}
+
+chmod 700 ${SUBVOLUME}
+touch ${SWAPFILE}
+chmod 600 ${SWAPFILE}
+
+# Make sure copy-on-write is disabled
+chattr +C ${SWAPFILE}
+
+# Make sure compression is disabled
+btrfs property set ${SWAPFILE} compression none
+
+fallocate -v -l 10G ${SWAPFILE}
+
+mkswap ${SWAPFILE}
+#+end_src
 ** USB
 :PROPERTIES:
 :name: Chaise Conn
