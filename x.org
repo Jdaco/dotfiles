@@ -28,17 +28,23 @@ add Control = Control_L
 #+end_src
 ** Locking
 
-Screen locking
+I use [[https://github.com/Raymo111/i3lock-color][i3lock-color]] for locking my screen
 
 #+begin_src elisp :noweb-ref configs
 ; X Lock Screen
-(defvar lock-command "dm-tool lock")
+(defvar lock-command "i3lock -n -B 5")
 
 (defun lock () (interactive) (shell-command lock-command))
 #+end_src
 
 #+begin_src elisp :noweb-ref exwm-keys
-([?\s-c] . lock)
+([?\s-l] . lock)
+#+end_src
+
+The screen locking package needs to be specified in your =config.scm=
+
+#+begin_src lisp
+(screen-locker-service i3lock-color "i3lock")
 #+end_src
 ** Screenshots
 #+begin_src elisp

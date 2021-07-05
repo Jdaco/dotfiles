@@ -1,4 +1,5 @@
 (use-modules (gnu packages ssh))
+(use-modules (gnu packages wm))
 (use-modules (gnu))
 (use-modules (gnu)
              (nongnu packages linux)
@@ -36,6 +37,7 @@
             (specification->package "sqlite")
             (specification->package "xrandr")
             (specification->package "autorandr")
+            (specification->package "i3lock-color")
             (specification->package "pulseaudio")
             (specification->package "docker")
             (specification->package "fd")
@@ -61,6 +63,7 @@
       (list (service openssh-service-type (openssh-configuration (openssh openssh-sans-x) (permit-root-login #f)))
 
             (set-xorg-configuration (xorg-configuration (keyboard-layout keyboard-layout)))
+            (screen-locker-service i3lock-color "i3lock")
             )
       %desktop-services))
   (bootloader
