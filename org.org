@@ -319,6 +319,11 @@ templates"
         org-default-priority 68
         org-log-done "time"
         org-log-done-with-time t
+        org-agenda-start-day nil
+        org-agenda-start-on-weekday nil
+        org-agenda-custom-commands
+        '(("v" "Upcoming week" agenda "" ((org-agenda-span 7) (org-agenda-tag-filter-preset '("-meal" "-maintenance" "-assistant" "-training")))))
+
 
         ; The evil keys aren't working on super-agenda headings
         ; https://github.com/alphapapa/org-super-agenda/issues/50
@@ -349,9 +354,11 @@ templates"
 
 (evil-set-initial-state 'org-agenda-mode 'emacs)
 (map! :map org-agenda-mode-map
-      "j" #'org-agenda-next-item
-      "k" #'org-agenda-previous-item
-      "!" #'org-agenda-toggle-deadlines)
+      :m "j" #'org-agenda-next-item
+      :m "k" #'org-agenda-previous-item
+      :m "!" #'org-agenda-toggle-deadlines
+      :m "W" #'org-agenda-week-view
+      :m "D" #'org-agenda-day-view)
 #+end_src
 
 #+begin_src elisp :noweb-ref packages
