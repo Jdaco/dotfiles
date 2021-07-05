@@ -83,6 +83,30 @@ I use [[https://orgmode.org/][Org mode]] for:
 #+end_src
 
 
+** Snippets
+:PROPERTIES:
+:snippet_mode: org-mode
+:END:
+
+*** resources-drawer
+#+BEGIN_SRC snippet :tangle (get-snippet-path)
+# name: resources-drawer
+# key: res
+# --
+:RESOURCES:
+  $0
+:END:
+#+END_SRC
+*** videos-drawer
+#+BEGIN_SRC snippet :tangle (get-snippet-path)
+# name: videos-drawer
+# key: vid
+# --
+:RESOURCES:
+  $0
+:END:
+#+END_SRC
+
 ** Capture
 :PROPERTIES:
 :ID:       5fe33daf-9f01-4348-91fd-e438e4381e50
