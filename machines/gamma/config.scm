@@ -74,7 +74,7 @@
   (swap-devices '("/swapfile"))
   (mapped-devices
    (list (mapped-device
-          (source (uuid "d2706825-09fb-4564-6a17c88d2758"))
+          (source (uuid "d2706825-09fb-4564-9832-6a17c88d2758"))
           (target "cryptroot")
           (type luks-device-mapping))))
   (file-systems
