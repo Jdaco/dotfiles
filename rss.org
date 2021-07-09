@@ -40,6 +40,11 @@ The [[https://github.com/skeeto/elfeed][Elfeed]] emacs package is my preferred f
   (defvar elfeed--update-timer nil
     "Timer returned by `run-at-time`")
 
+  (defun ccc/elfeed-reload-db ()
+    (interactive)
+    (elfeed-db-load)
+    (elfeed-search-update 1))
+
   (defun elfeed-delayed-update ()
     (when elfeed--update-timer (cancel-timer elfeed--update-timer))
     (setq elfeed--update-timer
@@ -57,6 +62,8 @@ The [[https://github.com/skeeto/elfeed][Elfeed]] emacs package is my preferred f
          :n "D" #'elfeed-download-video
          :n "q" #'elfeed-save-db-and-bury
          :n "C-l" #'elfeed-search-browse-url
+         :n "R" #'ccc/elfeed-reload-db
+         :n "U" #'elfeed-update
          )
         (:map elfeed-show-mode-map
          "C-l" #'elfeed-show-visit
