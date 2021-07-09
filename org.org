@@ -102,7 +102,7 @@ I use [[https://orgmode.org/][Org mode]] for:
 # name: videos-drawer
 # key: vid
 # --
-:RESOURCES:
+:VIDEOS:
   $0
 :END:
 #+END_SRC
