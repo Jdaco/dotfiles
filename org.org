@@ -358,7 +358,9 @@ templates"
       :m "k" #'org-agenda-previous-item
       :m "!" #'org-agenda-toggle-deadlines
       :m "W" #'org-agenda-week-view
-      :m "D" #'org-agenda-day-view)
+      :m "D" #'org-agenda-day-view
+      :m "C-=" #'text-scale-increase
+      :m "C--" #'text-scale-decrease)
 #+end_src
 
 #+begin_src elisp :noweb-ref packages
