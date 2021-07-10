@@ -22,6 +22,7 @@
     "acpi"
     "lsof"
     ;;  Media
+    "imv"
     "imagemagick"
     "ffmpeg"
     "pulsemixer"
@@ -50,6 +51,7 @@
     "scribus"
     "offlineimap"
     ;; Network
+    "sshfs"
     "nfs-utils"
     "syncthing"
     "curl"
