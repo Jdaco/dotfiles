@@ -322,8 +322,8 @@ templates"
         org-agenda-start-day nil
         org-agenda-start-on-weekday nil
         org-agenda-custom-commands
-        '(("v" "Upcoming week" agenda "" ((org-agenda-span 7) (org-agenda-tag-filter-preset '("-meal" "-maintenance" "-assistant" "-training")))))
-
+        '(("w" "Upcoming week" agenda "" ((org-agenda-span 7) (org-agenda-tag-filter-preset '("-meal" "-maintenance" "-assistant" "-training"))))
+          ("g" "Grouped" todo "" ((org-agenda-tag-filter-preset '("-maintenance")) (org-super-agenda-groups '((:todo "PROGRESS" :name "In Progress") (:auto-group))))))
 
         ; The evil keys aren't working on super-agenda headings
         ; https://github.com/alphapapa/org-super-agenda/issues/50
