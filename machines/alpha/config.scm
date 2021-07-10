@@ -45,6 +45,7 @@
          (specification->package "git")
          (specification->package "file")
          (specification->package "nss-certs")
+         (specification->package "rsync")
          (specification->package "gnupg")
          (specification->package "password-store")
          (specification->package "duplicity")

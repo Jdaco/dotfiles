@@ -38,7 +38,6 @@
     "xmodmap"
     "alacritty"
     ;; File utils
-    "rsync"
     "zip"
     "unzip"
     "exa"
