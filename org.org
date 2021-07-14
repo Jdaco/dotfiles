@@ -261,6 +261,7 @@ templates"
                  :visit-file "Makefile"
                  :children (
                             ("Mkosi" :keys "m" :template-file ,(f-join cookie-path "mkosi.org"))
+                            ("Python" :keys "p" :template-file ,(f-join cookie-path "python.org") :gitignore ("python" "emacs"))
                             ("Terraform" :keys "t"
                              :children (("Environment"
                                          :keys "e"
