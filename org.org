@@ -251,9 +251,6 @@ templates"
                  :file ,(f-join org-directory "areas/career.org")
                  :olp ("Plans" "Employers")
                  :template-file ,(f-join dotfiles-directory "templates" "org" "new-job.org"))
-                ("New Cookie" :keys "C"
-                 :function (lambda() (find-file (f-join cookie-path (format "%s.org" (read-string "Cookie Name: ")))))
-                 :template-file ,(f-join cookie-path "cookie.org"))
                 ("Cookies" :keys "c"
                  :function cookie-new-project
                  :immediate-finish t
