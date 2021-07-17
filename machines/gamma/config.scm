@@ -19,7 +19,7 @@
                   (group "users")
                   (home-directory "/home/chaise")
                   (supplementary-groups
-                    '("dialout" "wheel" "netdev" "audio" "video")))
+                    '("dialout" "wheel" "netdev" "audio" "video" "lp")))
                 %base-user-accounts))
   (packages
     (append
@@ -53,6 +53,8 @@
             (specification->package "pinentry-qt")
             (specification->package "wpa-supplicant")
             (specification->package "ovmf")
+            (specification->package "bluez-alsa")
+            (specification->package "bluez")
 
             ;; This needs to be installed at the same level
             ;; as emacs so that mu4e gets installed
@@ -62,8 +64,8 @@
   (services
     (append
       (list (service openssh-service-type (openssh-configuration (openssh openssh-sans-x) (permit-root-login #f)))
-
             (set-xorg-configuration (xorg-configuration (keyboard-layout keyboard-layout)))
+            (bluetooth-service #:auto-enable? #t)
             (screen-locker-service i3lock-color "i3lock")
             )
       %desktop-services))
