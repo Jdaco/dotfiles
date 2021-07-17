@@ -63,7 +63,7 @@ The [[https://github.com/skeeto/elfeed][Elfeed]] emacs package is my preferred f
          :n "q" #'elfeed-save-db-and-bury
          :n "C-l" #'elfeed-search-browse-url
          :n "R" #'ccc/elfeed-reload-db
-         :n "U" #'elfeed-update
+         :n "X" #'elfeed-update
          )
         (:map elfeed-show-mode-map
          "C-l" #'elfeed-show-visit
@@ -77,6 +77,8 @@ The [[https://github.com/skeeto/elfeed][Elfeed]] emacs package is my preferred f
       "o x" #'elfeed)
 
 #+end_src
+
+Configure my common elfeed search as Emacs bookmarks
 
 #+begin_src elisp :noweb-ref bookmarks
 ("elfeed-video"
