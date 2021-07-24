@@ -1,0 +1,16 @@
+#+TITLE: Software
+
+* Makefiles
+** Snippets
+:PROPERTIES:
+:snippet_mode: make-mode
+:END:
+*** phony
+#+begin_src snippet :tangle (get-snippet-path)
+# name: phony
+# key: phony
+# --
+.PHONY: $1
+$1: ## $2
+	@$0
+#+end_src

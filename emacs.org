@@ -572,3 +572,4 @@ I don't having a log of the commands I run
 ** Snippets
 
 #+include: ./terraform.org
+#+include: ./software.org
