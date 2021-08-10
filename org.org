@@ -376,3 +376,10 @@ templates"
 #+begin_src elisp :noweb-ref packages
 (package! ob-async)
 #+end_src
+** Presentations
+
+[[https://github.com/takaxp/org-tree-slide][org-tree-slide]] is my preferred way of giving presentations within Emacs
+
+#+begin_src elisp :noweb-ref packages
+(package! org-tree-slide)
+#+end_src
