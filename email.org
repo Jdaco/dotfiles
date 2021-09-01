@@ -51,8 +51,8 @@ localfolders = <<maildir>>/Gmail
 
 [Repository Gmail-remote]
 type = Gmail
-remoteusereval = get_pass("gmail")["user"]
-remotepasseval = get_pass("gmail")["password"]
+remoteusereval = get_pass("gmail_app")["user"]
+remotepasseval = get_pass("gmail_app")["password"]
 
 # Necessary as of OfflineIMAP 6.5.4
 sslcacertfile = /etc/ssl/certs/ca-certificates.crt
