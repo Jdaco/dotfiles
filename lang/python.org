@@ -1,0 +1,72 @@
+#+TITLE: Python
+
+* Snippets
+:PROPERTIES:
+:snippet_mode: python-mode
+:header-args:  :tangle (get-snippet-path)
+:END:
+
+** with
+#+BEGIN_SRC snippet
+# name: with
+# key: with
+# uuid: with
+# --
+with ${1:expr}${2: as ${3:alias}}:
+     $0
+#+END_SRC
+
+** method
+#+begin_src snippet
+# name: method
+# --
+def ${1:method_name}(self${2:, $3}):
+    \"\"\"
+    $4
+    \"\"\"
+    $0
+#+end_src
+
+** list
+#+begin_src snippet
+# name: list
+# key: li
+# uuid: li
+# group: definitions
+# --
+[${1:x} for $1 in ${2:list}]
+#+end_src
+
+** init
+#+begin_src snippet
+# name: init
+# key: init
+# uuid: init
+# --
+def __init__(self${1:, args}):
+    \"\"\"
+    $2
+    \"\"\"
+    $0
+#+end_src
+
+** ifmain
+#+begin_src snippet
+# name: ifmain
+# --
+if __name__ == '__main__':
+    ${1:`(or % "pass")`}
+#+end_src
+
+** def
+#+begin_src snippet
+# name: function
+# key: def
+# uuid: def
+# --
+def ${1:name}($2):
+    \"\"\"$3
+    ${2:$(python-args-to-docstring)}
+    \"\"\"
+    $0
+#+end_src

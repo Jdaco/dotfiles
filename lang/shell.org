@@ -1,0 +1,16 @@
+#+TITLE: Shell
+
+* Snippets
+:PROPERTIES:
+:snippet_mode: sh-mode
+:END:
+
+** bang
+#+begin_src snippet :tangle (get-snippet-path)
+# name: bang
+# key: #!
+# uuid: #!
+# --
+#!${1:/usr/bin/env `(symbol-name sh-shell)`}
+$0
+#+end_src

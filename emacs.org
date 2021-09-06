@@ -23,6 +23,10 @@ I use the [[https://github.com/hlissner/doom-emacs][Doom Emacs]] configuration f
 
 I use the [[https://github.com/joaotavora/yasnippet][yasnippet]] emacs package for snippets
 
+#+begin_src elisp :noweb-ref packages
+(package! yasnippet)
+#+end_src
+
 #+begin_src elisp :noweb-ref configs
 (map! :i "M-a" #'yas-previous-field
       :i "M-;" #'yas-next-field
@@ -137,7 +141,7 @@ git clone https://github.com/hlissner/doom-emacs ~/.emacs.d
        ;;objed             ; text object editing for the innocent
        ;;parinfer          ; turn lisp into python, sort of
        ;;rotate-text       ; cycle region at point between text candidates
-       snippets          ; my elves. They type so I don't have to
+       ;; snippets          ; my elves. They type so I don't have to
        ;;word-wrap         ; soft wrapping with language-aware indent
 
        :emacs
@@ -572,7 +576,3 @@ I don't having a log of the commands I run
 (package! geiser)
 (package! geiser-guile)
 #+end_src
-** Snippets
-
-#+include: ./terraform.org
-#+include: ./software.org

@@ -15,3 +15,10 @@ These are the base layers that will be installed on every system
 #+INCLUDE: ./x.org
 #+INCLUDE: ./guix.org
 #+INCLUDE: ./org.org
+
+
+#+INCLUDE: ./makefile.org
+#+INCLUDE: ./markdown.org
+#+INCLUDE: ./python.org
+#+INCLUDE: ./shell.org
+#+INCLUDE: ./terraform.org

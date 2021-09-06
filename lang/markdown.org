@@ -1,0 +1,16 @@
+#+TITLE: Markdown
+
+* Snippets
+:PROPERTIES:
+:snippet_mode: markdown-mode
+:header-args:  :tangle (get-snippet-path)
+:END:
+
+** code
+#+begin_src snippet
+# name: Code block
+# --
+\`\`\`${1:lang}
+`%`$0
+\`\`\`
+#+end_src

@@ -1,12 +1,12 @@
-#+TITLE: Software
+#+TITLE: Makefile
 
-* Makefiles
-** Snippets
+* Snippets
 :PROPERTIES:
 :snippet_mode: make-mode
+:header-args:  :tangle (get-snippet-path)
 :END:
-*** phony
-#+begin_src snippet :tangle (get-snippet-path)
+** phony
+#+begin_src snippet
 # name: phony
 # key: phony
 # --
