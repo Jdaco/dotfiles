@@ -17,8 +17,8 @@ These are the base layers that will be installed on every system
 #+INCLUDE: ./org.org
 
 
-#+INCLUDE: ./makefile.org
-#+INCLUDE: ./markdown.org
-#+INCLUDE: ./python.org
-#+INCLUDE: ./shell.org
-#+INCLUDE: ./terraform.org
+#+INCLUDE: ./lang/makefile.org
+#+INCLUDE: ./lang/markdown.org
+#+INCLUDE: ./lang/python.org
+#+INCLUDE: ./lang/shell.org
+#+INCLUDE: ./lang/terraform.org
