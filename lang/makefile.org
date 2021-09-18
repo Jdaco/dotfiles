@@ -14,3 +14,17 @@
 $1: ## $2
 	@$0
 #+end_src
+* Keys
+#+begin_src elisp :noweb-ref configs
+(defun projectile-find-makefile () (interactive)
+       (let ((fpath (projectile-expand-root "Makefile")))
+         (if (file-exists-p fpath)
+             (find-file fpath)
+           (message "Makefile doesn't exist"))))
+
+(map! :leader
+      "p m" #'projectile-find-makefile
+      "p M" #'+make/run
+)
+
+#+end_src

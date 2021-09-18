@@ -520,12 +520,6 @@ alias lsblk lsblk -o 'name,size,type,mountpoint,partlabel,uuid' $*
 [[https://github.com/bbatsov/projectile][Projectile]] is an emacs package that provides helpful commands for search, navigating, and executing commands within a project. Projectile recognizes a project as a directory containing a =.git= directory
 
 #+begin_src elisp :noweb-ref configs
-(defun projectile-find-makefile () (interactive)
-       (let ((fpath (projectile-expand-root "Makefile")))
-         (if (file-exists-p fpath)
-             (find-file fpath)
-           (message "Makefile doesn't exist"))))
-
 (defun projectile-find-readme () (interactive)
          (let ((fpaths (append
                         (file-expand-wildcards (projectile-expand-root "*.org"))
@@ -542,7 +536,6 @@ alias lsblk lsblk -o 'name,size,type,mountpoint,partlabel,uuid' $*
       (:prefix "p"
       "C" #'projectile-configure-project
       "r" #'projectile-run-project
-      "m" #'projectile-find-makefile
       "/" #'projectile-find-readme
       "'" #'projectile-run-eshell)
       )
