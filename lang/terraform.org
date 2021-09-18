@@ -141,3 +141,9 @@ data "aws_iam_policy_document" "$1" {
   }
 }
 #+end_src
+* Aliases
+#+begin_src sh :noweb-ref aliases
+alias tf terraform $*
+alias tfa terraform apply $*
+alias tfA terraform apply -auto-approve $*
+#+end_src
