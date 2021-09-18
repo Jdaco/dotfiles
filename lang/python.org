@@ -70,3 +70,14 @@ def ${1:name}($2):
     \"\"\"
     $0
 #+end_src
+
+** fixture
+#+begin_src snippet
+# name: fixture
+# key: fixture
+# uuid: fixture
+# --
+@pytest.fixture(scope="${1:function}")
+def ${2:name}($3):
+    $0
+#+end_src
