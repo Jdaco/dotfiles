@@ -123,6 +123,7 @@ Can show completions at point for COMMAND using helm or ivy"
             ([?\s-f] . ace-window)
             ([?\s-F] . exwm-layout-toggle-fullscreen)
             ([?\s-m] . exwm-workspace-move-window)
+            <<exwm-keys>>
             ;; Launch application.
             ([?\s-r] . (lambda (command)
                          (interactive (list (read-shell-command "$ ")))

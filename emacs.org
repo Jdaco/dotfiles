@@ -32,6 +32,11 @@ I use the [[https://github.com/joaotavora/yasnippet][yasnippet]] emacs package f
       :i "M-;" #'yas-next-field
       :i "M-:" #'yas-expand)
 #+end_src
+*** Buffers
+
+#+begin_src elisp :noweb-ref exwm-keys
+([?\s-b] . helm-buffers-list)
+#+end_src
 ** Bookmarks
 [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Bookmarks.html][Bookmarks]] let you save your position in commonly used files
 
