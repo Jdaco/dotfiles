@@ -4,7 +4,7 @@ These are the base layers that will be installed on every system
 
 #+name: machine-prop
 #+begin_src elisp
-(org-entry-get nil prop t)
+(or (org-entry-get nil prop t) (when (boundp 'default) default))
 #+end_src
 
 #+INCLUDE: ./emacs.org

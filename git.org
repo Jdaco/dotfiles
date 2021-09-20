@@ -9,7 +9,7 @@ Most of my git work is done in Emacs's [[https://magit.vc/][Magit]] interface, b
     email = "<<machine-prop(prop="email")>>"
 
 [github]
-  user = Jdaco
+  user = <<machine-prop(prop="git", default="Jdaco")>>
 
 [color]
   ui = yes

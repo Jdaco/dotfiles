@@ -270,6 +270,7 @@ git clone https://github.com/Jdaco/dotfiles
 :PROPERTIES:
 :name: Chaise Conn
 :email:    chaise.conn@iontra.com
+:git:  iontra-chaise
 :header-args:    :noweb yes :mkdirp true
 :ID: beta
 :END:
