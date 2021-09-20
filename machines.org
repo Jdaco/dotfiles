@@ -277,6 +277,7 @@ git clone https://github.com/Jdaco/dotfiles
 Configs for my Iontra laptop
 
 #+include: ./base.org
+#+include: ~/sync/config.org
 
 #+begin_src elisp :noweb-ref configs
 (setq inbox-file "~/sync/inbox.org"
@@ -290,14 +291,6 @@ Configs for my Iontra laptop
 
 #+begin_src elisp :noweb-ref packages
 (package! exwm)
-#+end_src
-
-#+begin_src elisp :noweb-ref prodigy-services
-(prodigy-define-service
-    :name "Teams"
-    :command "/usr/share/teams/teams"
-    :args '("--disable-namespace-sandbox" "--disable-setuid-sandbox")
-    :kill-process-buffer-on-stop t)
 #+end_src
 
 *** Monitors
