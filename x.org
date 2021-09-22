@@ -47,7 +47,7 @@ The screen locking package needs to be specified in your =config.scm=
 (screen-locker-service i3lock-color "i3lock")
 #+end_src
 ** Screenshots
-#+begin_src elisp
+#+begin_src elisp :noweb-ref configs
 ; Screenshots
 (defvar scrot-format "scrot-%Y-%m-%d-%H-%M-%S.png"
   "File name format to save screenshots with")
@@ -70,7 +70,6 @@ The screen locking package needs to be specified in your =config.scm=
 ([?\s-c] . scrot)
 ([?\s-C] . scrot-select)
 #+end_src
-
 
 Packages for Arch linux
 
@@ -167,3 +166,16 @@ Can show completions at point for COMMAND using helm or ivy"
 #+begin_src elisp :noweb-ref packages
 (package! helm-exwm)
 #+end_src
+** Monitors
+I use ~autorandr~ to manage monitor orientation
+
+#+begin_src elisp :noweb-ref aliases
+(defun cc/mon-reload ()
+  (interactive)
+  (start-process "mon-reload" nil "autorandr" "--change" "horizontal"))
+
+(map! :leader
+      :n "W R" #'cc/mon-reload)
+#+end_src
+
+#+RESULTS:
