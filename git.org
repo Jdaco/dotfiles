@@ -74,3 +74,18 @@ Most of my git work is done in Emacs's [[https://magit.vc/][Magit]] interface, b
     branched-from = "!git merge-base \"$(git current-branch)\" \"$(git parent)\" | tr -d '[:space:]'"
     changed-files = "!git diff --diff-filter=d --name-only \"$(git branched-from)\" | grep -E '.jsx?$|.ts$'"
 #+end_src
+** Repos list
+
+#+begin_src elisp :noweb-ref configs
+(setq magit-repolist-columns
+      '(("Name"    25 magit-repolist-column-ident ())
+        ("Version" 25 magit-repolist-column-version ())
+        ("D"        1 magit-repolist-column-dirty ())
+        ("⇣"      3 magit-repolist-column-unpulled-from-pushremote
+         ((:right-align t)
+          (:help-echo "Upstream changes not in branch")))
+        ("⇡"        3 magit-repolist-column-unpushed-to-pushremote
+         ((:right-align t)
+          (:help-echo "Local changes not in upstream")))
+        ("Path"    99 magit-repolist-column-path ())))
+#+end_src

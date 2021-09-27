@@ -44,7 +44,8 @@ My primary workstation
       org-roam-directory "~/roam"
       inbox-file "~/inbox.org"
       org-agenda-files `(,(f-join org-roam-directory "areas") ,(f-join org-roam-directory "areas/career/companies/iontra/iontra.org"))
-      scrot-directory "~/Downloads")
+      scrot-directory "~/Downloads"
+      magit-repository-directories `((,dotfiles-directory . 0)))
 #+end_src
 
 #+include: ./base.org
@@ -167,7 +168,8 @@ My primary laptop
       org-roam-directory "~/roam"
       inbox-file "~/inbox.org"
       org-agenda-files `(,(f-join org-roam-directory "areas") ,(f-join org-roam-directory "areas/career/companies/iontra/iontra.org"))
-      scrot-directory "~/Downloads")
+      scrot-directory "~/Downloads"
+      magit-repository-directories `((,dotfiles-directory . 0)))
 #+end_src
 
 #+include: ./base.org
@@ -285,7 +287,8 @@ Configs for my Iontra laptop
       org-directory "~/sync"
       scrot-directory "~/sync"
       org-agenda-files '("~/sync/areas/fresh.org")
-      dotfiles-directory "~/dotfiles")
+      dotfiles-directory "~/dotfiles"
+      magit-repository-directories '(("~/proj" . 1)))
 
 (add-to-list 'exec-path (expand-file-name "~/.guix-profile/bin"))
 #+end_src
