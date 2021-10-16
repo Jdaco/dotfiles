@@ -2,11 +2,14 @@
 ** Video
 *** mpv
 
-[[https://wiki.archlinux.org/index.php/Mpv][MPV]] is my preferred video player. I use it in as many scenarios as I can
+- [[https://wiki.archlinux.org/index.php/Mpv][MPV]] is my preferred video player. I use it in as many scenarios as I can
+- I use [[https://github.com/yt-dlp/yt-dlp][yt-dlp]] to download videos from various sites
+  + This is better than [[https://github.com/ytdl-org/youtube-dl][youtube-dl]] because it downloads faster and plays age-restricted youtube videos
 
 #+begin_src conf :tangle .config/mpv/mpv.conf
 demuxer-readahead-secs=300
 ytdl-format=bestvideo[height<=?1080]+bestaudio/best
+script-opts=ytdl_hook-ytdl_path=/usr/bin/yt-dlp
 #+end_src
 
 #+begin_src conf :tangle .config/mpv/input.conf
