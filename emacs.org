@@ -505,6 +505,14 @@ alias lsblk lsblk -o 'name,size,type,mountpoint,partlabel,uuid' $*
 
 <<aliases>>
 #+end_src
+
+#+begin_src elisp :noweb-ref configs
+(map! :mode eshell-mode
+      :i
+      "C-l" (cmd! (eshell-z ".."))
+      "C-f" #'eshell-z)
+#+end_src
+
 **** PATH
 #+begin_src elisp :noweb-ref configs
 (add-to-list 'exec-path (expand-file-name "~/.local/bin"))
