@@ -490,8 +490,9 @@ I use [[https://www.gnu.org/software/emacs/manual/html_mono/eshell.html][Eshell]
 #+begin_src shell :tangle .config/doom/eshell/aliases
 alias doom ~/.emacs.d/bin/doom $*
 alias guixupdate sudo guix system reconfigure /etc/config.scm
-alias ls exa --long --color=always $*
+alias ls exa --long --color=always --group-directories-first $*
 alias lsr ls --tree $*
+alias lsrd lsr --only-dirs $*
 alias lsa ls -a $*
 
 # Monitoring
