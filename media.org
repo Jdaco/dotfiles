@@ -10,6 +10,7 @@
 demuxer-readahead-secs=300
 ytdl-format=bestvideo[height<=?1080]+bestaudio/best
 script-opts=ytdl_hook-ytdl_path=/usr/bin/yt-dlp
+screenshot-directory=~/Downloads
 #+end_src
 
 #+begin_src conf :tangle .config/mpv/input.conf
