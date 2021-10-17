@@ -526,6 +526,25 @@ alias lsblk lsblk -o 'name,size,type,mountpoint,partlabel,uuid' $*
 ** Filesystem
 *** Navigation
 
+#+begin_src elisp :noweb-ref configs
+(defun ccc/counsel-home ()
+    (interactive)
+    (let* ((cands (split-string
+                    (shell-command-to-string "find ~ -type d") "\n" t)))
+    (ivy-read "File: " cands :caller 'ccc/counsel-home)))
+
+(defun ccc/imv-dir (dir)
+  (interactive)
+  (let* ((images (split-string
+                    (shell-command-to-string (format "find %s -type f | shuf" dir)) "\n" t)))
+    (apply #'start-process "imv" "imv" "imv" images)))
+
+(map! :leader
+      "H" (cmd! () (find-file (ccc/counsel-home)))
+      "o I" (cmd! () (ccc/imv-dir (ccc/counsel-home)))
+      )
+#+end_src
+
 **** Treemacs
 [[https://github.com/Alexander-Miller/treemacs][Treemacs]] gives you a tree-style overview of your current project or directory
 
