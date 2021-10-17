@@ -265,8 +265,8 @@ templates"
 
   (setq org-capture-templates
         (doct `(("Inbox" :keys "i" :file inbox-file :template "* %?")
-                ("Task" :keys "t" :file (lambda () (find-areas #'car)) :olp ("Tasks") :template "* TODO %?")
-                ("Event" :keys "e" :file (lambda () (find-areas #'car)) :olp ("Events")
+                ("Task" :keys "t" :file (lambda () (find-areas #'identity)) :olp ("Tasks") :template "* TODO %?")
+                ("Event" :keys "e" :file (lambda () (find-areas #'identity)) :olp ("Events")
                  :template-file ,(f-join dotfiles-directory "templates" "org" "event.org"))
                 ("Recipe" :keys "r" :function (lambda () (goto-or-create-heading "Recipe")) :template "* %?     :recipe:")
                 ("New Job" :keys "j"
