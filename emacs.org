@@ -530,7 +530,7 @@ alias lsblk lsblk -o 'name,size,type,mountpoint,partlabel,uuid' $*
 (defun ccc/counsel-home ()
     (interactive)
     (let* ((cands (split-string
-                    (shell-command-to-string "find ~ -type d") "\n" t)))
+                    (shell-command-to-string "find ~ -type d | grep -v /home/chaise/.cache") "\n" t)))
     (ivy-read "File: " cands :caller 'ccc/counsel-home)))
 
 (defun ccc/imv-dir (dir)
