@@ -89,3 +89,7 @@ Most of my git work is done in Emacs's [[https://magit.vc/][Magit]] interface, b
           (:help-echo "Local changes not in upstream")))
         ("Path"    99 magit-repolist-column-path ())))
 #+end_src
+** Packages
+#+begin_src elisp :noweb-ref packages
+(package! gitignore-templates)
+#+end_src

@@ -15,7 +15,7 @@ I use [[https://www.passwordstore.org/][Pass]] to manage my passwords
 #+begin_src elisp :noweb-ref configs
 (map! :leader
       (:prefix ("!" . "Passwords")
-       "!" #'helm-pass
+       "!" #'ivy-pass
        "l" #'pass
        "i" #'password-store-insert
        "g" #'password-store-generate

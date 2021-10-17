@@ -163,9 +163,6 @@ Can show completions at point for COMMAND using helm or ivy"
 (exwm-config-misc)
 #+end_src
 
-#+begin_src elisp :noweb-ref packages
-(package! helm-exwm)
-#+end_src
 ** Monitors
 I use ~autorandr~ to manage monitor orientation
 

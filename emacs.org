@@ -28,6 +28,9 @@ I use the [[https://github.com/joaotavora/yasnippet][yasnippet]] emacs package f
 #+end_src
 
 #+begin_src elisp :noweb-ref configs
+(require 'yasnippet)
+(add-to-list 'yas-snippet-dirs "~/.config/doom/snippets")
+
 (map! :i "M-a" #'yas-previous-field
       :i "M-;" #'yas-next-field
       :i "M-:" #'yas-expand)
@@ -35,7 +38,7 @@ I use the [[https://github.com/joaotavora/yasnippet][yasnippet]] emacs package f
 *** Buffers
 
 #+begin_src elisp :noweb-ref exwm-keys
-([?\s-b] . helm-buffers-list)
+([?\s-b] . +ivy/switch-buffer)
 #+end_src
 ** Bookmarks
 [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Bookmarks.html][Bookmarks]] let you save your position in commonly used files
@@ -105,9 +108,9 @@ git clone https://github.com/hlissner/doom-emacs ~/.emacs.d
 
        :completion
        company           ; the ultimate code completion backend
-       helm              ; the *other* search engine for love and life
+       ;; helm              ; the *other* search engine for love and life
        ;;ido               ; the other *other* search engine...
-       ;;ivy               ; a search engine for love and life
+       (ivy +icons)               ; a search engine for love and life
 
        :ui
        deft              ; notational velocity for Emacs
@@ -351,9 +354,9 @@ git clone https://github.com/hlissner/doom-emacs ~/.emacs.d
 (recentf-mode 0)
 
 (map! :leader
-      :desc "M-x" "SPC" #'helm-M-x)
+      :desc "M-x" "SPC" #'counsel-M-x)
 
-(map! :map helm-map
+(map! :map ivy-mode-map
       "C-p" #'evil-paste-after)
 
 (map! :map minibuffer-local-map
@@ -442,7 +445,7 @@ git clone https://github.com/hlissner/doom-emacs ~/.emacs.d
 ; Help
 (map! :leader
       :prefix "h"
-      "I" #'helm-info)
+      "I" #'info-display-manual)
 #+end_src
 
 *** Man

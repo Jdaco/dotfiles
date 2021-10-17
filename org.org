@@ -12,7 +12,7 @@ I use [[https://orgmode.org/][Org mode]] for:
 - Note :: The configurations for someof these are stored in =brain.org=
 
 #+begin_src elisp :noweb-ref configs
-(after! (helm org-agenda)
+(after! (ivy org-agenda)
 
   (defun goto-or-create-heading (heading &optional level)
     (find-areas)
@@ -107,6 +107,16 @@ I use [[https://orgmode.org/][Org mode]] for:
 :END:
 #+END_SRC
 
+*** source-block
+#+BEGIN_SRC snippet :tangle (get-snippet-path)
+# name: source-block
+# key: src
+# --
+#+begin_src $1
+$0
+`(format "#+end_src")`
+#+end_src
+
 ** Capture
 :PROPERTIES:
 :ID:       5fe33daf-9f01-4348-91fd-e438e4381e50
@@ -120,13 +130,13 @@ Org-mode comes with a [[https://orgmode.org/manual/Capture.html][capture]] syste
    - I used to use [[https://cookiecutter.readthedocs.io/en/1.7.2/][cookiecutter]] for this, but org-mode gives me much more flexibility. [[https://yeoman.io/][Yeoman]] is another popular option
 
 #+begin_src elisp :noweb-ref configs :results none
-(after! helm
+(after! ivy
   (defvar cookie-path (f-join dotfiles-directory "cookies")
     "Path to cookie dierectory")
 
   (defun choose (prompt choices)
-    "Choose an option from CHOICES using helm"
-    (helm :sources (helm-build-sync-source prompt :candidates choices)))
+    "Choose an option from CHOICES using ivy"
+    (ivy-read prompt choices))
 
   (defun cookie-get-path ()
     "Generate the path to tangle src block to
@@ -156,9 +166,11 @@ to be tangled'"
     (when (doct-get :gitignore)
       (with-current-buffer (find-file-noselect (expand-file-name ".gitignore" (cookie-root)))
         (end-of-buffer)
-        (insert "\n.project.org\n"
-                (url-to-string (helm-gitignore--generate-url (doct-get :gitignore))))
-        (save-buffer))))
+        (insert "\n.project.org\n")
+        (dolist name (doct-get :gitignore)
+                (gitignore-templates-insert (doct-get :gitignore)))
+        (save-buffer)))
+    )
 
   (defun cookie-new-project (&optional directory)
     "Find the staring place for the capture process
@@ -290,7 +302,6 @@ templates"
 #+begin_src elisp :noweb-ref packages
 (package! doct)
 (package! gitignore-templates)
-(package! helm-gitignore)
 #+end_src
 ** Agenda
 #+begin_src elisp :noweb-ref configs
