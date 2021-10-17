@@ -116,6 +116,16 @@ I use [[https://orgmode.org/][Org mode]] for:
 $0
 `(format "#+end_src")`
 #+end_src
+*** center
+#+BEGIN_SRC snippet :tangle (get-snippet-path)
+# name: center
+# key: center
+# --
+#+begin_src $1
+#+begin_center
+$0
+#+end_center
+#+end_src
 
 ** Capture
 :PROPERTIES:

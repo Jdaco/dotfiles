@@ -81,3 +81,33 @@ def ${1:name}($2):
 def ${2:name}($3):
     $0
 #+end_src
+
+** test
+#+begin_src snippet
+# name: test
+# key: test
+# uuid: test
+# --
+def test_${1:name}($2):
+    $0
+#+end_src
+
+** doc
+#+begin_src snippet
+# name: doc
+# key: doc
+# uuid: doc
+# --
+"""
+$0
+"""
+#+end_src
+
+** logger
+#+begin_src snippet
+# name: logger
+# key: logger
+# uuid: logger
+# --
+logger = logging.getLogger(${1:__name__})
+#+end_src

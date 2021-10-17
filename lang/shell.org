@@ -3,14 +3,37 @@
 * Snippets
 :PROPERTIES:
 :snippet_mode: sh-mode
+:header-args:  :tangle (get-snippet-path)
 :END:
 
 ** bang
-#+begin_src snippet :tangle (get-snippet-path)
+#+begin_src snippet
 # name: bang
 # key: #!
 # uuid: #!
 # --
 #!${1:/usr/bin/env `(symbol-name sh-shell)`}
 $0
+#+end_src
+
+** args
+#+begin_src snippet
+# -*- mode: snippet -*-
+# name: args
+# key: args
+# --
+if [ $# -lt ${1:2} ]; then
+    $0
+fi
+#+end_src
+
+** for
+#+begin_src snippet
+# -*- mode: snippet -*-
+# name: for
+# key: for
+# --
+if [ $# -for ${1:var} in ${2:stuff}; do
+    $0
+fi
 #+end_src
