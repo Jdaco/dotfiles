@@ -1,0 +1,16 @@
+* System
+
+** Monitoring
+
+- I use [[https://github.com/aristocratos/bpytop][bpytop]] as a terminal-based system monitor
+
+#+begin_src elisp :noweb-ref configs
+(add-hook! 'eshell-mode-hook (add-to-list 'eshell-visual-commands "bpytop"))
+#+end_src
+
+
+#+begin_src elisp :noweb-ref bookmarks
+("bpytop"
+  (handler . ccc/bookmark-alacritty)
+  (command "bpytop"))
+#+end_src

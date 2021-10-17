@@ -45,6 +45,13 @@ I use the [[https://github.com/joaotavora/yasnippet][yasnippet]] emacs package f
 
 #+begin_src elisp :noweb-ref configs
 (setq bookmark-default-file "~/.emacs.d/.local/etc/bookmarks")
+
+(defun ccc/bookmark-alacritty (bmk-record)
+  "Open a command in alacritty"
+  (interactive)
+  (let* ((command (car (bookmark-prop-get bmk-record 'command)))
+         (name (format "alacritty-%s" command)))
+    (start-process-shell-command name nil (format "alacritty -e '%s'" command))))
 #+end_src
 
 #+begin_src elisp :tangle .emacs.d/.local/etc/bookmarks

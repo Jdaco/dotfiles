@@ -15,6 +15,7 @@ These are the base layers that will be installed on every system
 #+INCLUDE: ./x.org
 #+INCLUDE: ./guix.org
 #+INCLUDE: ./org.org
+#+INCLUDE: ./system.org
 
 
 #+INCLUDE: ./lang/makefile.org

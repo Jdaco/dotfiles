@@ -58,6 +58,7 @@
     "wget"
     ;;
     "stow"
+    "bpytop"
     "icecat"
     "pandoc"
     "awscli"
