@@ -64,6 +64,7 @@ The [[https://github.com/skeeto/elfeed][Elfeed]] emacs package is my preferred f
          :n "C-l" #'elfeed-search-browse-url
          :n "R" #'ccc/elfeed-reload-db
          :n "X" #'elfeed-update
+         :v "y" #'elfeed-search-yank
          )
         (:map elfeed-show-mode-map
          "C-l" #'elfeed-show-visit
