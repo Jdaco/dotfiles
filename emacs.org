@@ -490,6 +490,13 @@ I use [[https://www.gnu.org/software/emacs/manual/html_mono/eshell.html][Eshell]
 :ID:       d14e235d-95ff-4976-bed9-4c0253a576e3
 :END:
 
+#+begin_src elisp :noweb-ref configs
+(defun eshell/mktemp (&rest args)
+  "Alias for mktemp that removes the trailing newline"
+  (interactive)
+  (string-trim (shell-command-to-string (string-join (cons "mktemp" args) " "))))
+#+end_src
+
 #+begin_src shell :tangle .config/doom/eshell/aliases
 alias doom ~/.emacs.d/bin/doom $*
 alias guixupdate sudo guix system reconfigure /etc/config.scm
@@ -498,6 +505,10 @@ alias lsr ls --tree $*
 alias lsrd lsr --only-dirs $*
 alias lsa ls -a $*
 
+# Sudo
+alias umount sudo umount $*
+alias mount sudo mount $*
+
 # Monitoring
 alias pgrep pgrep --list-full $*
 alias iostat iostat -hNs $*
@@ -505,7 +516,9 @@ alias pstree pstree -U $*
 alias df df -h $*
 alias clip xclip -selection clipboard -o $*
 
+# Block Devices
 alias lsblk lsblk -o 'name,size,type,mountpoint,partlabel,uuid' $*
+alias mnt mount $1 ${mktemp -d}
 
 <<aliases>>
 #+end_src
