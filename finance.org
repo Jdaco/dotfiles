@@ -133,3 +133,8 @@ ledger
     Expenses:$1
     $0
 #+end_src
+** Bookmarks
+#+begin_src elisp :noweb-ref bookmarks
+("ledger"
+ (filename . "~/ledger/main.ledger"))
+#+end_src
