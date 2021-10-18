@@ -98,4 +98,6 @@ Configure my common elfeed search as Emacs bookmarks
   (location . "+unread -image -video -reddit")
   (tags "unread")
   (handler . elfeed-search-bookmark-handler))
+("feeds"
+  (filename . "~/roam/other/feeds.org"))
 #+end_src

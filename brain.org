@@ -246,6 +246,11 @@ For example, an org-ql dynamic block header could look like:
 #+begin_src elisp :noweb-ref packages
 (package! org-drill)
 #+end_src
+
+#+begin_src elisp :noweb-ref bookmarks
+("drills"
+  (filename . "~/roam/other/drills.org"))
+#+end_src
 ** Roam
 
 [[https://www.orgroam.com/][org-roam]] applies the [[https://zettelkasten.de/posts/overview/][Zettelkasten Method]] to Emacs and Org mode. The idea is that you have many small note files with no strict structure, that link use hyperlinks to relate to each other. Org-roam helps in this by keeping track of the *backlinks* so you can easily see which notes link to the note that you're currently looking at.
