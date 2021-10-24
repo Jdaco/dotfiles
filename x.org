@@ -166,7 +166,7 @@ Can show completions at point for COMMAND using helm or ivy"
 ** Monitors
 I use ~autorandr~ to manage monitor orientation
 
-#+begin_src elisp :noweb-ref aliases
+#+begin_src elisp :noweb-ref configs
 (defun cc/mon-reload ()
   (interactive)
   (start-process "mon-reload" nil "autorandr" "--change" "horizontal"))
