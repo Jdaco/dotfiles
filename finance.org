@@ -31,7 +31,7 @@ I use [[https://www.ledger-cli.org/][Ledger]] for my financial bookkeeping. I lo
                          ("reg" "%(binary) -f %(ledger-file) reg")
                          ("payee" "%(binary) -f %(ledger-file) reg @%(payee)")
                          ("account" "%(binary) -f %(ledger-file) reg %(account)")
-                         ("budget" ,(concat "%(binary) -f %(ledger-file) budget -F '" ledger-budget-format "' ^Assets:Savings ^Income ^Expenses --add-budget --price -p %(month)"))
+                         ("budget" ,(concat "%(binary) -f %(ledger-file) budget -F '" ledger-budget-format "' ^Assets:Savings ^Income ^Expenses --exchange $ --price -p %(month)"))
                          ("unbudget" "%(binary) -f %(ledger-file) bal -p %(month) --unbudgeted ^Expenses ^Income"))
         )
   (defun ledger-report-budget-format-specifier ()
