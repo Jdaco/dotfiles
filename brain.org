@@ -2,6 +2,7 @@
 These are my configurations needed to work with my main notes and agendas. These files contain sensitive data so I don't include them on every computer.
 
 #+begin_src elisp :noweb-ref configs
+(after! ivy
   (defun find-place () (interactive)
          (let* ((candidates (org-map-entries
                               '(s-join "/" (org-get-outline-path t)) nil
@@ -32,6 +33,8 @@ These are my configurations needed to work with my main notes and agendas. These
       :prefix ("o f" . "Find")
       "a" #'find-areas
       "p" #'find-place)
+
+  )
 #+end_src
 
 ** Search
