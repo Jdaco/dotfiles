@@ -253,6 +253,8 @@ For example, an org-ql dynamic block header could look like:
 #+begin_src elisp :noweb-ref bookmarks
 ("drills"
   (filename . "~/roam/other/drills.org"))
+("contacts"
+  (filename . "~/roam/other/contacts.org"))
 #+end_src
 ** Roam
 
