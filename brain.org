@@ -255,6 +255,8 @@ For example, an org-ql dynamic block header could look like:
   (filename . "~/roam/other/drills.org"))
 ("contacts"
   (filename . "~/roam/other/contacts.org"))
+("places"
+  (filename . "~/roam/other/places.org"))
 #+end_src
 ** Roam
 
