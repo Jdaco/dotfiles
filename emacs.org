@@ -546,12 +546,26 @@ alias mnt mount $1 ${mktemp -d}
 ** Filesystem
 *** Navigation
 
+I use ~consult-dir~ to quickly find files and add their patt to the current minibuffer selection
+
+#+begin_src elisp :noweb-ref packages
+(package! consult-dir)
+#+end_src
+
+#+begin_src elisp :noweb-ref configs
+(map! :map ivy-minibuffer-map
+      "C-;" #'consult-dir)
+#+end_src
+
+
+
 #+begin_src elisp :noweb-ref configs
 (defun ccc/counsel-home ()
     (interactive)
     (let* ((cands (split-string
                     (shell-command-to-string "find ~ -type d | grep -v -e .cache -e .git") "\n" t)))
     (ivy-read "File: " cands :caller 'ccc/counsel-home)))
+
 
 (defun ccc/imv-dir (dir)
   (interactive)
@@ -564,6 +578,7 @@ alias mnt mount $1 ${mktemp -d}
       "o I" (cmd! () (ccc/imv-dir (ccc/counsel-home)))
       )
 #+end_src
+
 
 **** Treemacs
 [[https://github.com/Alexander-Miller/treemacs][Treemacs]] gives you a tree-style overview of your current project or directory
