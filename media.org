@@ -26,9 +26,14 @@ Ctrl+o script_message locate-current-file
 Open org-mode link in MPV
 
 #+begin_src elisp :noweb-ref configs
-(defun run-mpv (url)
+(defun run-mpv (url &optional new_window)
   "Watch a video from URL in MPV"
   (start-process "mpv" "mpv" "mpv" "--demuxer-readahead-secs=300" url))
+
+; Open youtube videos in mpv by default
+(setq browse-url-browser-function
+      '(("https:\\/\\/www\\.youtu\\.*be." . run-mpv)
+        ("." . browse-url-generic)))
 
 (defun org-open-at-point-in-mpv ()
   (interactive)
