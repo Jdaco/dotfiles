@@ -93,3 +93,10 @@ Most of my git work is done in Emacs's [[https://magit.vc/][Magit]] interface, b
 #+begin_src elisp :noweb-ref packages
 (package! gitignore-templates)
 #+end_src
+* Magit
+
+To fix magit starting up with =emacs= evil-state
+
+#+begin_src elisp :noweb-ref configs
+(evil-collection-magit-set-initial-states)
+#+end_src
