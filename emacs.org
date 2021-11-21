@@ -541,6 +541,7 @@ alias mnt mount $1 ${mktemp -d}
 #+begin_src elisp :noweb-ref configs
 (add-to-list 'exec-path (expand-file-name "~/.local/bin"))
 (add-to-list 'exec-path (expand-file-name "~/dotfiles/bin"))
+(setq eshell-path-env (s-join ":" exec-path))
 #+end_src
 
 ** Filesystem
