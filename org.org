@@ -80,6 +80,7 @@ I use [[https://orgmode.org/][Org mode]] for:
 #+begin_src elisp :noweb-ref packages
 (package! org-sidebar)
 (package! org-picklink)
+(package! org-ref)
 #+end_src
 
 
