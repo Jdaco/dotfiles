@@ -286,7 +286,7 @@ Configs for my Iontra laptop
 (setq inbox-file "~/sync/inbox.org"
       org-directory "~/sync"
       scrot-directory "~/sync"
-      org-agenda-files '("~/sync/areas/fresh.org")
+      org-agenda-files '("~/sync/areas/iontra.org")
       dotfiles-directory "~/dotfiles"
       magit-repository-directories '(("~/proj" . 1)))
 
@@ -300,4 +300,12 @@ Configs for my Iontra laptop
 *** Monitors
 #+begin_src elisp :noweb-ref exwm-configs
 (setq exwm-randr-workspace-monitor-plist '(0 "eDP-1" 1 "eDP-1" 2 "HDMI-1" 3 "HDMI-1"))
+#+end_src
+*** Bookmarks
+
+#+begin_src elisp :noweb-ref bookmarks
+("org"
+  (filename . "~/sync/iontra.org"))
+("inbox"
+  (filename . inbox-file))
 #+end_src
