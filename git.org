@@ -98,5 +98,6 @@ Most of my git work is done in Emacs's [[https://magit.vc/][Magit]] interface, b
 To fix magit starting up with =emacs= evil-state
 
 #+begin_src elisp :noweb-ref configs
-(evil-collection-magit-set-initial-states)
+(after! evil-collection-magit
+  (evil-collection-magit-set-initial-states))
 #+end_src
