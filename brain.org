@@ -259,6 +259,9 @@ For example, an org-ql dynamic block header could look like:
   (filename . "~/roam/other/places.org"))
 #+end_src
 ** Roam
+:PROPERTIES:
+:ID:       c94f5761-3a42-44df-afd3-55f409902dbf
+:END:
 
 [[https://www.orgroam.com/][org-roam]] applies the [[https://zettelkasten.de/posts/overview/][Zettelkasten Method]] to Emacs and Org mode. The idea is that you have many small note files with no strict structure, that link use hyperlinks to relate to each other. Org-roam helps in this by keeping track of the *backlinks* so you can easily see which notes link to the note that you're currently looking at.
 
@@ -266,35 +269,33 @@ For example, an org-ql dynamic block header could look like:
 
 (setq org-roam-tag-sources '(prop last-directory)
       org-roam-file-exclude-regexp (concat (expand-file-name org-roam-directory) "areas")
-      org-roam-capture-templates '(("d" "default"
-                                    plain #'org-roam--capture-get-point "%?"
-                                    :file-name "notes/%<%Y%m%d%H%M%S>-${slug}"
-                                    :head "#+title: ${title}\n\n- tags :: "
+      org-roam-capture-templates '(("d" "default" plain "%?"
+                                    :target (file+head "notes/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n\n- tags :: ")
                                     :unnarrowed t)
                                    ("c" "conference"
                                     plain #'org-roam--capture-get-point "%?"
-                                    :file-name "conferences/%<%Y%m%d%H%M%S>-${slug}"
+                                    :target "conferences/%<%Y%m%d%H%M%S>-${slug}"
                                     :head "* ${title}\n\n- tags :: "
                                     :unnarrowed t)
                                    ("s" "Store"
                                     plain #'org-roam--capture-get-point "%?"
-                                    :file-name "stores/%<%Y%m%d%H%M%S>-${slug}"
+                                    :target "stores/%<%Y%m%d%H%M%S>-${slug}"
                                     :head "#+title: ${title}\n#+roam_key: \n\n- tags :: "
                                     :unnarrowed t)
                                    ("r" "Recipe"
                                     plain #'org-roam--capture-get-point "%?"
-                                    :file-name "recipes/%<%Y%m%d%H%M%S>-${slug}"
+                                    :target "recipes/%<%Y%m%d%H%M%S>-${slug}"
                                     :head "#+title: ${title}\n\n- tags :: "
                                     :unnarrowed t)
                                    ("P" "Presentation"
                                     plain #'org-roam--capture-get-point "%?"
-                                    :file-name "presentations/%<%Y%m%d%H%M%S>-${slug}"
+                                    :target "presentations/%<%Y%m%d%H%M%S>-${slug}"
                                     :head "#+title: ${title}\n\n- tags :: "
                                     :unnarrowed t)
                                    ("p" "Programming Language"
                                     plain #'org-roam--capture-get-point
                                     (file "~/roam/areas/software/templates/programming_language.org")
-                                    :file-name "notes/%<%Y%m%d%H%M%S>-${slug}"))
+                                    :target "notes/%<%Y%m%d%H%M%S>-${slug}"))
       )
 #+end_src
 
