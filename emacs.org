@@ -363,6 +363,9 @@ git clone https://github.com/hlissner/doom-emacs ~/.emacs.d
 (map! :leader
       :desc "M-x" "SPC" #'counsel-M-x)
 
+(map! :map eshell-mode-map
+      :i "C-p" #'evil-paste-after)
+
 (map! :map ivy-mode-map
       "C-p" #'evil-paste-after)
 
@@ -541,6 +544,7 @@ alias mnt mount $1 ${mktemp -d}
 #+begin_src elisp :noweb-ref configs
 (add-to-list 'exec-path (expand-file-name "~/.local/bin"))
 (add-to-list 'exec-path (expand-file-name "~/dotfiles/bin"))
+(add-to-list 'exec-path (expand-file-name "/usr/bin"))
 (setq eshell-path-env (s-join ":" exec-path))
 #+end_src
 
@@ -639,6 +643,12 @@ I don't having a log of the commands I run
 (setq history-length 0)
 #+end_src
 ** Lisp
+#+begin_src elisp :noweb-ref configs
+; Replace eval-last-sexp with pretty printing versiion
+(global-set-key [remap eval-last-sexp] 'pp-eval-last-sexp)
+#+end_src
+
+
 #+begin_src elisp :noweb-ref packages
 (package! geiser)
 (package! geiser-guile)
