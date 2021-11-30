@@ -42,6 +42,7 @@ My primary workstation
 (setq dotfiles-directory "~/dotfiles"
       org-directory "~/roam"
       org-roam-directory "~/roam"
+      org-roam-database-connector 'sqlite3
       inbox-file "~/inbox.org"
       org-agenda-files `(,(f-join org-roam-directory "areas") ,(f-join org-roam-directory "areas/career/companies/iontra/iontra.org"))
       scrot-directory "~/Downloads"
@@ -169,7 +170,9 @@ My primary laptop
       inbox-file "~/inbox.org"
       org-agenda-files `(,(f-join org-roam-directory "areas") ,(f-join org-roam-directory "areas/career/companies/iontra/iontra.org"))
       scrot-directory "~/Downloads"
-      magit-repository-directories `((,dotfiles-directory . 0)))
+      magit-repository-directories `((,dotfiles-directory . 0))
+      org-roam-database-connector 'sqlite3
+      )
 #+end_src
 
 #+include: ./base.org
