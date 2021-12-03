@@ -1,0 +1,17 @@
+* Docs
+
+** Dash
+
+I use [[https://kapeli.com/dash][Dash]] to lookup documentation while offline
+
+#+begin_src elisp :noweb-ref configs
+(setq dash-docs-common-docsets '("Bash" "Emacs_Lisp")
+      dash-docs-common-user-docsets '("GNU Make"))
+#+end_src
+
+To install these dash docsets:
+
+#+begin_src elisp
+(dolist (docs dash-docs-common-docsets) (dash-docs-install-docset docs))
+(dolist (docs dash-docs-common-user-docsets) (dash-docs-install-user-docset docs))
+#+end_src
