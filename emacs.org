@@ -30,6 +30,7 @@ I use the [[https://github.com/joaotavora/yasnippet][yasnippet]] emacs package f
 #+begin_src elisp :noweb-ref configs
 (require 'yasnippet)
 (add-to-list 'yas-snippet-dirs "~/.config/doom/snippets")
+(yas-global-mode)
 
 (map! :i "M-a" #'yas-previous-field
       :i "M-;" #'yas-next-field
