@@ -623,6 +623,8 @@ In the terminal I've always loved the [[https://github.com/ranger/ranger][ranger
 (map! :leader
       "f -" #'dired-jump)
 
+(ranger-override-dired-mode t)
+
 ; Ranger settings
 (setq ranger-clieanup-eagerly t
       ranger-show-literal nil
