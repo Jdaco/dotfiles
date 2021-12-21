@@ -43,10 +43,14 @@ My primary workstation
       org-directory "~/roam"
       org-roam-directory "~/roam"
       org-roam-database-connector 'sqlite3
-      inbox-file "~/inbox.org"
       org-agenda-files `(,(f-join org-roam-directory "areas") ,(f-join org-roam-directory "areas/career/companies/iontra/iontra.org"))
       scrot-directory "~/Downloads"
       magit-repository-directories `((,dotfiles-directory . 0)))
+#+end_src
+
+#+begin_src elisp :noweb-ref bookmarks
+("inbox"
+  (filename . "~/inbox.org"))
 #+end_src
 
 #+include: ./base.org
@@ -167,7 +171,6 @@ My primary laptop
 (setq dotfiles-directory "~/dotfiles"
       org-directory "~/roam"
       org-roam-directory "~/roam"
-      inbox-file "~/inbox.org"
       org-agenda-files `(,(f-join org-roam-directory "areas") ,(f-join org-roam-directory "areas/career/companies/iontra/iontra.org"))
       scrot-directory "~/Downloads"
       magit-repository-directories `((,dotfiles-directory . 0))
@@ -182,6 +185,11 @@ My primary laptop
 #+include: ./brain.org
 #+include: ./npm.org
 #+include: ./vm.org
+
+#+begin_src elisp :noweb-ref bookmarks
+("inbox"
+  (filename . "~/inbox.org"))
+#+end_src
 
 *** Disks
 
@@ -225,9 +233,13 @@ This is a version of my configuration for use as a bootable medium.
 
 #+begin_src elisp :noweb-ref configs
 (setq dotfiles-directory "~/dotfiles"
-      inbox-file "~/inbox.org"
       scrot-directory "~/Downloads"
       org-roam-directory "~/org")
+#+end_src
+
+#+begin_src elisp :noweb-ref bookmarks
+("inbox"
+  (filename . "~/inbox.org"))
 #+end_src
 
 #+include: ./base.org
@@ -286,8 +298,7 @@ Configs for my Iontra laptop
 #+include: ~/sync/config.org
 
 #+begin_src elisp :noweb-ref configs
-(setq inbox-file "~/sync/inbox.org"
-      org-directory "~/sync"
+(setq org-directory "~/sync"
       scrot-directory "~/sync"
       org-agenda-files '("~/sync/areas/iontra.org")
       dotfiles-directory "~/dotfiles"
@@ -310,5 +321,5 @@ Configs for my Iontra laptop
 ("org"
   (filename . "~/sync/iontra.org"))
 ("inbox"
-  (filename . inbox-file))
+  (filename . "~/sync/inbox.org"))
 #+end_src

@@ -61,6 +61,8 @@ I use the [[https://github.com/joaotavora/yasnippet][yasnippet]] emacs package f
 ;;; nevertheless, you probably don't want to edit it.
 ;;; -*- End Of Bookmark File Format Version Stamp -*-
 (
+("Downloads"
+  (filename . "~/Downloads"))
 <<bookmarks>>
 )
 #+end_src
