@@ -56,6 +56,8 @@
     "syncthing"
     "curl"
     "wget"
+    ;;  Fonts
+    "font-victor-mono"
     ;;
     "stow"
     "bpytop"
