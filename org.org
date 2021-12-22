@@ -264,7 +264,7 @@ templates"
         (shell-command (format "cp %s %s" assets (cookie-root))))))
 
   (setq org-capture-templates
-        (doct `(("Inbox" :keys "i" :file (bookmark-get-filename "inbox") :template "* %?")
+        (doct `(("Inbox" :keys "i" :file ,(bookmark-get-filename "inbox") :template "* %?")
                 ("Task" :keys "t" :file (lambda () (find-areas #'identity)) :olp ("Tasks") :template "* TODO %?")
                 ("Event" :keys "e" :file (lambda () (find-areas #'identity)) :olp ("Events")
                  :template-file ,(f-join dotfiles-directory "templates" "org" "event.org"))
