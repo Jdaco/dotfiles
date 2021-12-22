@@ -163,7 +163,7 @@ git clone https://github.com/hlissner/doom-emacs ~/.emacs.d
        ;;word-wrap         ; soft wrapping with language-aware indent
 
        :emacs
-       (dired +ranger +icons)             ; making dired pretty [functional]
+       (dired +icons)             ; making dired pretty [functional]
        electric          ; smarter, keyword-based electric-indent
        ;;ibuffer         ; interactive buffer management
        undo              ; persistent, smarter undo for your inevitable mistakes
@@ -619,27 +619,37 @@ I use ~consult-dir~ to quickly find files and add their patt to the current mini
 
 
 #+end_src
-**** Ranger
-In the terminal I've always loved the [[https://github.com/ranger/ranger][ranger]] file manager. In emacs you have [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Dired.html][dired]] which handles a lot of the ranger functionality. And to get the full 3-column view of ranger I use the [[https://github.com/ralesi/ranger.el][ranger.el]] emacs package
+**** Dired
 
 #+begin_src elisp :noweb-ref configs
-; Dired
 (map! :leader
       "f -" #'dired-jump)
 
-(map! :map ranger-mode-map
-      :m
-      "; h" (cmd! () (find-file (ccc/counsel-home))))
+(map! :map 'dired-mode-map
+      :n
+      "g h" (cmd! () (find-file "~"))
+      "C-k" #'dired-kill-line
+      "C-K" #'dired-kill-subdir
+      "Z" #'dired-do-compress
+      "c" #'dired-do-compress-to)
 
-(ranger-override-dired-mode t)
+(evil-collection-define-key 'normal 'dired-mode-map
+      "h" #'dired-up-directory
+      "we" (cmd! () (let ((process-connection-type nil)) (start-process "" nil "xdg-open" (car (dired-get-marked-files)))))
+      "l" #'dired-open-file)
 
-; Ranger settings
-(setq ranger-clieanup-eagerly t
-      ranger-show-literal nil
-      ranger-show-dotfiles nil
-      ranger-parent-depth 2)
+(setq dired-listing-switches "-algho --group-directories-first"
+      delete-by-moving-to-trash t
+      trash-directory "~/.trash"
+      dired-open-extensions '(("mp4" . "mpv")
+                              ("webm" . "mpv"))
+      dired-omit-files (rx (seq bol "." (* any) eol))
+      )
 #+end_src
 
+#+begin_src elisp :noweb-ref packages
+(package! dired-open)
+#+end_src
 *** Archives
 You can use ~dired~ to manage archives
 
