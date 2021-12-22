@@ -628,6 +628,10 @@ In the terminal I've always loved the [[https://github.com/ranger/ranger][ranger
 (map! :leader
       "f -" #'dired-jump)
 
+(map! :map ranger-mode-map
+      :m
+      "; h" (cmd! () (find-file (ccc/counsel-home))))
+
 (ranger-override-dired-mode t)
 
 ; Ranger settings
