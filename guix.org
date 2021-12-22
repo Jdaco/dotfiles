@@ -1,8 +1,7 @@
 * Guix
 #+begin_src elisp :noweb-ref configs
-(use-package! guix
-  :config (map! :leader
-                "o g" #'guix))
+(map! :leader
+      "o g" #'guix)
 #+end_src
 
 #+begin_src elisp :noweb-ref packages
