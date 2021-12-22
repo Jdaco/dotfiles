@@ -360,6 +360,8 @@ git clone https://github.com/hlissner/doom-emacs ~/.emacs.d
   )
 
 (require 'f)
+(require 'bookmark)
+(bookmark-maybe-load-default-file)
 
 (recentf-mode 0)
 
