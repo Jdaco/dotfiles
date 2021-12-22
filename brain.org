@@ -37,6 +37,10 @@ These are my configurations needed to work with my main notes and agendas. These
   )
 #+end_src
 
+#+begin_src elisp :noweb-ref packages
+(package! emacsql-sqlite3)
+#+end_src
+
 ** Search
 *** Deft
 
