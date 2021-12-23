@@ -12,7 +12,7 @@ I use [[https://orgmode.org/][Org mode]] for:
 - Note :: The configurations for someof these are stored in =brain.org=
 
 #+begin_src elisp :noweb-ref configs
-(after! (ivy org-agenda)
+(after! (org-agenda)
 
   (defun goto-or-create-heading (heading &optional level)
     (find-areas)

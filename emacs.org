@@ -39,7 +39,7 @@ I use the [[https://github.com/joaotavora/yasnippet][yasnippet]] emacs package f
 *** Buffers
 
 #+begin_src elisp :noweb-ref exwm-keys
-([?\s-b] . +ivy/switch-buffer)
+([?\s-b] . switch-to-buffer)
 #+end_src
 ** Bookmarks
 [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Bookmarks.html][Bookmarks]] let you save your position in commonly used files
@@ -120,7 +120,9 @@ git clone https://github.com/hlissner/doom-emacs ~/.emacs.d
        company           ; the ultimate code completion backend
        ;; helm              ; the *other* search engine for love and life
        ;;ido               ; the other *other* search engine...
-       (ivy +icons)               ; a search engine for love and life
+       ;; (ivy +icons)               ; a search engine for love and life
+       vertico           ; the search engine of the future
+
 
        :ui
        deft              ; notational velocity for Emacs
@@ -370,9 +372,6 @@ git clone https://github.com/hlissner/doom-emacs ~/.emacs.d
 (map! :map eshell-mode-map
       :i "C-p" #'evil-paste-after)
 
-(map! :map ivy-mode-map
-      "C-p" #'evil-paste-after)
-
 (map! :map minibuffer-local-map
       "C-p" #'evil-paste-after)
 
@@ -385,6 +384,8 @@ git clone https://github.com/hlissner/doom-emacs ~/.emacs.d
 
 <<configs>>
 #+end_src
+
+
 
 *** packages.el
 :PROPERTIES:
@@ -560,13 +561,6 @@ I use ~consult-dir~ to quickly find files and add their patt to the current mini
 #+begin_src elisp :noweb-ref packages
 (package! consult-dir)
 #+end_src
-
-#+begin_src elisp :noweb-ref configs
-(map! :map ivy-minibuffer-map
-      "C-;" #'consult-dir)
-#+end_src
-
-
 
 #+begin_src elisp :noweb-ref configs
 (defun ccc/counsel-home ()
