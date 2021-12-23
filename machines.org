@@ -294,9 +294,6 @@ git clone https://github.com/Jdaco/dotfiles
 
 Configs for my Iontra laptop
 
-#+include: ./base.org
-#+include: ~/sync/config.org
-
 #+begin_src elisp :noweb-ref configs
 (setq org-directory "~/sync"
       scrot-directory "~/sync"
@@ -310,6 +307,9 @@ Configs for my Iontra laptop
 #+begin_src elisp :noweb-ref packages
 (package! exwm)
 #+end_src
+
+#+include: ./base.org
+#+include: ~/sync/config.org
 
 *** Monitors
 #+begin_src elisp :noweb-ref exwm-configs
