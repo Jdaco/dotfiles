@@ -183,6 +183,7 @@ git clone https://github.com/hlissner/doom-emacs ~/.emacs.d
        ;;grammar           ; tasing grammar mistake every you make
 
        :tools
+       biblio
        ansible
        ;;debugger          ; FIXME stepping through code, to help you add bugs
        direnv
@@ -367,7 +368,7 @@ git clone https://github.com/hlissner/doom-emacs ~/.emacs.d
 (recentf-mode 0)
 
 (map! :leader
-      :desc "M-x" "SPC" #'counsel-M-x)
+      "SPC" #'execute-extended-command)
 
 (map! :map eshell-mode-map
       :i "C-p" #'evil-paste-after)
@@ -563,12 +564,13 @@ I use ~consult-dir~ to quickly find files and add their patt to the current mini
 #+end_src
 
 #+begin_src elisp :noweb-ref configs
-(defun ccc/counsel-home ()
-    (interactive)
-    (let* ((cands (split-string
-                    (shell-command-to-string "find ~ -type d | grep -v -e .cache -e .git") "\n" t)))
-    (ivy-read "File: " cands :caller 'ccc/counsel-home)))
+(require 'consult)
+(setq consult-dir-shadow-filenames nil)
 
+(defun ccc/consult-home ()
+    (let ((consult-find-args "find . -type d")
+          (default-directory "~"))
+      (concat "~/" (consult--find "Dir: " #'consult--find-builder ""))))
 
 (defun ccc/imv-dir (dir)
   (interactive)
@@ -576,12 +578,14 @@ I use ~consult-dir~ to quickly find files and add their patt to the current mini
                     (shell-command-to-string (format "find %s -type f | shuf" dir)) "\n" t)))
     (apply #'start-process "imv" "imv" "imv" images)))
 
+(map! :map vertico-map
+      "C-:" (cmd! () (delete-minibuffer-contents) (insert (ccc/consult-home))))
+
 (map! :leader
-      "H" (cmd! () (find-file (ccc/counsel-home)))
-      "o I" (cmd! () (ccc/imv-dir (ccc/counsel-home)))
+      "H" (cmd! () (find-file (ccc/consult-home)))
+      "o I" (cmd! () (ccc/imv-dir (ccc/consult-home)))
       )
 #+end_src
-
 
 **** Treemacs
 [[https://github.com/Alexander-Miller/treemacs][Treemacs]] gives you a tree-style overview of your current project or directory
@@ -629,7 +633,7 @@ I use ~consult-dir~ to quickly find files and add their patt to the current mini
 
 (evil-collection-define-key 'normal 'dired-mode-map
       "h" #'dired-up-directory
-      "we" (cmd! () (let ((process-connection-type nil)) (start-process "" nil "xdg-open" (car (dired-get-marked-files)))))
+      "we" (cmd! () (consult-file-externally (car (dired-get-marked-files))))
       "l" #'dired-open-file)
 
 (setq dired-listing-switches "-algho --group-directories-first"

@@ -2,39 +2,29 @@
 These are my configurations needed to work with my main notes and agendas. These files contain sensitive data so I don't include them on every computer.
 
 #+begin_src elisp :noweb-ref configs
-(after! ivy
-  (defun find-place () (interactive)
-         (let* ((candidates (org-map-entries
-                              '(s-join "/" (org-get-outline-path t)) nil
-                              `(,(f-join org-directory "other/places.org")))))
-           (ivy-read "Places: " candidates
-                     :action '(1
-                               ("s" (lambda (place) (org-ql-search 'org-agenda-files `(children (property "Place" ,place)) :super-groups '((:auto-category t)))) "search")
-                               ("c" (lambda (place) (kill-new place)) "copy")))))
+(defun find-place () (interactive)
+        (let* ((candidates (org-map-entries
+                            '(s-join "/" (org-get-outline-path t)) nil
+                            `(,(f-join org-directory "other/places.org")))))
 
-  (defun find-areas (&optional action)
-    (interactive)
-    (let* ((candidates (directory-files (f-join org-directory "areas") t "^[^.].*\.org")))
-           (ivy-read "Areas: " candidates
-                     :caller 'find-areas
-                     :action (or action #'find-file))))
-
-(ivy-configure 'find-areas
-  :display-transformer-fn #'file-name-base)
-
-  (defun org-dblock-write:contacts (params)
-    (org-dblock-write:org-ql `(:file ,(f-join org-directory "other/contacts.org")
-                               :columns (heading todo ((property "Place") "Place"))
-                               :query (children (and (heading "Services") (children (heading ,(plist-get params :service))))))))
+        (org-ql-search 'org-agenda-files
+            `(children (property "Place" ,(completing-read "Places: " candidates))) :super-groups '((:auto-category t)))))
 
 
+(defun find-areas ()
+(interactive)
+(find-file
+    (read-file-name "Areas: " "~/roam/areas/" nil (confirm-nonexistent-file-or-buffer) nil #'f-file-p)))
+
+(defun org-dblock-write:contacts (params)
+(org-dblock-write:org-ql `(:file ,(f-join org-directory "other/contacts.org")
+                            :columns (heading todo ((property "Place") "Place"))
+                            :query (children (and (heading "Services") (children (heading ,(plist-get params :service))))))))
 
 (map! :leader
-      :prefix ("o f" . "Find")
-      "a" #'find-areas
-      "p" #'find-place)
-
-  )
+    :prefix ("o f" . "Find")
+    "a" #'find-areas
+    "p" #'find-place)
 #+end_src
 
 #+begin_src elisp :noweb-ref packages
@@ -308,12 +298,11 @@ For example, an org-ql dynamic block header could look like:
 
 ** Books
 
-I prefer to read ebooks because being able to highlight and copy text from the book makes it much easier to take notes. Emacs has a great system for reading and annotating PDF files ([[https://github.com/politza/pdf-tools][pdf-tools]]). I store all of my ebooks in a single flat directory. Metadata about each book is stored in a [[http://www.bibtex.org/][Bibtex]] file and each books is named after it's bibtex entry ID. [[https://github.com/tmalsburg/helm-bibtex][ivy-bibtex]] lets you fuzzy-search through these entries
+I prefer to read ebooks because being able to highlight and copy text from the book makes it much easier to take notes. Emacs has a great system for reading and annotating PDF files ([[https://github.com/politza/pdf-tools][pdf-tools]]). I store all of my ebooks in a single flat directory. Metadata about each book is stored in a [[http://www.bibtex.org/][Bibtex]] file and each books is named after it's bibtex entry ID.
 
 - Note :: [[https://books.google.com/][books.google.com]] provides bibtex-style citations for books in it's database
 
 I use [[https://github.com/weirdNox/org-noter][org-noter]] when I'm taking notes on the book. It provides an interface with the PDF and the org-mode notes side-by-side. Org-noter will add metadata to your notes to link them to the page in the PDF that they're about
-
 
 
 *** org-noter
@@ -326,9 +315,6 @@ I use [[https://github.com/weirdNox/org-noter][org-noter]] when I'm taking notes
 (map! :after org-noter
       :mode org-noter-doc-mode
       :n "i" #'org-noter-insert-note)
-
-; Autoload ivy-bibtex so capture template works on startup
-(require 'ivy-bibtex)
 #+end_src
 
 #+begin_src elisp :noweb-ref packages
@@ -338,13 +324,14 @@ I use [[https://github.com/weirdNox/org-noter][org-noter]] when I'm taking notes
 *** Bibtex
 #+begin_src elisp :noweb-ref configs
 (setq
-          bibtex-completion-bibliography "~/roam/books/books.bib"
-          bibtex-completion-library-path "~/roam/books"
-          bibtex-completion-notes-path "~/roam/books"
+          citar-bibliography '("~/roam/books/books.bib")
+          citar-library-paths '("~/roam/books/")
+          citar-notes-paths '("~/roam/books/")
+          citar-default-action #'citar-open-library-files
           org-ref-default-bibliography '("~/roam/books/books.bib")
           reftex-default-bibliography org-ref-default-bibliography
           org-ref-pdf-directory "~/roam/books/"
-                bibtex-completion-notes-template-multiple-files "#+TITLE: ${title}
+          bibtex-completion-notes-template-multiple-files "#+TITLE: ${title}
 ,#+ROAM_KEY: cite:${=key=}
 
 - tags :: %?"
@@ -374,7 +361,7 @@ I use [[https://github.com/weirdNox/org-noter][org-noter]] when I'm taking notes
         (save-buffer)))))
 
 (map! :leader
-      "o B" #'ivy-bibtex)
+      "o B" citar-default-action)
 
 #+end_src
 

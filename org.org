@@ -140,50 +140,49 @@ Org-mode comes with a [[https://orgmode.org/manual/Capture.html][capture]] syste
    - I used to use [[https://cookiecutter.readthedocs.io/en/1.7.2/][cookiecutter]] for this, but org-mode gives me much more flexibility. [[https://yeoman.io/][Yeoman]] is another popular option
 
 #+begin_src elisp :noweb-ref configs :results none
-(after! ivy
-  (defvar cookie-path (f-join dotfiles-directory "cookies")
-    "Path to cookie dierectory")
+(defvar cookie-path (f-join dotfiles-directory "cookies")
+"Path to cookie dierectory")
 
-  (defun choose (prompt choices)
-    "Choose an option from CHOICES using ivy"
-    (ivy-read prompt choices))
+(defun choose (prompt choices)
+"Choose an option from CHOICES"
+(completing-read prompt choices))
 
-  (defun cookie-get-path ()
-    "Generate the path to tangle src block to
+(defun cookie-get-path ()
+"Generate the path to tangle src block to
 Intended to be used in the form of `:tangle (cookie-get-path) on files that are meant
 to be tangled'"
-    (apply 'f-join (cons (file-name-directory (buffer-file-name (marker-buffer (org-capture-get :cookie-mark))))
-                         (cdr (org-get-outline-path t)))))
+(apply 'f-join (cons (file-name-directory (buffer-file-name (marker-buffer (org-capture-get :cookie-mark))))
+                        (cdr (org-get-outline-path t)))))
 
-  (defun cookie-root ()
-    (f-dirname
-     (buffer-file-name (marker-buffer (org-capture-get :cookie-mark)))))
+(defun cookie-root ()
+(f-dirname
+    (buffer-file-name (marker-buffer (org-capture-get :cookie-mark)))))
 
-  (defun cookie-git ()
-    (when (doct-get :git)
-      (let ((root (cookie-root)))
-        (save-window-excursion
-          (magit-init root)
-          (magit-stage-file root)))))
+(defun cookie-git ()
+(when (doct-get :git)
+    (let ((root (cookie-root)))
+    (save-window-excursion
+        (magit-init root)
+        (magit-stage-file root)))))
 
-  (defun cookie-visit-file ()
-    (let ((path (expand-file-name (doct-get :visit-file) (cookie-root))))
-      (find-file path)
-      (magit-status)))
+(defun cookie-visit-file ()
+(let ((path (expand-file-name (doct-get :visit-file) (cookie-root))))
+    (find-file path)
+    (magit-status)))
 
-  (defun cookie-gitignore ()
-    "Generate a gitignore from https://gitignore.io"
-    (when (doct-get :gitignore)
-      (with-current-buffer (find-file-noselect (expand-file-name ".gitignore" (cookie-root)))
-        (end-of-buffer)
-        (insert "\n.project.org\n")
-        (dolist name (doct-get :gitignore)
-                (gitignore-templates-insert (doct-get :gitignore)))
-        (save-buffer)))
-    )
+(defun cookie-gitignore ()
+"Generate a gitignore from https://gitignore.io"
+(when (doct-get :gitignore)
+    (with-current-buffer (find-file-noselect (expand-file-name ".gitignore" (cookie-root)))
+    (end-of-buffer)
+    (insert "\n.project.org\n")
+    (dolist name (doct-get :gitignore)
+            (gitignore-templates-insert (doct-get :gitignore)))
+    (save-buffer)))
+)
 
-  (defun cookie-new-project (&optional directory)
-    "Find the staring place for the capture process
+(defun cookie-new-project (&optional directory)
+"Find the staring place for the capture process
 
 Info is stored in a .project.org file
 
@@ -194,119 +193,117 @@ Looks for `.project.org' in the projectile root, not the selected directory
 If the project root isn't the selected directory, make sub headings to match the
 path relative to the project root
 "
-    (let* ((project-dir (read-directory-name "Project Directory: "))
-           (root (projectile-project-root project-dir))
-           (relative-to-root (f-relative  project-dir (or root project-dir))))
-      (find-file (concat (or root project-dir) ".project.org"))
-      (beginning-of-buffer)
-      (when (eq 0 (buffer-size))
-        (org-insert-heading)
-        (insert (f-base (f-dirname (buffer-file-name))))
-        (org-entry-put nil "VISIBILITY" "contents")
-        (org-entry-put nil "header-args" ":noweb yes :mkdirp yes"))
-      (unless (string= "./" relative-to-root)
-        (let ((path (list (org-get-heading t t))))
-          (dolist (segment (f-split relative-to-root))
-            (setq path (append path (list segment)))
-            (let ((found (org-ql-select (current-buffer) (cons 'outline-path-segment path) :action #'point)))
-              (if found
-                  (goto-char (car found))
-                (progn
-                  (org-insert-subheading '(4))
-                  (insert segment)))))
-          ))
-      (org-capture-put :cookie-mark (point-marker))))
+(let* ((project-dir (read-directory-name "Project Directory: "))
+        (root (projectile-project-root project-dir))
+        (relative-to-root (f-relative  project-dir (or root project-dir))))
+    (find-file (concat (or root project-dir) ".project.org"))
+    (beginning-of-buffer)
+    (when (eq 0 (buffer-size))
+    (org-insert-heading)
+    (insert (f-base (f-dirname (buffer-file-name))))
+    (org-entry-put nil "VISIBILITY" "contents")
+    (org-entry-put nil "header-args" ":noweb yes :mkdirp yes"))
+    (unless (string= "./" relative-to-root)
+    (let ((path (list (org-get-heading t t))))
+        (dolist (segment (f-split relative-to-root))
+        (setq path (append path (list segment)))
+        (let ((found (org-ql-select (current-buffer) (cons 'outline-path-segment path) :action #'point)))
+            (if found
+                (goto-char (car found))
+            (progn
+                (org-insert-subheading '(4))
+                (insert segment)))))
+        ))
+    (org-capture-put :cookie-mark (point-marker))))
 
-  (defun process-cookie ()
-    "Generate the project files from the cookie"
-    (org-babel-tangle)
-    (org-map-entries
-     (lambda ()
-       (progn
-         (let* ((path (cookie-get-path))
-                (dir (file-name-directory path))
-                (contents (org-get-entry))
-                (level (org-current-level)))
-           (unless (file-directory-p dir) (mkdir dir t))
-           (with-current-buffer (find-file-noselect path)
-             (insert contents)
-             (save-buffer)
-             (org-map-entries (lambda () (--dotimes level (org-promote))))
-             (save-buffer)))))
-     "TAGS={export}" nil))
+(defun process-cookie ()
+"Generate the project files from the cookie"
+(org-babel-tangle)
+(org-map-entries
+    (lambda ()
+    (progn
+        (let* ((path (cookie-get-path))
+            (dir (file-name-directory path))
+            (contents (org-get-entry))
+            (level (org-current-level)))
+        (unless (file-directory-p dir) (mkdir dir t))
+        (with-current-buffer (find-file-noselect path)
+            (insert contents)
+            (save-buffer)
+            (org-map-entries (lambda () (--dotimes level (org-promote))))
+            (save-buffer)))))
+    "TAGS={export}" nil))
 
-  (defun cookie-get (prop)
-    "Get PROP from the projects `.project.org' file
+(defun cookie-get (prop)
+"Get PROP from the projects `.project.org' file
 
 Intended to be used as `%(cookie-get PROP)' from the cookie templates"
-    (or (org-entry-get (org-capture-get :cookie-mark) prop t) ""))
+(or (org-entry-get (org-capture-get :cookie-mark) prop t) ""))
 
-  (defun cookie-prompt (var &optional initial)
-    "Prompt the user for a value and save it in `.project.org'
+(defun cookie-prompt (var &optional initial)
+"Prompt the user for a value and save it in `.project.org'
 
 Returns an empty string
 Intended to be used as `%(cookie-prompt PROP INITIAL)' from the cookie templates"
-    (org-entry-put (org-capture-get :cookie-mark) var (read-string (format "%s: " var) initial))
-    "")
+(org-entry-put (org-capture-get :cookie-mark) var (read-string (format "%s: " var) initial))
+"")
 
-  (defun cookie-choice (var &rest choices)
-    "Prompt the user to choose a value and save it in `.project.org'
+(defun cookie-choice (var &rest choices)
+"Prompt the user to choose a value and save it in `.project.org'
 
 Returns an empty string
 Intended to be used as `%(cookie-choice PROP CHOICE CHOICE ...)' from the cookie
 templates"
-    (org-entry-put (org-capture-get :cookie-mark) var (choose (format "%s: " var) choices))
-    "")
+(org-entry-put (org-capture-get :cookie-mark) var (choose (format "%s: " var) choices))
+"")
 
-  (defun cookie-copy-assets ()
-    (when (doct-get :assets)
-      (let ((assets (f-join cookie-path (doct-get :assets) "*")))
-        (shell-command (format "cp %s %s" assets (cookie-root))))))
+(defun cookie-copy-assets ()
+(when (doct-get :assets)
+    (let ((assets (f-join cookie-path (doct-get :assets) "*")))
+    (shell-command (format "cp %s %s" assets (cookie-root))))))
 
-  (setq org-capture-templates
-        (doct `(("Inbox" :keys "i" :file ,(bookmark-get-filename "inbox") :template "* %?")
-                ("Task" :keys "t" :file (lambda () (find-areas #'identity)) :olp ("Tasks") :template "* TODO %?")
-                ("Event" :keys "e" :file (lambda () (find-areas #'identity)) :olp ("Events")
-                 :template-file ,(f-join dotfiles-directory "templates" "org" "event.org"))
-                ("Recipe" :keys "r" :function (lambda () (goto-or-create-heading "Recipe")) :template "* %?     :recipe:")
-                ("New Job" :keys "j"
-                 :file ,(f-join org-directory "areas/career.org")
-                 :olp ("Plans" "Employers")
-                 :template-file ,(f-join dotfiles-directory "templates" "org" "new-job.org"))
-                ("Cookies" :keys "c"
-                 :function cookie-new-project
-                 :immediate-finish t
-                 :kill-buffer nil
-                 :prepare-finalize (lambda () (cookie-copy-assets) (process-cookie))
-                 :after-finalize (lambda () (cookie-gitignore) (cookie-git) (cookie-visit-file))
-                 :git t
-                 :visit-file "Makefile"
-                 :children (
-                            ("Mkosi" :keys "m" :template-file ,(f-join cookie-path "mkosi.org"))
-                            ("Python" :keys "p" :template-file ,(f-join cookie-path "python.org") :gitignore ("python" "emacs"))
-                            ("Terraform" :keys "t"
-                             :children (("Environment"
-                                         :keys "e"
-                                         :template-file ,(f-join cookie-path "terraform/environment.org" )
-                                         :git nil)
-                                        ("Project" :keys "p"
-                                         :gitignore ("terraform" "terragrunt")
-                                         :children (("Azure"
-                                                     :keys "a"
-                                                     :template-file ,(f-join cookie-path "terraform/project/azure.org"))
-                                                    ("AWS"
-                                                     :keys "w"
-                                                     :template-file ,(f-join cookie-path "terraform/project/aws.org"))))
-                                        ("Module"
-                                         :keys "m"
-                                         :template-file ,(f-join cookie-path "terraform/module.org")
-                                         :git nil)
-                                        ))))
-                <<capture-templates>>
+(setq org-capture-templates
+    (doct `(("Inbox" :keys "i" :file ,(bookmark-get-filename "inbox") :template "* %?")
+            ("Task" :keys "t" :file (lambda () (find-areas #'identity)) :olp ("Tasks") :template "* TODO %?")
+            ("Event" :keys "e" :file (lambda () (find-areas #'identity)) :olp ("Events")
+                :template-file ,(f-join dotfiles-directory "templates" "org" "event.org"))
+            ("Recipe" :keys "r" :function (lambda () (goto-or-create-heading "Recipe")) :template "* %?     :recipe:")
+            ("New Job" :keys "j"
+                :file ,(f-join org-directory "areas/career.org")
+                :olp ("Plans" "Employers")
+                :template-file ,(f-join dotfiles-directory "templates" "org" "new-job.org"))
+            ("Cookies" :keys "c"
+            :function cookie-new-project
+                :immediate-finish t
+                :kill-buffer nil
+                :prepare-finalize (lambda () (cookie-copy-assets) (process-cookie))
+                :after-finalize (lambda () (cookie-gitignore) (cookie-git) (cookie-visit-file))
+                :git t
+                :visit-file "Makefile"
+                :children (
+                        ("Mkosi" :keys "m" :template-file ,(f-join cookie-path "mkosi.org"))
+                        ("Python" :keys "p" :template-file ,(f-join cookie-path "python.org") :gitignore ("python" "emacs"))
+                        ("Terraform" :keys "t"
+                            :children (("Environment"
+                                        :keys "e"
+                                        :template-file ,(f-join cookie-path "terraform/environment.org" )
+                                        :git nil)
+                                    ("Project" :keys "p"
+                                        :gitignore ("terraform" "terragrunt")
+                                        :children (("Azure"
+                                                    :keys "a"
+                                                    :template-file ,(f-join cookie-path "terraform/project/azure.org"))
+                                                ("AWS"
+                                                    :keys "w"
+                                                    :template-file ,(f-join cookie-path "terraform/project/aws.org"))))
+                                    ("Module"
+                                        :keys "m"
+                                        :template-file ,(f-join cookie-path "terraform/module.org")
+                                        :git nil)
+                                    ))))
+            <<capture-templates>>
 
-                )))
-  )
-
+            )))
 #+end_src
 
 #+begin_src elisp :noweb-ref packages

@@ -92,16 +92,6 @@ scrot
 (defvar exwm-app-launcher--prompt "$ "
   "Prompt for the EXWM application launcher")
 
-(defun exwm/app-launcher (command)
-  "Launches an application in your PATH.
-Can show completions at point for COMMAND using helm or ivy"
-  (interactive (list (read-shell-command exwm-app-launcher--prompt)))
-  (exwm/run-program-in-home command))
-
-(defun exwm/run-program-in-home (command)
-  (let ((default-directory (expand-file-name "~")))
-    (start-process-shell-command command nil command)))
-
 (setq exwm-workspace-number 4)
 
 ;; Make the alternate doom leader key work in EXWM buffers
