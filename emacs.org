@@ -568,7 +568,7 @@ I use ~consult-dir~ to quickly find files and add their patt to the current mini
 (setq consult-dir-shadow-filenames nil)
 
 (defun ccc/consult-home ()
-    (let ((consult-find-args "find . -type d")
+    (let ((consult-find-args "find . -type d -not ( -wholename */.* -prune )")
           (default-directory "~"))
       (concat "~/" (consult--find "Dir: " #'consult--find-builder ""))))
 
