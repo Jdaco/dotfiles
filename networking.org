@@ -13,3 +13,12 @@ I use [[https://syncthing.net/][Syncthing]] to sync data between my different de
     :url "http://localhost:8384"
     :kill-process-buffer-on-stop t)
 #+end_src
+**** Bookmarks
+This bookmark shows me any file conflicts in my home directory
+
+#+begin_src elisp :noweb-ref bookmarks
+("conflicts"
+  (location . "~")
+  (pattern . "*conflict*")
+  (handler . ccc/find-bookmark-handler))
+#+end_src
