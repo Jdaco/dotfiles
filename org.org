@@ -73,7 +73,10 @@ I use [[https://orgmode.org/][Org mode]] for:
       )
 )
 
-(add-hook! org-mode (company-mode 0))
+(add-hook! org-mode
+  (progn
+    (company-mode 0)
+    (doom-disable-line-numbers-h)))
 #+end_src
 
 #+begin_src elisp :noweb-ref packages
