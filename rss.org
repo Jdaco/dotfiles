@@ -69,14 +69,17 @@ The [[https://github.com/skeeto/elfeed][Elfeed]] emacs package is my preferred f
         (:map elfeed-show-mode-map
          "C-l" #'elfeed-show-visit
          )
-        ))
+        )
+)
 
-
+(after! consult
+  (add-to-list consult-bookmark-narrow
+               `(?e "Elfeed" ,#'elfeed-search-bookmark-handler))
+  )
 
 
 (map! :leader
       "o x" #'elfeed)
-
 #+end_src
 
 Configure my common elfeed search as Emacs bookmarks
