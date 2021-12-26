@@ -11,7 +11,7 @@ These are my configurations needed to work with my main notes and agendas. These
             `(children (property "Place" ,(completing-read "Places: " candidates))) :super-groups '((:auto-category t)))))
 
 
-(defun find-areas ()
+(defun ccc/find-areas ()
 (interactive)
 (find-file
     (read-file-name "Areas: " "~/roam/areas/" nil (confirm-nonexistent-file-or-buffer) nil #'f-file-p)))
@@ -23,7 +23,7 @@ These are my configurations needed to work with my main notes and agendas. These
 
 (map! :leader
     :prefix ("o f" . "Find")
-    "a" #'find-areas
+    "a" #'ccc/find-areas
     "p" #'find-place)
 #+end_src
 
