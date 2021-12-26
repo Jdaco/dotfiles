@@ -593,12 +593,22 @@ I use ~consult-dir~ to quickly find files and add their patt to the current mini
                     (shell-command-to-string (format "find %s -type f | shuf" dir)) "\n" t)))
     (apply #'start-process "imv" "imv" "imv" images)))
 
+(defun ccc/find-file-in (&optional arg)
+  (interactive "P")
+  (if arg
+      (+vertico/find-file-in "~")
+    (+vertico/find-file-in))
+  )
+
 (map! :map vertico-map
       "C-:" (cmd! () (delete-minibuffer-contents) (insert (ccc/consult-home))))
 
 (map! :leader
       "H" (cmd! () (find-file (ccc/consult-home)))
       "o I" (cmd! () (ccc/imv-dir (ccc/consult-home)))
+      "f d"  #'consult-dir
+      "f r"  #'consult-find
+      "f F"  #'ccc/find-file-in
       )
 #+end_src
 
