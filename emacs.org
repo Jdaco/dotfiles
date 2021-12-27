@@ -55,7 +55,7 @@ I use the [[https://github.com/joaotavora/yasnippet][yasnippet]] emacs package f
     (start-process-shell-command name nil (format "alacritty -e '%s'" command))))
 
 (after! consult
-  (add-to-list consult-bookmark-narrow
+  (add-to-list 'consult-bookmark-narrow
                `(?t "Terminal" ,#'ccc/bookmark-alacritty))
   )
 #+end_src

@@ -73,7 +73,7 @@ The [[https://github.com/skeeto/elfeed][Elfeed]] emacs package is my preferred f
 )
 
 (after! consult
-  (add-to-list consult-bookmark-narrow
+  (add-to-list 'consult-bookmark-narrow
                `(?e "Elfeed" ,#'elfeed-search-bookmark-handler))
   )
 
