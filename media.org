@@ -15,6 +15,10 @@ screenshot-directory=~/Downloads
 
 #+begin_src conf :tangle .config/mpv/input.conf
 Ctrl+o script_message locate-current-file
+Ctrl+l seek  5
+Ctrl+h seek -5
+Ctrl+j seek  60
+Ctrl+k seek -60
 #+end_src
 
 **** Scripts
