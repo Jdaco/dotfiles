@@ -631,6 +631,8 @@ I use ~consult-dir~ to quickly find files and add their patt to the current mini
 
 (setq projectile-project-root-files '())
 
+(after! projectile
+  (add-to-list 'projectile-commander-methods `(?E "Eshell" ,#'projectile-run-eshell)))
 
 (map! :leader
       (:prefix "p"
