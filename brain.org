@@ -457,3 +457,68 @@ Used to capture books I want to read into the right category
                                            (find-file-noselect "~/roam/areas/org/templates/book.org")
                                          (buffer-string)))))
 #+end_src
+*** Tasks
+#+begin_src elisp
+(defvar task-queue nil)
+
+(defvar task-current nil)
+
+(defvar images-file "~/roam/other/images.org")
+
+(defun queue-task (cmd)
+  (interactive)
+  (if task-current
+      (setq task-queue (append task-queue (list cmd)))
+      (start-task cmd))
+  task-queue)
+
+(setq download-command
+  "/home/chaise/.local/bin/gallery-dl --dest /home/chaise/gallery-dl --filter 'date > datetime.utcfromtimestamp(%d)' -A 10 %s")
+
+(defun next-task ()
+  (interactive)
+  (when task-queue
+    (start-task (car task-queue)))
+    (setq task-queue (cdr task-queue)))
+
+(defun yesterday-start ()
+  (let ((yesterday (decode-time (time-add (current-time) (* 3600 -24)))))
+    (time-convert
+     (encode-time (make-decoded-time :second 0 :minute 0 :hour 0 :day (nth 3 yesterday) :month (nth 4 yesterday) :year (nth 5 yesterday)))
+     'integer)
+    ))
+
+(defun start-task (cmd)
+  (interactive)
+  (let* ((default-directory "/home/chaise")
+         (process (start-process-shell-command "task" "*tasks*" cmd)))
+    (setq task-current cmd)
+    (set-process-sentinel process (lambda (process event) (setq task-current nil) (next-task)))
+    ))
+
+(defun download-images ()
+  (interactive)
+  (dolist (link (image-links))
+    (let ((cmd (format download-command (yesterday-start) link)))
+      (queue-task cmd))
+    )
+  )
+
+(defun image-links ()
+  (with-current-buffer
+      (find-file-noselect images-file)
+(-non-nil (org-map-entries
+   (lambda ()
+        (forward-char 3)
+     (let ((hyperlink (s-match "^\\[\\[\\(http.+?\\)\\]\\(?:\\[.+?\\]\\)?\\]" (org-get-heading))))
+       (when hyperlink
+         (nth 1 hyperlink)
+       )
+       ))))
+      )
+  )
+#+end_src
+
+#+RESULTS:
+: image-links
+
