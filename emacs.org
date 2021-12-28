@@ -656,7 +656,10 @@ I use ~consult-dir~ to quickly find files and add their patt to the current mini
       "C-k" #'dired-kill-line
       "C-K" #'dired-kill-subdir
       "Z" #'dired-do-compress
-      "c" #'dired-do-compress-to)
+      "c" #'dired-do-compress-to
+      :localleader
+      "t"  (cmd! () (dired-toggle-marks) (image-dired-display-thumbs) (dired-unmark-all-marks))
+      )
 
 (evil-collection-define-key 'normal 'dired-mode-map
       "h" #'dired-up-directory
