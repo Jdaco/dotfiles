@@ -70,6 +70,14 @@ Use ~mpv~ to view your webcam
       "C-k" #'image-previous-file
       "C-j" #'image-next-file
       )
+(setq image-dired-thumb-size 250
+      image-dired-thumb-width 250
+      image-dired-thumb-height 250)
+
+(map! :map 'image-dired-thumbnail-mode-map
+      "C-l" (cmd! () (consult-file-externally (image-dired-original-file-name)))
+      )
+
 #+end_src
 
 *** IMV
