@@ -71,6 +71,17 @@ Use ~mpv~ to view your webcam
       "C-j" #'image-next-file
       )
 #+end_src
+
+*** IMV
+
+Config:
+
+#+begin_src conf :tangle .config/imv/config
+[binds]
+<Ctrl+Shift+K> = exec rm -v "$imv_current_file"; close
+#+end_src
+
+
 ** Audio
 *** Pulsemixer
 #+begin_src elisp :noweb-ref configs
