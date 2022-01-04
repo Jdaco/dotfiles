@@ -32,6 +32,7 @@ I use [[https://orgmode.org/][Org mode]] for:
         "M-h" #'org-promote-subtree
         "M-k" #'org-move-subtree-up
         "M-j" #'org-move-subtree-down
+        "C-)" #'org-cycle-list-bullet
         )
 
   (map! :map org-mode-map
