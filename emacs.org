@@ -671,6 +671,8 @@ I use ~consult-dir~ to quickly find files and add their patt to the current mini
       trash-directory "~/.trash"
       dired-open-extensions '(("mp4" . "mpv")
                               ("webm" . "mpv")
+                              ("mov" . "mpv")
+                              ("m4v" . "mpv")
                                       ("gif" . "imv"))
       dired-omit-files (rx (seq bol "." (* any) eol))
       )
