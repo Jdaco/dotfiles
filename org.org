@@ -266,7 +266,8 @@ templates"
     (let ((assets (f-join cookie-path (doct-get :assets) "*")))
     (shell-command (format "cp %s %s" assets (cookie-root))))))
 
-(setq org-capture-templates
+(after! org-capture
+  (setq org-capture-templates
     (doct `(("Inbox" :keys "i" :file ,(bookmark-get-filename "inbox") :template "* %?")
             ("Task" :keys "t" :file (lambda () (ccc/find-areas #'identity)) :olp ("Tasks") :template "* TODO %?")
             ("Event" :keys "e" :file (lambda () (ccc/find-areas #'identity)) :olp ("Events")
@@ -308,6 +309,8 @@ templates"
             <<capture-templates>>
 
             )))
+  )
+
 #+end_src
 
 #+begin_src elisp :noweb-ref packages
