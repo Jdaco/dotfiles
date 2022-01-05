@@ -590,7 +590,7 @@ I use ~consult-dir~ to quickly find files and add their patt to the current mini
 (defun ccc/imv-dir (dir)
   (interactive)
   (let* ((images (split-string
-                    (shell-command-to-string (format "find %s -type f | shuf" dir)) "\n" t)))
+                    (shell-command-to-string (format "find %s -type f | shuf | head -n 10000" dir)) "\n" t)))
     (apply #'start-process "imv" "imv" "imv" images)))
 
 (defun ccc/find-file-in (&optional arg)
