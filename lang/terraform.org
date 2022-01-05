@@ -72,6 +72,49 @@ variable "${1:name}" {
   $0
 }
 #+END_SRC
+** AWS
+*** Role
+*** Service Role
+
+#+begin_src snippet :tangle (get-snippet-path)
+# name: service-role
+# key: service-role
+# --
+resource "aws_iam_role" "${1:name}" {
+  name = ${1}_service_role
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = "sts:AssumeRole"
+        Principal = {
+          Service = "${2:service}"
+        }
+      }
+    ]
+  })
+
+  inline_policy {
+    policy = jsonencode({
+      Version = "2012-10-17"
+      Statement = [
+        {
+          Action = [
+            "${3:actions}"
+          ]
+          Effect = "Allow"
+          Resource = [
+            "${4:resources}"
+          ]
+        }
+      ]
+    })
+  }
+}
+#+end_src
+
 
 ** AWS
 *** bucket
