@@ -130,6 +130,15 @@ $0
 $0
 #+end_center
 #+end_src
+*** quote
+#+BEGIN_SRC snippet :tangle (get-snippet-path)
+# name: quote-block
+# key: quote
+# --
+#+begin_quote
+$0
+`(format "#+end_quote")`
+#+end_src
 
 ** Capture
 :PROPERTIES:
