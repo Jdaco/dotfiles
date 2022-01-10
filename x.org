@@ -38,7 +38,7 @@ I use [[https://github.com/Raymo111/i3lock-color][i3lock-color]] for locking my 
 #+end_src
 
 #+begin_src elisp :noweb-ref exwm-keys
-([?\s-l] . lock)
+;; ([?\s-L] . lock)
 #+end_src
 
 The screen locking package needs to be specified in your =config.scm=
@@ -112,6 +112,7 @@ scrot
             ([?\s-f] . ace-window)
             ([?\s-F] . exwm-layout-toggle-fullscreen)
             ([?\s-m] . exwm-workspace-move-window)
+            ([?\s-l] . ace-jump-line-mode)
             <<exwm-keys>>
             ;; Launch application.
             ([?\s-r] . (lambda (command)
