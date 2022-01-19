@@ -15,7 +15,7 @@ I use [[https://orgmode.org/][Org mode]] for:
 (after! (org-agenda)
 
   (defun goto-or-create-heading (heading &optional level)
-    (ccc/find-areas)
+    (find-file (ccc/find-areas))
     (let ((existing (org-ql-select (current-buffer)
                       `(and (level ,(or level 1)) (heading ,heading))
                       :action #'point)))
@@ -278,9 +278,6 @@ templates"
 (after! org-capture
   (setq org-capture-templates
     (doct `(("Inbox" :keys "i" :file ,(bookmark-get-filename "inbox") :template "* %?")
-            ("Task" :keys "t" :file (lambda () (ccc/find-areas #'identity)) :olp ("Tasks") :template "* TODO %?")
-            ("Event" :keys "e" :file (lambda () (ccc/find-areas #'identity)) :olp ("Events")
-                :template-file ,(f-join dotfiles-directory "templates" "org" "event.org"))
             ("Recipe" :keys "r" :function (lambda () (goto-or-create-heading "Recipe")) :template "* %?     :recipe:")
             ("New Job" :keys "j"
                 :file ,(f-join org-directory "areas/career.org")
@@ -413,3 +410,31 @@ templates"
 ** Presentations
 
 [[https://github.com/takaxp/org-tree-slide][org-tree-slide]] is my preferred way of giving presentations within Emacs. It's automatically installed in with the =org +present= Doom module
+
+#+begin_src elisp :noweb-ref packages
+(package! org-tree-slide)
+#+end_src
+
+
+#+begin_src elisp :noweb-ref configs
+(map! :leader
+      "t p" #'org-tree-slide-mode
+      "t P" #'org-tree-slide-play-with-timer
+      )
+
+(map! :map org-tree-slide-mode-map
+      "C-j" #'org-tree-slide-move-next-tree
+      "C-k" #'org-tree-slide-move-previous-tree
+      )
+
+(setq org-tree-slide-slide-in-effect nil
+      org-tree-slide-skip-outline-level 0
+      org-tree-slide-header t
+      org-tree-slide-fold-subtrees-skipped t)
+
+(after! org-tree-slide
+  (org-tree-slide-presentation-profile))
+#+end_src
+
+#+RESULTS:
+: presentation profile: ON
