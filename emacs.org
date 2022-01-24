@@ -680,6 +680,7 @@ I use ~consult-dir~ to quickly find files and add their patt to the current mini
 
 #+begin_src elisp :noweb-ref packages
 (package! dired-open)
+(package! dired-subtree)
 #+end_src
 *** Archives
 You can use ~dired~ to manage archives
