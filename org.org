@@ -140,6 +140,16 @@ $0
 `(format "#+end_quote")`
 #+end_src
 
+*** dblock
+#+BEGIN_SRC snippet :tangle (get-snippet-path)
+# name: dblock
+# key: db
+# --
+#+BEGIN: $1
+$0
+`(format "#+END:")`
+#+end_src
+
 ** Capture
 :PROPERTIES:
 :ID:       5fe33daf-9f01-4348-91fd-e438e4381e50
