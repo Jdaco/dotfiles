@@ -162,6 +162,11 @@ For example, an org-ql dynamic block header could look like:
                      :buffers-files org-agenda-files
                      :query (tags-local "vision")
                      :super-groups ((:auto-category)))
+                    ("Fitness"
+                     :buffers-files org-agenda-files
+                     :query (and (category "Fitness") (tags "progression" "goal") (parent (todo "PROGRESS")))
+                     :super-groups ((:auto-parent))
+                     )
                     ("Recipes"
                      :buffers-files org-agenda-files
                      :query (tags-local "recipe")
@@ -175,7 +180,7 @@ For example, an org-ql dynamic block header could look like:
                      :query (and
                              (not (scheduled))
                              (not (todo "WISH" "SHIPPING"))
-                             (not (tags "ARCHIVE" "recipe" "certification" "book" "goal" "vision" "training"))
+                             (not (tags "ARCHIVE" "recipe" "certification" "book" "goal" "vision" "training" "progression"))
                              (not (path "contacts.org"))
                              (todo))
                      :sort priority
