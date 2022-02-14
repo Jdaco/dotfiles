@@ -13,7 +13,8 @@ The [[https://github.com/skeeto/elfeed][Elfeed]] emacs package is my preferred f
   (setq elfeed-search-filter "@6-months-ago +unread"
     rmh-elfeed-org-files (list "~/roam/other/feeds.org")
     elfeed-db-directory "~/.elfeed"
-    elfeed-search-title-min-width 32)
+    elfeed-search-title-min-width 32
+    elfeed-sort-order "ascending")
 
   (defun elfeed-view-mpv (&optional use-generic-p)
     "Youtube-feed link"
