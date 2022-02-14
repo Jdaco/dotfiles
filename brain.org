@@ -12,9 +12,7 @@ These are my configurations needed to work with my main notes and agendas. These
 
 
 (defun ccc/find-areas ()
-(interactive)
-(find-file
-    (read-file-name "Areas: " "~/roam/areas/" nil (confirm-nonexistent-file-or-buffer) nil #'f-file-p)))
+    (read-file-name "Areas: " "~/roam/areas/" nil (confirm-nonexistent-file-or-buffer) nil #'f-file-p))
 
 (defun org-dblock-write:contacts (params)
 (org-dblock-write:org-ql `(:file ,(f-join org-directory "other/contacts.org")
@@ -23,7 +21,7 @@ These are my configurations needed to work with my main notes and agendas. These
 
 (map! :leader
     :prefix ("o f" . "Find")
-    "a" #'ccc/find-areas
+    "a" (cmd! (find-file (ccc/find-areas)))
     "p" #'find-place)
 #+end_src
 
@@ -276,31 +274,25 @@ For example, an org-ql dynamic block header could look like:
       org-roam-capture-templates '(("d" "default" plain "%?"
                                     :target (file+head "notes/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n\n- tags :: ")
                                     :unnarrowed t)
-                                   ("c" "conference"
-                                    plain #'org-roam--capture-get-point "%?"
+                                   ("c" "conference" plain "%?"
                                     :target "conferences/%<%Y%m%d%H%M%S>-${slug}"
                                     :head "* ${title}\n\n- tags :: "
                                     :unnarrowed t)
-                                   ("s" "Store"
-                                    plain #'org-roam--capture-get-point "%?"
+                                   ("s" "Store" plain "%?"
                                     :target "stores/%<%Y%m%d%H%M%S>-${slug}"
                                     :head "#+title: ${title}\n#+roam_key: \n\n- tags :: "
                                     :unnarrowed t)
-                                   ("r" "Recipe"
-                                    plain #'org-roam--capture-get-point "%?"
-                                    :target "recipes/%<%Y%m%d%H%M%S>-${slug}"
-                                    :head "#+title: ${title}\n\n- tags :: "
+                                   ("r" "Recipe" plain "%?"
+                                    :target (file+head "recipes/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n\n- tags :: ")
                                     :unnarrowed t)
                                    ("R" "Resource" plain "%?"
                                     :target (file+head "notes/resources/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n\n- tags :: ")
                                     :unnarrowed t)
-                                   ("P" "Presentation"
-                                    plain #'org-roam--capture-get-point "%?"
+                                   ("P" "Presentation" plain "%?"
                                     :target "presentations/%<%Y%m%d%H%M%S>-${slug}"
                                     :head "#+title: ${title}\n\n- tags :: "
                                     :unnarrowed t)
-                                   ("p" "Programming Language"
-                                    plain #'org-roam--capture-get-point
+                                   ("p" "Programming Language" plain
                                     (file "~/roam/areas/software/templates/programming_language.org")
                                     :target "notes/%<%Y%m%d%H%M%S>-${slug}"))
       )
@@ -460,10 +452,14 @@ Used to capture books I want to read into the right category
 #+begin_src elisp :noweb-ref capture-templates
 ("Book" :keys "b" :function (lambda () (goto-or-create-heading "Books"))
                  :template (lambda () (bibtex-completion-fill-template
-                                       (bibtex-completion-get-entry (ivy-bibtex-find-key))
+                                       (citar--get-entry (car (citar-select-ref)))
                                        (with-current-buffer
                                            (find-file-noselect "~/roam/areas/org/templates/book.org")
                                          (buffer-string)))))
+
+("Task" :keys "t" :file (lambda () (ccc/find-areas)) :olp ("Tasks") :template "* TODO %?")
+("Event" :keys "e" :file (lambda () (ccc/find-areas)) :olp ("Events") :template-file ,(f-join dotfiles-directory "templates" "org" "event.org"))
+
 #+end_src
 *** Tasks
 #+begin_src elisp
