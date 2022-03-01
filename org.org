@@ -291,7 +291,7 @@ templates"
             ("Recipe" :keys "r" :function (lambda () (goto-or-create-heading "Recipe")) :template "* %?     :recipe:")
             ("New Job" :keys "j"
                 :file ,(f-join org-directory "areas/career.org")
-                :olp ("Plans" "Employers")
+                :function (lambda ()  org-id-goto "76f493bc-fe55-4351-81ff-cc1b9f188db0")
                 :template-file ,(f-join dotfiles-directory "templates" "org" "new-job.org"))
             ("Cookies" :keys "c"
             :function cookie-new-project
