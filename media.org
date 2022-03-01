@@ -91,6 +91,7 @@ Config:
 #+begin_src conf :tangle .config/imv/config
 [binds]
 <Ctrl+Shift+K> = exec rm -v "$imv_current_file"; close
+r = rotate by 90
 #+end_src
 
 ** Audio
