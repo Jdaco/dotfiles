@@ -32,7 +32,8 @@ Open org-mode link in MPV
 #+begin_src elisp :noweb-ref configs
 (defun run-mpv (url &optional new_window)
   "Watch a video from URL in MPV"
-  (start-process "mpv" "mpv" "mpv" "--demuxer-readahead-secs=300" url))
+  (message url)
+  (start-process "mpv" "mpv" "mpv" "--demuxer-readahead-secs=300" "--force-window" url))
 
 ; Open youtube videos in mpv by default
 (setq browse-url-browser-function
