@@ -673,7 +673,8 @@ I use ~consult-dir~ to quickly find files and add their patt to the current mini
                               ("webm" . "mpv")
                               ("mov" . "mpv")
                               ("m4v" . "mpv")
-                                      ("gif" . "imv"))
+                              ("gif" . "imv")
+                              ("webp" . "imv"))
       dired-omit-files (rx (seq bol "." (* any) eol))
       )
 #+end_src
