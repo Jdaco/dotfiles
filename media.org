@@ -9,7 +9,7 @@
 #+begin_src conf :tangle .config/mpv/mpv.conf
 demuxer-readahead-secs=300
 ytdl-format=bestvideo[height<=?720]+bestaudio/best
-script-opts=ytdl_hook-ytdl_path=/usr/bin/yt-dlp
+script-opts=ytdl_hook-ytdl_path=yt-dlp
 screenshot-directory=~/Downloads
 #+end_src
 
