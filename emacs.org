@@ -41,6 +41,15 @@ I use the [[https://github.com/joaotavora/yasnippet][yasnippet]] emacs package f
 #+begin_src elisp :noweb-ref exwm-keys
 ([?\s-b] . switch-to-buffer)
 #+end_src
+*** Diff
+#+begin_src elisp :noweb-ref configs :results none
+(defun ccc/ediff-current-file ()
+  (interactive)
+  (let ((current-file (current-buffer))
+        (other-file (find-file-noselect (read-file-name "File to diff: "))))
+    (ediff-buffers current-file other-file)))
+#+end_src
+
 ** Bookmarks
 [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Bookmarks.html][Bookmarks]] let you save your position in commonly used files
 
