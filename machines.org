@@ -58,7 +58,6 @@ My primary workstation
 #+include: ./finance.org
 #+include: ./rss.org
 #+include: ./brain.org
-#+include: ./npm.org
 #+include: ./vm.org
 
 *** X
@@ -183,7 +182,6 @@ My primary laptop
 #+include: ./finance.org
 #+include: ./rss.org
 #+include: ./brain.org
-#+include: ./npm.org
 #+include: ./vm.org
 
 #+begin_src elisp :noweb-ref bookmarks
