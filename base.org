@@ -23,3 +23,4 @@ These are the base layers that will be installed on every system
 #+INCLUDE: ./lang/python.org
 #+INCLUDE: ./lang/shell.org
 #+INCLUDE: ./lang/terraform.org
+#+INCLUDE: ./lang/cloud/aws.org

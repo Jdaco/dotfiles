@@ -1,0 +1,11 @@
+#+TITLE: Aws
+
+
+* Eshell Completion
+#+begin_src elisp :noweb-ref configs
+(add-hook! eshell-mode (awscli-capf-add))
+#+end_src
+
+#+begin_src elisp :noweb-ref packages
+(package! awscli-capf)
+#+end_src
