@@ -311,6 +311,7 @@ I use [[https://github.com/weirdNox/org-noter][org-noter]] when I'm taking notes
 #+begin_src elisp :noweb-ref configs :results none
 (setq org-noter-always-create-frame nil
       org-noter-notes-search-path '("~/roam/books")
+      org-noter-doc-split-percentage '(0.67 . 0.33)
                 )
 
 (undefine-key! pdf-view-mode-map :n "i")
