@@ -189,6 +189,11 @@ My primary laptop
   (filename . "~/inbox.org"))
 #+end_src
 
+*** Monitors
+#+begin_src elisp :noweb-ref exwm-configs
+(setq exwm-randr-workspace-monitor-plist '(0 "eDP-1" 1 "eDP-1" 2 "HDMI-1" 3 "HDMI-1"))
+#+end_src
+
 *** Disks
 
 | Drive                                | Size | Encrypted? | Filesystem | Purpose |
