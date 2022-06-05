@@ -30,10 +30,12 @@ Ctrl+k seek -60
 Open org-mode link in MPV
 
 #+begin_src elisp :noweb-ref configs
-(defun run-mpv (url &optional new_window)
+(defun run-mpv (url &optional raw)
   "Watch a video from URL in MPV"
-  (message url)
-  (start-process "mpv" "mpv" "mpv" "--demuxer-readahead-secs=300" "--force-window" url))
+  (let ((command (if raw "mpv --force-window \"%s\"" "yt-dlp -f best -o - \"%s\" | mpv --force-window -")))
+    (start-process-shell-command "mpv" "mpv" (format command url)))
+
+  )
 
 ; Open youtube videos in mpv by default
 (setq browse-url-browser-function
