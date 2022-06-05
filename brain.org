@@ -452,11 +452,8 @@ Used to capture books I want to read into the right category
 
 #+begin_src elisp :noweb-ref capture-templates
 ("Book" :keys "b" :function (lambda () (goto-or-create-heading "Books"))
-                 :template (lambda () (bibtex-completion-fill-template
-                                       (citar--get-entry (car (citar-select-ref)))
-                                       (with-current-buffer
-                                           (find-file-noselect "~/roam/areas/org/templates/book.org")
-                                         (buffer-string)))))
+    :book (lambda () (car (citar-select-ref)))
+    :template-file "~/roam/areas/org/templates/book.org")
 
 ("Task" :keys "t" :file (lambda () (ccc/find-areas)) :olp ("Tasks") :template "* TODO %?")
 ("Event" :keys "e" :file (lambda () (ccc/find-areas)) :olp ("Events") :template-file ,(f-join dotfiles-directory "templates" "org" "event.org"))

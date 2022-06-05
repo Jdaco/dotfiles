@@ -285,7 +285,7 @@ templates"
     (let ((assets (f-join cookie-path (doct-get :assets) "*")))
     (shell-command (format "cp %s %s" assets (cookie-root))))))
 
-(after! org-capture
+(after! org
   (setq org-capture-templates
     (doct `(("Inbox" :keys "i" :file ,(bookmark-get-filename "inbox") :template "* %?")
             ("Recipe" :keys "r" :function (lambda () (goto-or-create-heading "Recipe")) :template "* %?     :recipe:")
