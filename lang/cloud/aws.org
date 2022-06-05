@@ -3,6 +3,7 @@
 
 * Eshell Completion
 #+begin_src elisp :noweb-ref configs
+(require 'awscli-capf)
 (add-hook! eshell-mode (awscli-capf-add))
 #+end_src
 
