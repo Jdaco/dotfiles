@@ -75,7 +75,8 @@ Use ~mpv~ to view your webcam
       )
 (setq image-dired-thumb-size 250
       image-dired-thumb-width 250
-      image-dired-thumb-height 250)
+      image-dired-thumb-height 250
+      image-use-external-converter t)
 
 (map! :map 'image-dired-thumbnail-mode-map
       "C-l" (cmd! () (consult-file-externally (image-dired-original-file-name)))
