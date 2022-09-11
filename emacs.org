@@ -716,3 +716,27 @@ I don't having a log of the commands I run
 (package! geiser)
 (package! geiser-guile)
 #+end_src
+** Theme
+
+Set =ansi-colors= to match =term-colors= (=ansi-colors= are used by Eshell and other command buffers)
+
+#+begin_src elisp :noweb-ref configs
+(custom-set-faces
+ '(ansi-color-black ((t (:inherit term-color-black))))
+ '(ansi-color-red ((t (:inherit term-color-red))))
+ '(ansi-color-green ((t (:inherit term-color-green))))
+ '(ansi-color-yellow ((t (:inherit term-color-yellow))))
+ '(ansi-color-blue ((t (:inherit term-color-blue))))
+ '(ansi-color-magenta ((t (:inherit term-color-magenta))))
+ '(ansi-color-cyan ((t (:inherit term-color-cyan))))
+ '(ansi-color-gray ((t (:inherit term-color-gray)))))
+
+(custom-set-faces
+ '(ansi-color-bright-black ((t (:inherit term-colo-bright-black))))
+ '(ansi-color-bright-red ((t (:inherit term-colo-bright-red))))
+ '(ansi-color-bright-green ((t (:inherit term-colo-bright-green))))
+ '(ansi-color-bright-yellow ((t (:inherit term-colo-bright-yellow))))
+ '(ansi-color-bright-blue ((t (:inherit term-colo-bright-blue))))
+ '(ansi-color-bright-magenta ((t (:inherit term-colo-bright-magenta))))
+ '(ansi-color-bright-cyan ((t (:inherit term-colo-bright-cyan)))))
+#+end_src
