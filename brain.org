@@ -330,7 +330,7 @@ I use [[https://github.com/weirdNox/org-noter][org-noter]] when I'm taking notes
           citar-bibliography '("~/roam/books/books.bib")
           citar-library-paths '("~/roam/books/")
           citar-notes-paths '("~/roam/books/")
-          citar-default-action #'citar-open-library-file
+          citar-default-action #'citar-open-files
           org-ref-default-bibliography '("~/roam/books/books.bib")
           reftex-default-bibliography org-ref-default-bibliography
           org-ref-pdf-directory "~/roam/books/"
@@ -339,16 +339,6 @@ I use [[https://github.com/weirdNox/org-noter][org-noter]] when I'm taking notes
 
 - tags :: %?"
                 )
-
-(defun ivy-bibtex-find-key ()
-    (require 'bibtex-completion)
-    (bibtex-completion-init)
-    (with-temp-buffer
-        (ivy-read "Bibtex: " (bibtex-completion-candidates)
-                  :caller 'ivy-bibtex
-                  :action #'ivy-bibtex-insert-key)
-        (buffer-string)))
-
 
 (defun bibtex-add-entry (entry)
   (let* ((id (with-temp-buffer
