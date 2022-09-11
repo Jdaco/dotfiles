@@ -38,7 +38,7 @@ Open org-mode link in MPV
   )
 
 ; Open youtube videos in mpv by default
-(setq browse-url-browser-function
+(setq browse-url-handlers
       '(("https:\\/\\/www\\.youtu\\.*be." . run-mpv)
         ("." . browse-url-firefox)))
 
