@@ -547,7 +547,7 @@ alias df df -h $*
 alias clip xclip -selection clipboard -o $*
 
 # Block Devices
-alias lsblk lsblk -o 'name,size,type,mountpoint,partlabel,uuid' $*
+alias lsblk lsblk -o 'name,size,type,mountpoint,partlabel,fstype,uuid' $*
 alias mnt mount $1 ${mktemp -d}
 
 <<aliases>>
