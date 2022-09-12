@@ -312,7 +312,6 @@ Configs for my Iontra laptop
 #+end_src
 
 #+include: ./base.org
-#+include: ~/sync/config.org
 
 *** Monitors
 #+begin_src elisp :noweb-ref exwm-configs
