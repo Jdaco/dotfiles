@@ -437,14 +437,10 @@ templates"
       "C-k" #'org-tree-slide-move-previous-tree
       )
 
-(setq org-tree-slide-slide-in-effect nil
+(after! org-tree-slide
+  (org-tree-slide-presentation-profile)
+  (setq org-tree-slide-slide-in-effect nil
       org-tree-slide-skip-outline-level 0
       org-tree-slide-header t
-      org-tree-slide-fold-subtrees-skipped t)
-
-(after! org-tree-slide
-  (org-tree-slide-presentation-profile))
+      org-tree-slide-fold-subtrees-skipped t))
 #+end_src
-
-#+RESULTS:
-: presentation profile: ON
