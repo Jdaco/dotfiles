@@ -1,5 +1,17 @@
 #+TITLE: Aws
 
+* Snippets
+:PROPERTIES:
+:snippet_mode: eshell-mode
+:END:
+
+** aws-create-password
+#+BEGIN_SRC snippet :tangle (get-snippet-path)
+# name: aws-create-password
+# key: aws-create-password
+# --
+aws iam create-login-profile --user-name $1 --password `(password-generator-strong nil t)` --password-reset-required$0
+#+END_SRC
 
 * Eshell Completion
 #+begin_src elisp :noweb-ref configs
