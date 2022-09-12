@@ -59,7 +59,7 @@ Use ~mpv~ to view your webcam
 #+begin_src elisp :noweb-ref configs
 (defun webcam ()
   (interactive)
-  (exwm/run-program-in-home "mpv /dev/video0"))
+  (run-mpv "/dev/video0" t))
 
 (map! :leader
       (:prefix ("M" . "Media")
