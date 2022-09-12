@@ -450,12 +450,22 @@ Used to capture books I want to read into the right category
 
 #+end_src
 *** Tasks
-#+begin_src elisp
+
+- [ ] Increase speed somehow
+  - Skip direct links and deviantart
+  - Run items in parallel?
+- [ ] Maybe write metadata files so I can get links to the posts
+- [ ] Add instgrams and twitters
+
+#+begin_src elisp :noweb-ref configs
 (defvar task-queue nil)
 
 (defvar task-current nil)
 
 (defvar images-file "~/roam/other/images.org")
+
+(defvar download-command
+  "/home/chaise/.local/bin/gallery-dl --dest /home/chaise/gallery-dl --verbose --filter 'date > datetime.utcfromtimestamp(%d)' -A 2 %s")
 
 (defun queue-task (cmd)
   (interactive)
@@ -463,9 +473,6 @@ Used to capture books I want to read into the right category
       (setq task-queue (append task-queue (list cmd)))
       (start-task cmd))
   task-queue)
-
-(setq download-command
-  "/home/chaise/.local/bin/gallery-dl --dest /home/chaise/gallery-dl --filter 'date > datetime.utcfromtimestamp(%d)' -A 10 %s")
 
 (defun next-task ()
   (interactive)
@@ -510,7 +517,3 @@ Used to capture books I want to read into the right category
       )
   )
 #+end_src
-
-#+RESULTS:
-: image-links
-
