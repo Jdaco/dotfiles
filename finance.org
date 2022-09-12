@@ -10,12 +10,10 @@ I use [[https://www.ledger-cli.org/][Ledger]] for my financial bookkeeping. I lo
 (after! ledger-mode
   (setq ledger-clear-whole-transactions t
         ledger-binary-path "ledger"
+            ledger-master-file "/home/chaise/ledger/main.ledger"
         ledger-report-auto-width t
         ledger-report-use-strict t
-        ledger-budget-format "%(justify(scrub(get_at(display_total, 0 )), 20, 0, true, color)) %(justify(get_at(display_total, 1) ? -scrub(get_at(display_total, 1)) : 0.0, 20, 20 + 1 + 20, true, color)) %(justify(get_at(display_total, 1) ? (get_at(display_total, 0) ? -(scrub(get_at(display_total, 1) + get_at(display_total, 0))) : -(scrub(get_at(display_total, 1)))) : -(scrub(get_at(display_total, 0))), 20, 20 + 1 + 20 + 1 + 20, true, color)) %(ansify_if(justify((get_at(display_total, 1) ? (100% * (get_at(display_total, 0) ? scrub(get_at(display_total, 0)) : 0.0)) / -scrub(get_at(display_total, 1)) : 0), 5, -1, true, false), magenta if (color and get_at(display_total, 1) and (abs(quantity(scrub(get_at(display_total, 0))) / quantity(scrub(get_at(display_total, 1)))) >= 1)))) %(justify((get_at(display_total, 1) ? (100% * (get_at(display_total, 0) ? scrub(get_at(display_total, 1)) : 0.0)) / -%(month-income) : 0), 5, -1, true, false)) %(!options.flat ? depth_spacer : \"\") %(ansify_if(partial_account(options.flat), blue if color))
-%/%$1 %$2 %$3 %$4 %$5
-%/%(\"-\" * 20) %(\"-\" * 20) %(\"-\" * 20) %(\"-\" * 5) %(\"-\" * 5)
-"
+        ledger-budget-format "%(justify(scrub(get_at(display_total, 0 )), 20, 0, true, color)) %(justify(get_at(display_total, 1) ? -scrub(get_at(display_total, 1)) : 0.0, 20, 20 + 1 + 20, true, color)) %(justify(get_at(display_total, 1) ? (get_at(display_total, 0) ? -(scrub(get_at(display_total, 1) + get_at(display_total, 0))) : -(scrub(get_at(display_total, 1)))) : -(scrub(get_at(display_total, 0))), 20, 20 + 1 + 20 + 1 + 20, true, color)) %(ansify_if(justify((get_at(display_total, 1) ? (100% * (get_at(display_total, 0) ? scrub(get_at(display_total, 0)) : 0.0)) / -scrub(get_at(display_total, 1)) : 0), 5, -1, true, false), magenta if (color and get_at(display_total, 1) and (abs(quantity(scrub(get_at(display_total, 0))) / quantity(scrub(get_at(display_total, 1)))) >= 1)))) %(justify((get_at(display_total, 1) ? (100% * (get_at(display_total, 0) ? scrub(get_at(display_total, 1)) : 0.0)) / -%(month-income) : 0), 5, -1, true, false)) %(!options.flat ? depth_spacer : \"\") %(ansify_if(partial_account(options.flat), blue if color))\n"
 
         ledger-report-format-specifiers '(("ledger-file" . ledger-report-ledger-file-format-specifier)
                                           ("binary" . ledger-report-binary-format-specifier)
@@ -25,17 +23,17 @@ I use [[https://www.ledger-cli.org/][Ledger]] for my financial bookkeeping. I lo
                                           ("tagname" . ledger-report-tagname-format-specifier)
                                           ("tagvalue" . ledger-report-tagvalue-format-specifier)
                                           ("month-income" . ledger-report-month-income-format-specifier)
-                                          ("budget-format" . ledger-report-budget-format-specifier))
-        ledger-reports `(("bal" "%(binary) -f %(ledger-file) bal --cleared ^Assets ^Liabilities")
-                         ("income" "%(binary) -f %(ledger-file) bal ^Income")
-                         ("reg" "%(binary) -f %(ledger-file) reg")
-                         ("payee" "%(binary) -f %(ledger-file) reg @%(payee)")
-                         ("account" "%(binary) -f %(ledger-file) reg %(account)")
-                         ("budget" ,(concat "%(binary) -f %(ledger-file) budget ^Assets:Savings ^Income ^Expenses --exchange $ --price -p %(month)"))
-                         ("unbudget" "%(binary) -f %(ledger-file) bal -p %(month) --unbudgeted ^Expenses ^Income"))
+                                          ("budget" . ledger-report-budget-format-specifier))
+        ledger-reports `(("Balance" "%(binary) -f %(ledger-file) bal --cleared --real --exchange $ ^Assets ^Liabilities")
+                         ("Savings" "%(binary) -f %(ledger-file) bal ^Assets:Savings --exchange $")
+                         ("Spending" "%(binary) -f %(ledger-file) bal ^Assets:Bank ^Liabilities:CreditCard --exchange $")
+                         ("Register" "%(binary) -f %(ledger-file) reg")
+                         ("Account" "%(binary) -f %(ledger-file) reg %(account)")
+                         ("Budget (Assets)" "%(binary) -f %(ledger-file) budget -F '%(budget)' ^Assets ^Lia --exchange $ --price -p %(month)")
+                         ("Budget" "%(binary) -f %(ledger-file) budget -F '%(budget)' ^Income ^Expenses --exchange $ --price -p %(month)")
+                         ("Budget (All)" "%(binary) -f %(ledger-file) budget -F '%(budget)' ^Income ^Expenses --exchange $ --price -p %(month) --add-budget"))
         )
-  (defun ledger-report-budget-format-specifier ()
-      ledger-budget-format)
+  (defun ledger-report-budget-format-specifier () (list ledger-budget-format))
   (defun ledger-report-month-income-format-specifier ()
     (let ((income-buffer (ledger-exec-ledger nil nil
                                       "budget" "^Income" "--depth" "1"
