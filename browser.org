@@ -11,6 +11,7 @@ https://addons.mozilla.org/en-US/firefox/addon/ublock-origin/
 https://addons.mozilla.org/en-US/firefox/addon/temporary-containers/
 https://addons.mozilla.org/en-US/firefox/addon/multi-account-containers/
 https://addons.mozilla.org/en-US/firefox/addon/canvasblocker/
+https://addons.mozilla.org/en-US/firefox/addon/chameleon-ext/
 https://github.com/kuanyui/copy-as-org-mode
 ** Settings
 - Startup
