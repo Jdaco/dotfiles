@@ -32,7 +32,7 @@ Open org-mode link in MPV
 #+begin_src elisp :noweb-ref configs
 (defun run-mpv (url &optional raw)
   "Watch a video from URL in MPV"
-  (let ((command (if raw "mpv --force-window \"%s\"" "yt-dlp -f best -o - \"%s\" | mpv --force-window -")))
+  (let ((command (if raw "mpv --force-window \"%s\"" "yt-dlp -o - \"%s\" | mpv --force-window -")))
     (start-process-shell-command "mpv" "mpv" (format command url)))
 
   )
@@ -64,6 +64,11 @@ Use ~mpv~ to view your webcam
 (map! :leader
       (:prefix ("M" . "Media")
       "v" #'webcam))
+#+end_src
+*** yt-dlp
+
+#+begin_src conf :tangle .config/yt-dlp/config
+--format bestvideo[height<=?720]+bestaudio/best
 #+end_src
 
 ** Images
