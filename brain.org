@@ -326,35 +326,37 @@ I use [[https://github.com/weirdNox/org-noter][org-noter]] when I'm taking notes
 
 *** Bibtex
 #+begin_src elisp :noweb-ref configs
-(setq
-          citar-bibliography '("~/roam/books/books.bib")
-          citar-library-paths '("~/roam/books/")
-          citar-notes-paths '("~/roam/books/")
-          citar-default-action #'citar-open-files
-          org-ref-default-bibliography '("~/roam/books/books.bib")
-          reftex-default-bibliography org-ref-default-bibliography
-          org-ref-pdf-directory "~/roam/books/"
-          bibtex-completion-notes-template-multiple-files "#+TITLE: ${title}
-,#+ROAM_KEY: cite:${=key=}
+(after! citar
+    (setq
+            citar-bibliography '("~/roam/books/books.bib")
+            citar-library-paths '("~/roam/books/")
+            citar-notes-paths '("~/roam/books/")
+            citar-default-action #'citar-open-files
+            org-ref-default-bibliography '("~/roam/books/books.bib")
+            reftex-default-bibliography org-ref-default-bibliography
+            org-ref-pdf-directory "~/roam/books/"
+            bibtex-completion-notes-template-multiple-files "#+TITLE: ${title}
+    ,#+ROAM_KEY: cite:${=key=}
 
-- tags :: %?"
-                )
+    - tags :: %?"
+                    )
 
-(defun bibtex-add-entry (entry)
-  (let* ((id (with-temp-buffer
-                  (bibtex-mode)
-                  (insert entry)
-                  (bibtex-completion-key-at-point)))
-        (exists (bibtex-completion-get-entry id)))
-    (if exists
-        (message (format "Entry %s already exists" id))
-      (with-current-buffer (find-file-noselect bibtex-completion-bibliography)
-        (end-of-buffer)
-        (insert "\n" entry)
-        (save-buffer)))))
+    (defun bibtex-add-entry (entry)
+    (let* ((id (with-temp-buffer
+                    (bibtex-mode)
+                    (insert entry)
+                    (bibtex-completion-key-at-point)))
+            (exists (bibtex-completion-get-entry id)))
+        (if exists
+            (message (format "Entry %s already exists" id))
+        (with-current-buffer (find-file-noselect bibtex-completion-bibliography)
+            (end-of-buffer)
+            (insert "\n" entry)
+            (save-buffer)))))
+  )
 
 (map! :leader
-      "o B" citar-default-action)
+      "o B" #'citar-open-files)
 
 #+end_src
 
@@ -442,7 +444,7 @@ Used to capture books I want to read into the right category
 
 #+begin_src elisp :noweb-ref capture-templates
 ("Book" :keys "b" :function (lambda () (goto-or-create-heading "Books"))
-    :book (lambda () (car (citar-select-ref)))
+    :book (lambda () (citar-select-ref))
     :template-file "~/roam/areas/org/templates/book.org")
 
 ("Task" :keys "t" :file (lambda () (ccc/find-areas)) :olp ("Tasks") :template "* TODO %?")
