@@ -9,14 +9,16 @@ I use the [[https://github.com/hlissner/doom-emacs][Doom Emacs]] configuration f
 ** Editing
 #+begin_src elisp :noweb-ref configs
 ;; Evil
+(require 'evil-collection)
 (setq evil-escape-key-sequence ";a"
       evil-escape-unordered-key-sequence t)
 
 ;; Files
 (map! :leader
       :nv "f S" #'evil-write-all)
-
-;; buffers
+(map! :nv "M-a" #'evil-scroll-up
+      :nv "M-;" #'evil-scroll-down
+      )
 #+end_src
 
 *** Snippets
