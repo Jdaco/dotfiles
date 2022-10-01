@@ -40,14 +40,6 @@ I use [[https://orgmode.org/][Org mode]] for:
         "v E" #'org-edit-src-code
         )
 
-(map!
-   (:leader
-    :prefix ("o o" . "Org")
-    :prefix ("S" . "org-sidebar")
-     "s" #'org-sidebar-toggle
-     "t" #'org-sidebar-tree-toggle
-    ))
-
 (map! :map calendar-mode-map
       "M-h" #'calendar-backward-day
       "M-l" #'calendar-forward-day
@@ -81,10 +73,28 @@ I use [[https://orgmode.org/][Org mode]] for:
 #+end_src
 
 #+begin_src elisp :noweb-ref packages
-(package! org-sidebar)
 (package! org-picklink)
 (package! org-ref)
 #+end_src
+
+
+** Sidebar
+#+begin_src elisp :noweb-ref configs
+(add-hook 'org-sidebar-window-after-display-hook (lambda () (evil-motion-state) (org-cycle-content 2)))
+
+(map!
+   (:leader
+    :prefix ("o o" . "Org")
+    :prefix ("S" . "org-sidebar")
+     "s" #'org-sidebar-toggle
+     "t" #'org-sidebar-tree-toggle
+     ))
+#+end_src
+
+#+begin_src elisp :noweb-ref packages
+(package! org-sidebar)
+#+end_src
+
 
 
 ** Snippets
@@ -149,7 +159,6 @@ $0
 $0
 `(format "#+END:")`
 #+end_src
-
 ** Capture
 :PROPERTIES:
 :ID:       5fe33daf-9f01-4348-91fd-e438e4381e50
