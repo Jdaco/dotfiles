@@ -286,6 +286,8 @@ templates"
     (shell-command (format "cp %s %s" assets (cookie-root))))))
 
 (after! org
+  (require 'bookmark)
+  (bookmark-maybe-load-default-file)
   (setq org-capture-templates
     (doct `(("Inbox" :keys "i" :file ,(bookmark-get-filename "inbox") :template "* %?")
             ("Recipe" :keys "r" :function (lambda () (goto-or-create-heading "Recipe")) :template "* %?     :recipe:")
