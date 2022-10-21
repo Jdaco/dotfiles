@@ -16,8 +16,9 @@ I use the [[https://github.com/hlissner/doom-emacs][Doom Emacs]] configuration f
 ;; Files
 (map! :leader
       :nv "f S" #'evil-write-all)
-(map! :nv "M-a" #'evil-scroll-up
-      :nv "M-;" #'evil-scroll-down
+
+(map! :nvm "M-a" #'evil-scroll-up
+      :nvm "M-;" #'evil-scroll-down
       )
 #+end_src
 
