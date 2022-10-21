@@ -743,3 +743,10 @@ Set =ansi-colors= to match =term-colors= (=ansi-colors= are used by Eshell and o
  '(ansi-color-bright-magenta ((t (:inherit term-colo-bright-magenta))))
  '(ansi-color-bright-cyan ((t (:inherit term-colo-bright-cyan)))))
 #+end_src
+** PDF
+#+begin_src elisp :noweb-ref configs
+(map! :map pdf-view-mode-map
+      :nvm "M-;" #'pdf-view-scroll-up-or-next-page
+      :nvm "M-a" #'pdf-view-scroll-down-or-previous-page
+      )
+#+end_src
