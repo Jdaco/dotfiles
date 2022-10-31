@@ -160,6 +160,10 @@ For example, an org-ql dynamic block header could look like:
                      :buffers-files org-agenda-files
                      :query (tags-local "vision")
                      :super-groups ((:auto-category)))
+                     ("Rules"
+                     :buffers-files org-agenda-files
+                     :query (tags-local "rule")
+                     :super-groups ((:auto-category)))
                     ("Fitness"
                      :buffers-files org-agenda-files
                      :query (and (category "Fitness") (tags "goal") (todo "PROGRESS") (parent (tags "progression")))
