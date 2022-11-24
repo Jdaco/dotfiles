@@ -107,4 +107,12 @@ r = rotate by 90
 *** Pulsemixer
 #+begin_src elisp :noweb-ref configs
 (add-hook! 'eshell-mode-hook (add-to-list 'eshell-visual-commands "pulsemixer"))
+
+(map! "<XF86AudioMute>" #'pulseaudio-control-toggle-current-sink-mute
+      "<XF86AudioRaiseVolume>" #'pulseaudio-control-increase-volume
+      "<XF86AudioLowerVolume>" #'pulseaudio-control-decrease-volume)
+#+end_src
+
+#+begin_src elisp :noweb-ref packages
+(package! pulseaudio-control)
 #+end_src
