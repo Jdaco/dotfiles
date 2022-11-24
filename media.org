@@ -69,6 +69,8 @@ Use ~mpv~ to view your webcam
 
 #+begin_src conf :tangle .config/yt-dlp/config
 --format bestvideo[height<=?720]+bestaudio/best
+--concurrent-fragments 8
+--write-url-link
 #+end_src
 
 ** Images
