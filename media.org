@@ -32,7 +32,7 @@ Open org-mode link in MPV
 #+begin_src elisp :noweb-ref configs
 (defun run-mpv (url &optional raw)
   "Watch a video from URL in MPV"
-  (let ((command (if raw "mpv --force-window \"%s\"" "yt-dlp -o - \"%s\" | mpv --force-window -")))
+  (let ((command "mpv --force-window \"%s\""))
     (start-process-shell-command "mpv" "mpv" (format command url)))
 
   )
