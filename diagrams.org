@@ -1,0 +1,5 @@
+#+title: Diagrams
+
+#+begin_src elisp :noweb-ref configs
+(set-popup-rule! "\\*PLANTUML Preview\\*" :side 'right :size 0.7)
+#+end_src

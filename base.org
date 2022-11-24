@@ -17,6 +17,7 @@ These are the base layers that will be installed on every system
 #+INCLUDE: ./org.org
 #+INCLUDE: ./system.org
 #+INCLUDE: ./k8s.org
+#+INCLUDE: ./diagrams.org
 
 
 #+INCLUDE: ./lang/makefile.org
