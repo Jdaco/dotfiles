@@ -3,3 +3,49 @@
 #+begin_src elisp :noweb-ref configs
 (set-popup-rule! "\\*PLANTUML Preview\\*" :side 'right :size 0.7)
 #+end_src
+
+* Snippets
+:PROPERTIES:
+:snippet_mode: plantuml-mode
+:END:
+#+BEGIN_SRC snippet :tangle (get-snippet-path)
+# name: mindmap
+# key: mindmap
+# --
+
+@startmindmap
+<style>
+    node {
+            MaximumWidth 150
+    }
+    arrow {
+            LineColor #aaa
+    }
+    :depth(0) {
+            BackgroundColor cornflowerblue
+    }
+    :depth(1) {
+            BackgroundColor skyblue
+    }
+    :depth(2) {
+            BackgroundColor aquamarine
+    }
+    :depth(3) {
+            BackgroundColor mediumspringgreen
+    }
+    :depth(4) {
+            BackgroundColor palegreen
+    }
+
+    .unsure {
+            LineColor red
+            LineThickness 2
+    }
+    .risk {
+            LineColor violet
+            LineThickness 2
+    }
+</style>
++ $0
+@endmindmap
+#+END_SRC
