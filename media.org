@@ -72,6 +72,12 @@ Use ~mpv~ to view your webcam
 --concurrent-fragments 8
 --write-url-link
 #+end_src
+*** gallery-dl
+
+#+begin_src sh :noweb-ref aliases
+alias gdl gallery-dl -o browser=firefox $*
+#+end_src
+
 
 ** Images
 #+begin_src elisp :noweb-ref configs :results none
