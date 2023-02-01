@@ -38,12 +38,15 @@
     }
 
     .unsure {
-            LineColor red
+            LineColor violet
             LineThickness 2
     }
     .risk {
-            LineColor violet
+            LineColor red
             LineThickness 2
+    }
+    .nope {
+            BackgroundColor #666
     }
 </style>
 + $0
