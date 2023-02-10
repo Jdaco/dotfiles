@@ -171,3 +171,15 @@ I use ~autorandr~ to manage monitor orientation
 #+end_src
 
 #+RESULTS:
+** Screen Drawing
+I use [[https://github.com/bk138/gromit-mpx][gromit-mpx]] to draw on my screen
+
+#+begin_src elisp :noweb-ref configs
+(defun gromit-mpx ()
+  (interactive)
+  (start-process-shell-command "gromit-mpx" nil "gromit-mpx -a"))
+#+end_src
+
+#+begin_src elisp :noweb-ref exwm-keys
+([?\s-g] . gromit-mpx)
+#+end_src
