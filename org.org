@@ -448,10 +448,21 @@ templates"
       "C-k" #'org-tree-slide-move-previous-tree
       )
 
+(map! :map org-mode-map
+      "M-)" #'org-timestamp-up-day
+      "M-(" #'org-timestamp-down-day
+      )
+
 (after! org-tree-slide
   (org-tree-slide-presentation-profile)
   (setq org-tree-slide-slide-in-effect nil
       org-tree-slide-skip-outline-level 0
       org-tree-slide-header t
       org-tree-slide-fold-subtrees-skipped t))
+#+end_src
+
+** Gantt
+#+begin_src elisp :noweb-ref packages
+(package! elgantt
+  :recipe (:host github :repo "legalnonsense/elgantt"))
 #+end_src
