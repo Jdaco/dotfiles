@@ -16,4 +16,6 @@
 #+begin_src shell :noweb-ref aliases
 alias k kubectl $*
 alias kap kubectl apply -f $*
+alias kapk kubectl apply -k $*
+alias k3d-create k3d cluster create --agents 2 --port "8080:80@loadbalancer" $*
 #+end_src
