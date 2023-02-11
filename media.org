@@ -11,6 +11,7 @@ demuxer-readahead-secs=300
 ytdl-format=bestvideo[height<=?720]+bestaudio/best
 script-opts=ytdl_hook-ytdl_path=yt-dlp
 screenshot-directory=~/Downloads
+force-window=true
 #+end_src
 
 #+begin_src conf :tangle .config/mpv/input.conf
