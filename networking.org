@@ -1,4 +1,27 @@
 * Networking
+#+begin_src elisp
+(defun ccc/eshell-ssh (host)
+  (with-temp-buffer
+    (find-file (read-file-name "Find file: " (format "/ssh:chaise@%s:/" host) nil 'mustmatch))))
+
+
+(defun ccc/embark-find-ip-address ()
+  (save-excursion
+    (let* ((beg (progn (skip-chars-backward "[0-9].:") (point)))
+           (end (progn (skip-chars-forward "[0-9].:") (point)))
+           (str (buffer-substring-no-properties beg end)))
+        (when (string-match "[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+" str)
+          `(ip-address . ,str)))))
+
+(embark-define-keymap embark-ip-address-map
+  "Keymap for Embark ip-address actions"
+  ("H" ccc/eshell-ssh)
+  )
+
+(add-to-list 'embark-target-finders #'ccc/embark-find-ip-address)
+(add-to-list 'embark-keymap-alist '(ip-address embark-ip-address-map))
+#+end_src
+
 ** File Sharing
 *** Syncthing
 

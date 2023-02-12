@@ -660,9 +660,6 @@ I use ~consult-dir~ to quickly find files and add their patt to the current mini
     (+vertico/find-file-in))
   )
 
-(map! :map vertico-map
-      "C-:" (cmd! () (delete-minibuffer-contents) (insert (ccc/consult-home))))
-
 (map! :leader
       "H" (cmd! () (find-file (ccc/consult-home)))
       "o I" (cmd! () (ccc/imv-dir (ccc/consult-home)))
