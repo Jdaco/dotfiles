@@ -6,6 +6,41 @@ I do prefer the [[https://github.com/emacs-evil/evil][EVIL]] keybindings over th
 
 I use the [[https://github.com/hlissner/doom-emacs][Doom Emacs]] configuration framework. I agree with most of it's decisions out of the box, but I like that it stays out of your way so you can configure things your way
 
+** Completion
+
+#+begin_src elisp :noweb-ref configs
+
+(setq vertico-multiform-categories '((t reverse))
+      vertico-multiform-commands '((execute-extended-command grid reverse))
+)
+
+(map! :map vertico-reverse-map
+      :g "C-j" #'vertico-previous
+      :g "C-k" #'vertico-next)
+
+(defun ccc/vertico-cycle ()
+  (interactive)
+  (let* ((rev vertico-reverse-mode)
+         (grid vertico-grid-mode))
+    (if grid
+
+      (vertico-multiform-vertical)
+      (vertico-multiform-grid))
+    ))
+
+(map! :map vertico-map
+      :nvieg "M-/" #'vertico-quick-jump
+      :nvieg "C-h" #'vertico-grid-left
+      :nvieg "C-l" #'vertico-grid-right
+      :nvieg "C-l" #'vertico-grid-right
+      :nvieg "C-c C-c" #'ccc/vertico-cycle
+      :nvieg "C-c C-g" (cmd! (vertico-multiform--temporary-mode 'vertico-grid-mode (if vertico-grid-mode -1 1)))
+      :nvieg "C-c C-r" (cmd! (vertico-multiform--temporary-mode 'vertico-reverse-mode (if vertico-reverse-mode -1 1)))
+      "C-:" (cmd! () (delete-minibuffer-contents) (insert (ccc/consult-home)))
+      )
+(vertico-multiform-mode t)
+#+end_src
+
 ** Editing
 #+begin_src elisp :noweb-ref configs
 ;; Evil
