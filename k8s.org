@@ -17,5 +17,80 @@
 alias k kubectl $*
 alias kap kubectl apply -f $*
 alias kapk kubectl apply -k $*
-alias k3d-create k3d cluster create --agents 2 --port "8080:80@loadbalancer" $*
+#+end_src
+
+* Services
+
+#+begin_src elisp :noweb-ref prodigy-services
+(prodigy-define-service
+    :name "Podman"
+    :command "podman"
+    :args '("system" "service" "--time=0")
+    :kill-process-buffer-on-stop t)
+(prodigy-define-service
+    :name "Docker"
+    :command "dockerd"
+    :sudo t
+    :kill-process-buffer-on-stop t)
+#+end_src
+* K3D
+
+#+begin_src sh :noweb-ref aliases
+alias kls k3d cluster ls $*
+#+end_src
+
+#+begin_src elisp :noweb-ref configs
+(defvar k3d-binary-path "~/.local/bin/k3d")
+
+(defun k3d-get-cluster ()
+  (interactive)
+  (with-temp-buffer
+    (shell-command (format "%s cluster ls --no-headers | awk '{print $1}'" k3d-binary-path) (current-buffer))
+    (let ((clusters (delete "" (s-lines (s-trim (buffer-string))))))
+      (if clusters
+          (completing-read "Cluster: " (s-lines (s-trim (buffer-string))))
+        (error "No clusters available"))
+      )
+    )
+  )
+
+(defun k3d-ingress-reader (prompt initial history)
+  (format "%s:80@loadbalancer" (transient-read-number-N+ prompt initial history)))
+
+(defun k3d-cluster-create (name &optional args)
+  (interactive
+   (list (read-string "Cluster Name: ")
+    (transient-args transient-current-command)))
+  (let ((command (format "%s cluster create %s %s" k3d-binary-path name (s-join " " args))))
+   (async-shell-command command "k3d")))
+
+(defun k3d-cluster-delete (&rest args)
+  (interactive)
+  (let* ((cluster (if (seq-contains-p args "--all") "" (k3d-get-cluster)))
+        (fmt "%s cluster delete %s %s")
+        (command (format fmt k3d-binary-path cluster (s-join " " args))))
+   (async-shell-command command "k3d")))
+
+(transient-define-prefix transient-k3d-cluster-create ()
+  "Prefix that is minimal and uses an anonymous command suffix."
+  :value '("--port=8080:80@loadbalancer" "--agents=2")
+  ["Arguments"
+   ("-i" "Ingress" "--port=" :prompt "Ingress: " :reader k3d-ingress-reader)
+   ("-a" "Agents" "--agents=" :prompt "Number of agents: " :reader transient-read-number-N+)
+   ]
+  ["Actions"
+   ("c" "Create" k3d-cluster-create)
+   ;; TODO Not implemented yet
+   ("C" "From config file" k3d-cluster-create)]
+)
+
+(map! :leader
+      :n "a" nil)
+(map! (:leader
+      :prefix ("a" . "Applications")
+      :prefix ("a k" . "Containers")
+      :prefix ("a k d" . "K3D")
+      :desc "Delete cluster"       :n "d" #'k3d-cluster-delete
+      :desc "Delete all clusters"  :n "D" (cmd! (k3d-cluster-delete "--all"))
+      :desc "Create cluster"       :n "c" #'transient-k3d-cluster-create))
 #+end_src
