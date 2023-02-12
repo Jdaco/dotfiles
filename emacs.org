@@ -87,7 +87,20 @@ I use the [[https://github.com/joaotavora/yasnippet][yasnippet]] emacs package f
         (other-file (find-file-noselect (read-file-name "File to diff: "))))
     (ediff-buffers current-file other-file)))
 #+end_src
+*** Search
 
+#+begin_src elisp :noweb-ref configs
+(map! :n "/" #'isearch-forward
+      :n "?" #'isearch-backward
+      :n "n" #'isearch-repeat-forward
+      :n "N" #'isearch-repeat-backward
+      :n "C-/" #'+default/search-buffer
+      :n "C-?" #'+vertico/search-symbol-at-point
+      :n "M-/" #'avy-isearch
+      :n "M-?" #'isearch-occur
+      :n "C-'" #'iedit-mode
+      )
+#+end_src
 ** Bookmarks
 [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Bookmarks.html][Bookmarks]] let you save your position in commonly used files
 
