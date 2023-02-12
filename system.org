@@ -20,3 +20,13 @@
 #+begin_src elisp :noweb-ref configs
 (display-battery-mode)
 #+end_src
+
+*** Time
+
+#+begin_src elisp :noweb-ref configs
+(setq display-time-load-average-threshold 20
+      display-time-24hr-format t
+      display-time-mail-string nil
+      display-time-mail-icon nil)
+(display-time-mode t)
+#+end_src
