@@ -14,3 +14,9 @@
   (handler . ccc/bookmark-alacritty)
   (command "bpytop"))
 #+end_src
+
+*** Battery
+
+#+begin_src elisp :noweb-ref configs
+(display-battery-mode)
+#+end_src
