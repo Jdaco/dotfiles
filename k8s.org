@@ -6,11 +6,14 @@
 #+end_src
 
 #+begin_src elisp :noweb-ref configs
+(after! kuberenetes
 (require 'kubernetes-evil)
 (map! :leader
       :nv "k" #'kubernetes-overview)
 (map! :map kubernetes-mode-map
       :m "s" #'kubernetes-set-namespace)
+
+  )
 #+end_src
 
 #+begin_src shell :noweb-ref aliases

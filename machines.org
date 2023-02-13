@@ -298,13 +298,17 @@ git clone https://github.com/Jdaco/dotfiles
 Configs for my Iontra laptop
 
 #+begin_src elisp :noweb-ref configs
-(setq org-directory "~/sync"
-      scrot-directory "~/sync"
-      org-agenda-files '("~/sync/areas/iontra.org")
+(setq org-directory "~/org"
+      scrot-directory "~"
+      org-agenda-files '("~/org/iontra.org")
       dotfiles-directory "~/dotfiles"
-      magit-repository-directories '(("~/proj" . 1)))
+      magit-repository-directories '(("~/proj" . 1))
+      auth-sources '("~/.authinfo"))
 
 (add-to-list 'exec-path (expand-file-name "~/.guix-profile/bin"))
+
+(require 'pinentry)
+(pinentry-start)
 #+end_src
 
 #+begin_src elisp :noweb-ref packages
@@ -321,7 +325,7 @@ Configs for my Iontra laptop
 
 #+begin_src elisp :noweb-ref bookmarks
 ("org"
-  (filename . "~/sync/iontra.org"))
+  (filename . "~/org/iontra.org"))
 ("inbox"
-  (filename . "~/sync/inbox.org"))
+  (filename . "~/org/inbox.org"))
 #+end_src

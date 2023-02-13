@@ -1,11 +1,12 @@
 * Networking
-#+begin_src elisp
+#+begin_src elisp :noweb-ref configs
 (defun ccc/eshell-ssh (host)
   (with-temp-buffer
     (find-file (read-file-name "Find file: " (format "/ssh:chaise@%s:/" host) nil 'mustmatch))))
 
 
 (defun ccc/embark-find-ip-address ()
+  "If the word at point is an IP address, returns (ip-address . WORD)"
   (save-excursion
     (let* ((beg (progn (skip-chars-backward "[0-9].:") (point)))
            (end (progn (skip-chars-forward "[0-9].:") (point)))
@@ -142,4 +143,10 @@ I use [[https://syncthing.net/][Syncthing]] to sync data between my different de
 ;;  "network" (ccc/eshell-make-pipe "ip route list" "sed 1d" "awk '{print \\$1}'")
 ;;  "hosts" "network | xargs -n 1 nmap -sP | grep 'scan report' | awk '{print \$5}'"
  ;; )
+#+end_src
+** REST
+
+#+begin_src elisp :noweb-ref packages
+(package! restclient)
+(package! ob-restclient)
 #+end_src

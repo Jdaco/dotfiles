@@ -452,6 +452,9 @@ git clone https://github.com/hlissner/doom-emacs ~/.emacs.d
 
 (map! :leader :n "a" nil)
 
+(require 'transient)
+(require 'embark)
+
 <<configs>>
 #+end_src
 
@@ -812,17 +815,23 @@ Set =ansi-colors= to match =term-colors= (=ansi-colors= are used by Eshell and o
       :nvm "M-a" #'pdf-view-scroll-down-or-previous-page
       )
 #+end_src
+** Embark
+#+begin_src elisp :noweb-ref packages
+(package! embark)
+#+end_src
+
 ** Transient
 #+begin_src elisp :noweb-ref packages
+(package! transient)
 (package! transient-posframe)
 #+end_src
 
 #+begin_src elisp :noweb-ref configs
-(after! transient-posframe
+(after! transient
+    (require 'transient-posframe)
     (transient-posframe-mode 1)
     (setq transient-posframe-min-height 1)
   )
-(require 'transient-posframe)
 #+end_src
 ** Search
 #+begin_src elisp :noweb-ref configs
