@@ -81,6 +81,13 @@ alias gdl gallery-dl -o browser=firefox $*
 
 
 ** Images
+
+#+begin_src elisp
+("^\\*image-dired\\*$" :vslot -1 :slot 2 :select t :height 0.9)
+("^\\*image-dired-display-image\\*$" :vslot -1 :slot 2 :select t :height 0.9 :width 0.9)
+#+end_src
+
+
 #+begin_src elisp :noweb-ref configs :results none
 ; Image keybinds
 (map! :map image-mode-map
