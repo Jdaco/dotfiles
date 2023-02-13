@@ -77,7 +77,7 @@ alias kls k3d cluster ls $*
   :value '("--port=8080:80@loadbalancer" "--agents=2")
   ["Arguments"
    ("-i" "Ingress" "--port=" :prompt "Ingress: " :reader k3d-ingress-reader)
-   ("-a" "Agents" "--agents=" :prompt "Number of agents: " :reader transient-read-number-N+)
+   ("-a" "Agents" "--agents=" :always-read t :prompt "Number of agents: " :reader transient-read-number-N+)
    ]
   ["Actions"
    ("c" "Create" k3d-cluster-create)
@@ -87,8 +87,6 @@ alias kls k3d cluster ls $*
 
 (set-popup-rule! (regexp-quote k3d-buffer-name) :side 'right :size 0.3 :select nil :ttl 0)
 
-(map! :leader
-      :n "a" nil)
 (map! (:leader
       :prefix ("a" . "Applications")
       :prefix ("a k" . "Containers")

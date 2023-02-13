@@ -448,6 +448,8 @@ git clone https://github.com/hlissner/doom-emacs ~/.emacs.d
                              (point-max))
       (kill-buffer))))
 
+(map! :leader :n "a" nil)
+
 <<configs>>
 #+end_src
 
