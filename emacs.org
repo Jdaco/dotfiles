@@ -729,8 +729,6 @@ I use ~consult-dir~ to quickly find files and add their patt to the current mini
 
 (setq dired-listing-switches "-algho --group-directories-first"
 
-      delete-by-moving-to-trash t
-      trash-directory "~/.trash"
       dired-open-extensions '(("mp4" . "mpv")
                               ("webm" . "mpv")
                               ("mkv" . "mpv")
@@ -746,6 +744,18 @@ I use ~consult-dir~ to quickly find files and add their patt to the current mini
 (package! dired-open)
 (package! dired-subtree)
 #+end_src
+*** Trash
+#+begin_src elisp :noweb-ref configs
+(setq delete-by-moving-to-trash t
+      trash-directory "~/.trash"
+)
+
+(defun ccc/empty-trash ()
+  "Remove trash directory"
+  (interactive)
+  (let ((delete-by-moving-to-trash nil)) (delete-directory trash-directory t)))
+#+end_src
+
 *** Archives
 You can use ~dired~ to manage archives
 
