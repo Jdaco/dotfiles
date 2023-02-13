@@ -1,0 +1,7 @@
+#+title: Graphql
+
+#+begin_src elisp :noweb-ref packages
+(package! ob-graphql)
+(package! graphql-mode)
+(package! graphql-doc)
+#+end_src
