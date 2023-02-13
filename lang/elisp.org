@@ -1,0 +1,17 @@
+#+title: Emacs Lisp
+
+* Snippets
+:PROPERTIES:
+:snippet_mode: emacs-lisp-mode
+:END:
+
+** defun
+#+BEGIN_SRC snippet :tangle (get-snippet-path)
+# name: defun
+# key: defun
+# --
+(defun $1 ($2)
+    (interactive)
+    "$3"
+    $0)
+#+END_SRC
