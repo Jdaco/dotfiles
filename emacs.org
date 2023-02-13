@@ -723,7 +723,10 @@ I use ~consult-dir~ to quickly find files and add their patt to the current mini
       "we" (cmd! () (consult-file-externally (car (dired-get-marked-files))))
       "l" #'dired-open-file)
 
+(add-hook! 'dired-mode-hook #'dired-hide-details-mode)
+
 (setq dired-listing-switches "-algho --group-directories-first"
+
       delete-by-moving-to-trash t
       trash-directory "~/.trash"
       dired-open-extensions '(("mp4" . "mpv")
@@ -806,4 +809,22 @@ Set =ansi-colors= to match =term-colors= (=ansi-colors= are used by Eshell and o
     (setq transient-posframe-min-height 1)
   )
 (require 'transient-posframe)
+#+end_src
+** Search
+#+begin_src elisp :noweb-ref configs
+(setq +lookup-provider-url-alist
+  '(("Doom Emacs issues" "https://github.com/hlissner/doom-emacs/issues?q=is%%3Aissue+%s")
+    ("Google"            +lookup--online-backend-google "https://google.com/search?q=%s")
+    ("Google images"     "https://www.google.com/images?q=%s")
+    ("Google maps"       "https://maps.google.com/maps?q=%s")
+    ("Project Gutenberg" "http://www.gutenberg.org/ebooks/search/?query=%s")
+    ("DuckDuckGo"        +lookup--online-backend-duckduckgo "https://duckduckgo.com/?q=%s")
+    ("DevDocs.io"        "https://devdocs.io/#q=%s")
+    ("StackOverflow"     "https://stackoverflow.com/search?q=%s")
+    ("Github"            "https://github.com/search?ref=simplesearch&q=%s")
+    ("Youtube"           "https://youtube.com/results?aq=f&oq=&search_query=%s")
+    ("Wolfram alpha"     "https://wolframalpha.com/input/?i=%s")
+    ("Wikipedia"         "https://wikipedia.org/search-redirect.php?language=en&go=Go&search=%s")
+    ("MDN"               "https://developer.mozilla.org/en-US/search?q=%s")
+    )
 #+end_src
