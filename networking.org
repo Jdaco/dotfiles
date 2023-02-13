@@ -49,3 +49,90 @@ I use [[https://syncthing.net/][Syncthing]] to sync data between my different de
   (pattern . "*conflict*")
   (handler . ccc/find-bookmark-handler))
 #+end_src
+*** rsync
+
+#+begin_src elisp :noweb-ref configs
+(defvar rsync-buffer-name "*rsync*")
+
+(defun rsync--format-path (path)
+  "Convert TRAMP paths to rsync format"
+    (if (tramp-tramp-file-p path)
+        (let ((tramp (tramp-dissect-file-name path)))
+          (format "%s@%s:%s"
+                  (tramp-file-name-user tramp)
+                  (tramp-file-name-host tramp)
+                  (file-local-name path)))
+      path
+      ))
+
+
+(defun transient-rsync-read-directory (prompt _initial-input _history)
+  "Read a directory."
+  (rsync--format-path (expand-file-name (read-directory-name prompt)))
+  )
+
+(defun rsync-get-command (args)
+  "Returns rsync command from arguments"
+  (interactive)
+  (let ((source (replace-regexp-in-string "/$" "" (transient-arg-value "--source=" args)))
+        (dest (replace-regexp-in-string "/$" "" (transient-arg-value "--dest=" args)))
+        (opts (remove-if (apply-partially #'string-match "dest\\|source") args)))
+  (format "rsync %s %s %s" (s-join " " opts) source dest))
+  )
+(defun rsync-copy-command (&rest args)
+  "Copy the rsync command to clipboard"
+  (interactive (transient-args transient-current-command))
+  (kill-new (rsync-get-command args)))
+
+(defun rsync-copy (&rest args)
+  "Use rsync to copy files"
+  (interactive (transient-args transient-current-command))
+  (let ((command (rsync-get-command args))
+        (default-directory (expand-file-name "~")))
+    (async-shell-command command rsync-buffer-name))
+  )
+
+(transient-define-prefix transient-rsync ()
+  "Prefix that is minimal and uses an anonymous command suffix."
+  :value '("--verbose")
+  ["Arguments"
+   ("-r" "Recursive" "--recursive")
+   ("-v" "Verbose" "--verbose")
+   ("s" "Source" "--source="
+    :init-value (lambda (o) (oset o value (rsync--format-path (dired-dwim-target-directory))))
+    :always-read t
+    :reader transient-rsync-read-directory
+    :prompt "Source: ")
+   ("d" "Destination" "--dest="
+    :always-read t
+    :reader transient-rsync-read-directory
+    :prompt "Destination: ")
+   ]
+  ["Actions"
+   ("r" "Copy" rsync-copy)
+   ("x" "Copy command" rsync-copy-command)
+   ]
+)
+
+(set-popup-rule! (regexp-quote rsync-buffer-name) :side 'right :size 0.4 :select nil :ttl 0)
+
+(map! :leader
+      :n "a r" #'transient-rsync)
+#+end_src
+
+** nmap
+#+begin_src elisp :noweb-ref configs
+(defun eshell/nmap-ping (&rest args)
+  (with-temp-buffer
+    (eshell-command "nmap -sP 192.168.1.0/24" t)
+    (buffer-string)))
+
+(defun ccc/eshell-make-pipe (&rest commands)
+  (format "bash -c \"%s\"" (s-join " | " commands))
+  )
+
+;; (set-eshell-alias!
+;;  "network" (ccc/eshell-make-pipe "ip route list" "sed 1d" "awk '{print \\$1}'")
+;;  "hosts" "network | xargs -n 1 nmap -sP | grep 'scan report' | awk '{print \$5}'"
+ ;; )
+#+end_src
