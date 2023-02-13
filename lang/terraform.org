@@ -1,5 +1,15 @@
 #+TITLE: Terraform
 
+#+begin_src elisp :noweb-ref configs
+(defun terraform ()
+    (interactive)
+  "Run Terraform"
+  (message "Not implemented"))
+
+(map! :leader
+      "a t" #'terraform)
+#+end_src
+
 * Snippets
 :PROPERTIES:
 :snippet_mode: terraform-mode
@@ -189,4 +199,10 @@ data "aws_iam_policy_document" "$1" {
 alias tf terraform $*
 alias tfa terraform apply $*
 alias tfA terraform apply -auto-approve $*
+#+end_src
+* Bookmarks
+#+begin_src elisp :noweb-ref bookmarks
+("Terraform (AWS)"
+ (link . "https://registry.terraform.io/providers/hashicorp/aws/latest/docs")
+ (handler . ccc/org-bookmark-handler))
 #+end_src
