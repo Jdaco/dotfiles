@@ -853,6 +853,7 @@ Set =ansi-colors= to match =term-colors= (=ansi-colors= are used by Eshell and o
     ("Wolfram alpha"     "https://wolframalpha.com/input/?i=%s")
     ("Wikipedia"         "https://wikipedia.org/search-redirect.php?language=en&go=Go&search=%s")
     ("MDN"               "https://developer.mozilla.org/en-US/search?q=%s")
+    ("Kubernetes"        "https://kubernetes.io/search/?q=%s")
     )
 )
 #+end_src
