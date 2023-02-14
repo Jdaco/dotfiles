@@ -1,0 +1,42 @@
+#+title: Ansible
+
+#+begin_src elisp :noweb-ref configs
+(defvar ansible-buffer-name "*ansible*")
+(defun ansible--get-command (playbook args)
+  (format "ansible-playbook %s %s" playbook (s-join " " args)))
+
+(defun ansible-copy-command (playbook &optional args)
+  (interactive
+   (list (read-file-name "Playbook: ")
+    (transient-args transient-current-command)))
+  (kill-new (ansible--get-command playbook args))
+  )
+
+(defun ansible-playbook--execute (playbook &optional args)
+  (interactive
+   (list (read-file-name "Playbook: ")
+    (transient-args transient-current-command)))
+  (let* ((command (ansible--get-command playbook args)))
+    (async-shell-command command ansible-buffer-name))
+  )
+
+(transient-define-prefix ansible-playbook ()
+  "Prefix that is minimal and uses an anonymous command suffix."
+  :value '("--forks=40")
+  ["Arguments"
+   ("-i" "Inventory" "--inventory=" :reader transient-read-existing-file)
+   ("-f" "Forks" "--forks=" :reader transient-read-number-N+)
+   ]
+  ["Actions"
+   ("r" "Run" ansible-playbook--execute)
+   ("x" "Copy command" ansible-copy-command)
+   ]
+)
+
+(set-popup-rule! (regexp-quote ansible-buffer-name) :side 'right :size 0.4 :select nil :ttl 0)
+
+(map! (:leader
+      :n "a a" #'ansible-playbook
+      )
+)
+#+end_src

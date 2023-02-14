@@ -20,6 +20,7 @@ These are the base layers that will be installed on every system
 #+INCLUDE: ./diagrams.org
 
 
+#+INCLUDE: ./ansible.org
 #+INCLUDE: ./lang/makefile.org
 #+INCLUDE: ./lang/markdown.org
 #+INCLUDE: ./lang/python.org
