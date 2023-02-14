@@ -125,3 +125,52 @@ alias kls k3d cluster ls $*
       :desc "Delete all clusters"  :n "D" (cmd! (k3d-cluster-delete "--all"))
       :desc "Create cluster"       :n "c" #'transient-k3d-cluster-create))
 #+end_src
+* kubectl
+
+#+begin_src elisp :noweb-ref configs
+(defvar kubectl-binary-path "~/.local/bin/kubectl")
+(defvar kubectl-buffer-name "*kubectl*")
+
+(defun kubectl-apply--get-command (args)
+  (format "%s apply %s" kubectl-binary-path (s-join " " args)))
+
+(defun kubectl-apply-copy-command (&rest args)
+  (interactive (transient-args transient-current-command))
+  (kill-new (kubectl-apply--get-command args))
+  )
+
+;; (defun k3d-cluster-create--sentinel (process event)
+;;     (when (and (equal k3d-buffer-name (buffer-name (process-buffer process)))
+;;                (equal "finished" (car (s-lines event))))
+;;       (start-process k3d-buffer-name k3d-buffer-name "kubectl"))
+;;     )
+;; (advice-add 'shell-command-sentinel :after #'k3d-cluster-create--sentinel)
+
+(defun kubect-apply (&rest args)
+  (interactive (transient-args transient-current-command))
+  (let* ((command (kubectl-apply--get-command args)))
+    (async-shell-command command kubectl-buffer-name))
+  )
+
+(transient-define-prefix kubectl ()
+  "Prefix that is minimal and uses an anonymous command suffix."
+  :value '("--port=8080:80@loadbalancer" "--agents=2")
+  ["Arguments"
+   ("-f" "File" "--filename=" :reader transient-read-existing-file)
+   ("-k" "Kustomize" "--kustomize=" :reader transient-read-existing-directory)
+   ("-p" "Prune" "--prune")
+   ("-a" "All" "--all")
+   ]
+  ["Actions"
+   ("a" "Apply" kubect-apply)
+   ("x" "Copy command" kubectl-apply-copy-command)
+   ]
+)
+
+(set-popup-rule! (regexp-quote kubectl-buffer-name) :side 'right :size 0.4 :select nil :ttl 0)
+
+(map! (:leader
+      :n "a k k" #'kubectl
+      )
+)
+#+end_src
