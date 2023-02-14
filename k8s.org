@@ -61,12 +61,36 @@ alias kls k3d cluster ls $*
 (defun k3d-ingress-reader (prompt initial history)
   (format "%s:80@loadbalancer" (transient-read-number-N+ prompt initial history)))
 
+(defun k3d-volume-reader (prompt initial history)
+  (let ((dir (transient-read-directory prompt "/tmp" history)))
+    (unless (f-dir-p dir)
+      (mkdir dir))
+    (format "%s:/tmp/k3dvol" dir)))
+
+(defun k3d-cluster-create--get-command (name args)
+  (format "%s cluster create %s %s" k3d-binary-path name (s-join " " args)))
+
+(defun k3d-cluster-create-copy-command (name &optional args)
+  (interactive
+(list (read-string "Cluster Name: ")
+    (transient-args transient-current-command)))
+  (kill-new (k3d-cluster-create--get-command name args))
+  )
+
+;; (defun k3d-cluster-create--sentinel (process event)
+;;     (when (and (equal k3d-buffer-name (buffer-name (process-buffer process)))
+;;                (equal "finished" (car (s-lines event))))
+;;       (start-process k3d-buffer-name k3d-buffer-name "kubectl"))
+;;     )
+;; (advice-add 'shell-command-sentinel :after #'k3d-cluster-create--sentinel)
+
 (defun k3d-cluster-create (name &optional args)
   (interactive
    (list (read-string "Cluster Name: ")
     (transient-args transient-current-command)))
-  (let ((command (format "%s cluster create %s %s" k3d-binary-path name (s-join " " args))))
-   (async-shell-command command k3d-buffer-name)))
+  (let* ((command (k3d-cluster-create--get-command name args)))
+    (async-shell-command command k3d-buffer-name)))
+
 
 (defun k3d-cluster-delete (&rest args)
   (interactive)
@@ -81,11 +105,14 @@ alias kls k3d cluster ls $*
   ["Arguments"
    ("-i" "Ingress" "--port=" :prompt "Ingress: " :reader k3d-ingress-reader)
    ("-a" "Agents" "--agents=" :always-read t :prompt "Number of agents: " :reader transient-read-number-N+)
+   ("-v" "Volume" "--volume=" :always-read t :prompt "Number of agents: " :reader k3d-volume-reader)
    ]
   ["Actions"
    ("c" "Create" k3d-cluster-create)
    ;; TODO Not implemented yet
-   ("C" "From config file" k3d-cluster-create)]
+   ("C" "From config file" k3d-cluster-create)
+   ("x" "Copy command" k3d-cluster-create-copy-command)
+   ]
 )
 
 (set-popup-rule! (regexp-quote k3d-buffer-name) :side 'right :size 0.3 :select nil :ttl 0)
