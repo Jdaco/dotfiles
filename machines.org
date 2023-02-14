@@ -315,6 +315,10 @@ Configs for my Iontra laptop
 (package! exwm)
 #+end_src
 
+#+begin_src elisp :noweb-ref capture-templates
+("Task" :keys "t" :file "~/org/iontra.org" :olp ("Tasks") :template "* TODO %?")
+#+end_src
+
 #+include: ./base.org
 
 *** Monitors
