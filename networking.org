@@ -2,16 +2,17 @@
 #+begin_src elisp :noweb-ref configs
 (defun ccc/eshell-ssh (host)
   (with-temp-buffer
-    (find-file (read-file-name "Find file: " (format "/ssh:chaise@%s:/" host) nil 'mustmatch))))
+    (find-file (read-file-name "Find file: " (format "/ssh:%s:/" host)))))
 
+(defvar ip-address-regex (rx (? (1+ alnum) "@") (1+ digit) "." (1+ digit) "." (1+ digit) "." (1+ digit)))
 
 (defun ccc/embark-find-ip-address ()
   "If the word at point is an IP address, returns (ip-address . WORD)"
   (save-excursion
-    (let* ((beg (progn (skip-chars-backward "[0-9].:") (point)))
-           (end (progn (skip-chars-forward "[0-9].:") (point)))
+    (let* ((beg (progn (skip-chars-backward "[:alnum:].@") (point)))
+           (end (progn (skip-chars-forward "[:alnum:].@") (point)))
            (str (buffer-substring-no-properties beg end)))
-        (when (string-match "[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+" str)
+        (when (string-match ip-address-regex str)
           `(ip-address . ,str)))))
 
 (embark-define-keymap embark-ip-address-map
