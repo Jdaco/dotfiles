@@ -518,6 +518,14 @@ git clone https://github.com/hlissner/doom-emacs ~/.emacs.d
 
 <<packages>>
 #+end_src
+*** Updating
+#+begin_src elisp :noweb-ref configs
+(map! :leader
+      :desc "config-tangle" :n "h d t" (cmd! (compile (f-join dotfiles-directory "bin" "config-tangle")))
+      :desc "Doom sync" :n "h d y" (cmd! (compile "~/.emacs.d/bin/doom sync"))
+      :desc "Doom upgrade" :n "h d y" (cmd! (compile "~/.emacs.d/bin/doom upgrade"))
+      )
+#+end_src
 
 ** Help
 *** Info
