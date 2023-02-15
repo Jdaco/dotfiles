@@ -22,20 +22,34 @@ alias kap kubectl apply -f $*
 alias kapk kubectl apply -k $*
 #+end_src
 
-* Services
-
+* Docker
 #+begin_src elisp :noweb-ref prodigy-services
 (prodigy-define-service
     :name "Podman"
     :command "podman"
     :args '("system" "service" "--time=0")
     :kill-process-buffer-on-stop t)
+#+end_src
+
+#+begin_src elisp :noweb-ref configs
+(defvar docker-buffer-name "*docker*")
+
+(set-popup-rule! (regexp-quote docker-buffer-name) :side 'right :size 0.4 :select nil :ttl 0)
+
+(map! :leader
+      :desc "Docker prune"   :n "a k D p" (cmd! (async-shell-command "docker system prune --all --force" docker-buffer-name))
+      )
+#+end_src
+
+* Podman
+#+begin_src elisp :noweb-ref prodigy-services
 (prodigy-define-service
-    :name "Docker"
-    :command "dockerd"
-    :sudo t
+    :name "Podman"
+    :command "podman"
+    :args '("system" "service" "--time=0")
     :kill-process-buffer-on-stop t)
 #+end_src
+
 * K3D
 
 #+begin_src sh :noweb-ref aliases
@@ -125,7 +139,6 @@ alias kls k3d cluster ls $*
       :desc "Delete all clusters"  :n "D" (cmd! (k3d-cluster-delete "--all"))
       :desc "Create cluster"       :n "c" #'transient-k3d-cluster-create))
 #+end_src
-
 * kubectl
 
 #+begin_src elisp :noweb-ref configs
