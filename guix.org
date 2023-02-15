@@ -1,7 +1,14 @@
 * Guix
 #+begin_src elisp :noweb-ref configs
+(defvar guix-buffer-name "*guix*")
+
+(set-popup-rule! (regexp-quote guix-buffer-name) :side 'bottom :size 0.3 :select nil :ttl 0)
+
 (map! :leader
-      "a g" #'guix)
+      :n "a g g" #'guix
+      :desc "Guix Pull"     :n "a g p" (cmd! (async-shell-command "guix pull" guix-buffer-name))
+      :desc "Guix Upgrade"  :n "a g u" (cmd! (async-shell-command "guix upgrade" guix-buffer-name))
+      )
 #+end_src
 
 #+begin_src elisp :noweb-ref packages
