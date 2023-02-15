@@ -2,7 +2,7 @@
 #+begin_src elisp :noweb-ref configs
 (defvar guix-buffer-name "*guix*")
 
-(set-popup-rule! (regexp-quote guix-buffer-name) :side 'bottom :size 0.3 :select nil :ttl 0)
+(set-popup-rule! (regexp-quote guix-buffer-name) :side 'bottom :size 0.3 :select nil :quit 'current)
 
 (map! :leader
       :n "a g g" #'guix
