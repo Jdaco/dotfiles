@@ -72,7 +72,20 @@ Use ~mpv~ to view your webcam
 --format bestvideo[height<=?720]+bestaudio/best
 --concurrent-fragments 8
 --write-url-link
+--paths ~/Downloads
 #+end_src
+
+#+begin_src elisp :noweb-ref configs
+(defvar yt-dlp-buffer-name "*yt-dlp*")
+
+(set-popup-rule! (regexp-quote yt-dlp-buffer-name) :side 'bottom :size 0.3 :select nil :quit 'current)
+
+(map! :leader
+      :desc "Download Video"  :n "a s y" (cmd! (async-shell-command (format "yt-dlp %s" (read-string "URL: ")) yt-dlp-buffer-name))
+      )
+#+end_src
+
+
 *** gallery-dl
 
 #+begin_src sh :noweb-ref aliases
