@@ -43,8 +43,9 @@ My primary workstation
       org-directory "~/roam"
       org-roam-directory "~/roam"
       org-roam-database-connector 'sqlite3
-      org-agenda-files `(,(f-join org-roam-directory "areas") ,(f-join org-roam-directory "areas/career/companies/iontra/iontra.org"))
-      scrot-directory "~/Downloads"
+      org-agenda-files `(,(f-join org-roam-directory "areas"))
+      download-directory "~/Downloads"
+      scrot-directory download-directory
       magit-repository-directories `((,dotfiles-directory . 0)))
 #+end_src
 
@@ -170,8 +171,9 @@ My primary laptop
 (setq dotfiles-directory "~/dotfiles"
       org-directory "~/roam"
       org-roam-directory "~/roam"
-      org-agenda-files `(,(f-join org-roam-directory "areas") ,(f-join org-roam-directory "areas/career/companies/iontra/iontra.org"))
-      scrot-directory "~/Downloads"
+      org-agenda-files `(,(f-join org-roam-directory "areas"))
+      download-directory "~/Downloads"
+      scrot-directory download-directory
       magit-repository-directories `((,dotfiles-directory . 0))
       org-roam-database-connector 'sqlite3
       )
