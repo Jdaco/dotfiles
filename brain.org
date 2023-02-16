@@ -350,10 +350,10 @@ I use [[https://github.com/weirdNox/org-noter][org-noter]] when I'm taking notes
                     (bibtex-mode)
                     (insert entry)
                     (bibtex-completion-key-at-point)))
-            (exists (bibtex-completion-get-entry id)))
+            (exists (citar-get-entry id)))
         (if exists
             (message (format "Entry %s already exists" id))
-        (with-current-buffer (find-file-noselect bibtex-completion-bibliography)
+        (with-current-buffer (find-file-noselect (car citar-bibliography))
             (end-of-buffer)
             (insert "\n" entry)
             (save-buffer)))))
@@ -366,64 +366,54 @@ I use [[https://github.com/weirdNox/org-noter][org-noter]] when I'm taking notes
 
 #+begin_src elisp :noweb-ref packages
 (package! org-roam-bibtex)
-(package! ivy-bibtex)
 (package! org-ref)
 #+end_src
 
-*** ivy-books
+*** google-books
 #+begin_src elisp :noweb-ref configs
-(after! ivy
-  (defun ivy-books--get-bibtex (candidate)
-    (alist-get 'id candidate)
-    (let ((bibtex (url-to-string
-                   (format "https://books.google.com/books?id=%s&output=bibtex" (alist-get 'id candidate)))))
-      (bibtex-add-entry bibtex)))
-
-
-  (defun ivy-books--url-retrieve-from-google ()
-    "Retrieve information of book using google books api."
-    (switch-to-buffer
-     (url-retrieve-synchronously
-      (concat "https://www.googleapis.com/books/v1/volumes?q=" helm-pattern)))
-    (let ((response-string (buffer-substring-no-properties
-                            url-http-end-of-headers (point-max))))
-      (kill-buffer (current-buffer))
-      (json-read-from-string (decode-coding-string response-string 'utf-8))))
-
-  (defun ivy-books--extract-values-from-google (item)
-    "Extract attribute from result of api.
-ITEM is each book information."
-    (let ((title "")
-          (author "")
-          (publisher "")
-          (publishedDate ""))
-      (dolist (i item)
-        (when (string= "volumeInfo" (car i))
-          (dolist (j (cdr i))
-            (when (string= "title" (car j))
-              (setq title (cdr j)))
-            (when (string= "authors" (car j))
-              (setq author (cdr j)))
-            (when (string= "publisher" (car j))
-              (setq publisher (cdr j)))
-            (when (string= "publishedDate" (car j))
-              (setq publishedDate (cdr j)))
-            )))
-      (cons
-       (format "Title:%s, Authors:%s, Publisher:%s, PublishedDate:%s" title author publisher publishedDate)
-       item)))
-
-  (defun ivy-books--candidates-from-google ()
-    (mapcar 'ivy-books--extract-values-from-google (cdr (nth 2 (ivy-books--url-retrieve-from-google)))))
-
-  (defun ivy-books ()
-    "Books searcher with ivy interface."
-    ; This was converted from Helm and doesn't work
-    ; It needs to be updated to provide dynamic candidates from the search results
-    (interactive)
-      (ivy-read "Search Books: " (ivy-books--candidates-from-google)
-                :action #'ivy-books--get-bibtex))
+(defun google-books--get-bibtex (book)
+  "Get a bibtex file from Google Books API"
+  ;; book
+  (url-to-string (format "https://books.google.com/books?id=%s&output=bibtex" book))
   )
+
+(defun google-books--search (pattern)
+  "Search Google Books API"
+  (interactive)
+  (let* ((url (browse-url-encode-url (concat "https://www.googleapis.com/books/v1/volumes?q=" pattern)))
+        (response (url-to-string url)))
+    (cdr (nth 2 (json-read-from-string response)))))
+
+(defun google-books--builder (prompt)
+  `( "/home/chaise/dotfiles/bin/curl-jq.sh"
+     ,(browse-url-encode-url (concat "https://www.googleapis.com/books/v1/volumes?q=" prompt))
+     ".items[]")
+  )
+
+(defun google-books--display-candidate (candidate)
+  (let ((json (json-parse-string candidate)))
+    (list (gethash "title" (gethash "volumeInfo" json)) (gethash "id" json)))
+  )
+
+(defun google-books--lookup (selected candidates &rest _)
+  (nth 1 (assoc selected candidates)))
+
+  (defun google-books--read-title ()
+    (consult--read (consult--async-command #'google-books--builder (consult--async-map #'google-books--display-candidate))
+     :prompt "Title"
+     :lookup #'google-books--lookup
+     :initial (consult--async-split-initial nil)
+     :require-match t
+     )
+    )
+
+(defun google-books ()
+    "Books searcher with ivy interface."
+    (interactive)
+    (let ((book (google-books--read-title)))
+      (bibtex-add-entry (google-books--get-bibtex book))
+      )
+)
 #+end_src
 
 *** pdf-tools
