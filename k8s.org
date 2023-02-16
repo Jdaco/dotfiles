@@ -25,9 +25,9 @@ alias kapk kubectl apply -k $*
 * Docker
 #+begin_src elisp :noweb-ref prodigy-services
 (prodigy-define-service
-    :name "Podman"
-    :command "podman"
-    :args '("system" "service" "--time=0")
+    :name "Docker"
+    :command "dockerd"
+    :sudo t
     :kill-process-buffer-on-stop t)
 #+end_src
 
