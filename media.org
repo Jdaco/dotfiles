@@ -80,8 +80,13 @@ Use ~mpv~ to view your webcam
 
 (set-popup-rule! (regexp-quote yt-dlp-buffer-name) :side 'bottom :size 0.3 :select nil :quit 'current)
 
+(defun yt-dlp-download (url)
+  (interactive "sURL: ")
+  (async-shell-command (format "yt-dlp %s" url) yt-dlp-buffer-name)
+  )
+
 (map! :leader
-      :desc "Download Video"  :n "a s y" (cmd! (async-shell-command (format "yt-dlp %s" (read-string "URL: ")) yt-dlp-buffer-name))
+      :desc "Download Video"  :n "a s y" #'yt-dlp-download
       )
 #+end_src
 
