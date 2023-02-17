@@ -50,6 +50,16 @@ I use [[https://orgmode.org/][Org mode]] for:
 (map! :leader
       "A" #'org-archive-to-archive-sibling)
 
+(defun org-id-open-other-window ()
+  (interactive)
+  (let* ((id (org-id-get))
+         (location (car (org-id-find id))))
+    (find-file-other-window location)))
+
+(map! :map embark-org-link-map
+      "o" #'org-id-open-other-window
+      )
+
 ;; Strike through org-done tasks to intensify the sense of achievement
 (set-face-attribute 'org-headline-done nil :strike-through t)
 
