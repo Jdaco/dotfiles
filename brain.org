@@ -300,6 +300,12 @@ For example, an org-ql dynamic block header could look like:
                                     (file "~/roam/areas/software/templates/programming_language.org")
                                     :target "notes/%<%Y%m%d%H%M%S>-${slug}"))
       )
+
+(map! :map embark-org-roam-map
+      "o" (cmd!! #'org-roam-node-find '(4))
+      )
+
+(add-to-list 'embark-keymap-alist '(org-roam-node embark-org-roam-map))
 #+end_src
 
 ** Books
