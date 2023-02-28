@@ -158,6 +158,20 @@ scrot
 (exwm-config-misc)
 #+end_src
 
+*** Modeline
+
+#+begin_src elisp :noweb-ref packages
+(package! exwm-modeline)
+#+end_src
+
+#+begin_src elisp :noweb-ref configs
+(after! exwm
+  (require 'exwm-modeline)
+  (add-hook 'exwm-init-hook #'exwm-modeline-mode)
+  )
+#+end_src
+
+
 ** Monitors
 I use ~autorandr~ to manage monitor orientation
 
