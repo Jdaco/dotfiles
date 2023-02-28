@@ -18,6 +18,7 @@
 
 #+begin_src shell :noweb-ref aliases
 alias k kubectl $*
+alias kga kubectl get all --all-namespaces $*
 alias kap kubectl apply -f $*
 alias kapk kubectl apply -k $*
 #+end_src
