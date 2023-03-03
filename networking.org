@@ -15,10 +15,8 @@
         (when (string-match ip-address-regex str)
           `(ip-address . ,str)))))
 
-(embark-define-keymap embark-ip-address-map
-  "Keymap for Embark ip-address actions"
-  ("H" ccc/eshell-ssh)
-  )
+(map! :map embark-ip-address-map
+      "H" #'ccc/eshell-ssh)
 
 (add-to-list 'embark-target-finders #'ccc/embark-find-ip-address)
 (add-to-list 'embark-keymap-alist '(ip-address embark-ip-address-map))
