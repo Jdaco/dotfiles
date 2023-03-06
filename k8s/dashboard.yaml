@@ -1,0 +1,37 @@
+---
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: kubernetes-dashboard
+spec:
+  chart: kubernetes-dashboard
+  repo: https://kubernetes.github.io/dashboard/
+  targetNamespace: kube-system
+  valuesContent: |-
+    extraArgs:
+      - --enable-skip-login
+      - --enable-insecure-login
+    protocolHttp: true
+    metricsScraper:
+      enabled: true
+    service:
+      externalPort: 80
+    ingress:
+      enabled: true
+      hosts:
+        - dashboard.127.0.0.1.nip.io
+---
+# Give dashboard admin access
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: kubernetes-dashboard
+  namespace: kube-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+  - kind: ServiceAccount
+    name: kubernetes-dashboard
+    namespace: kube-system

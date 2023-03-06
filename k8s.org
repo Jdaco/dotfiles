@@ -7,13 +7,11 @@
 
 #+begin_src elisp :noweb-ref configs
 (after! kuberenetes
-(require 'kubernetes-evil)
+(require 'kubernetes-evil))
 (map! :leader
       :nv "k" #'kubernetes-overview)
 (map! :map kubernetes-mode-map
       :m "s" #'kubernetes-set-namespace)
-
-  )
 #+end_src
 
 #+begin_src shell :noweb-ref aliases
@@ -120,7 +118,9 @@ alias kls k3d cluster ls $*
   ["Arguments"
    ("-i" "Ingress" "--port=" :prompt "Ingress: " :reader k3d-ingress-reader)
    ("-a" "Agents" "--agents=" :always-read t :prompt "Number of agents: " :reader transient-read-number-N+)
-   ("-v" "Volume" "--volume=" :always-read t :prompt "Number of agents: " :reader k3d-volume-reader)
+   ("-v" "Volume" "--volume=" :always-read t :prompt "Volume: " :reader k3d-volume-reader)
+   ("-f" "Install Flux" "--volume=/home/chaise/dotfiles/k8s/flux.yaml:/var/lib/rancher/k3s/server/manifests/flux.yaml@server:*")
+   ("-d" "Install Dashboard" "--volume=/home/chaise/dotfiles/k8s/dashboard.yaml:/var/lib/rancher/k3s/server/manifests/dashboard.yaml@server:*")
    ]
   ["Actions"
    ("c" "Create" k3d-cluster-create)
