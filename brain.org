@@ -292,8 +292,7 @@ For example, an org-ql dynamic block header could look like:
                                     :head "* ${title}\n\n- tags :: "
                                     :unnarrowed t)
                                    ("s" "Store" plain "%?"
-                                    :target "stores/%<%Y%m%d%H%M%S>-${slug}"
-                                    :head "#+title: ${title}\n#+roam_key: \n\n- tags :: "
+                                    :target (file+head "stores/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n\n- tags :: ")
                                     :unnarrowed t)
                                    ("r" "Recipe" plain "%?"
                                     :target (file+head "recipes/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n\n- tags :: ")
