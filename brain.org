@@ -101,8 +101,10 @@ For example, an org-ql dynamic block header could look like:
 #+BEGIN: org-ql :query (todo \"UNDERWAY\") :columns (priority todo heading) :sort (priority date) :ts-format \"%Y-%m-%d %H:%M\""
   (-let* (((&plist :query :columns :sort :ts-format :take :file) params)
           (query (cl-etypecase query
-                   (string (org-ql--plain-query query))
-                   (t query)))
+                   (string (org-ql--query-string-to-sexp query))
+                   (list  ;; SAFETY: Query is in sexp form: ask for confirmation, because it could contain arbitrary code.
+                    (org-ql--ask-unsafe-query query)
+                    query)))
           (columns (or columns '(heading todo (priority "P"))))
           ;; MAYBE: Custom column functions.
           (format-fns
