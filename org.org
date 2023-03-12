@@ -169,6 +169,15 @@ $0
 $0
 `(format "#+END:")`
 #+end_src
+*** agenda-block
+#+BEGIN_SRC snippet :tangle (get-snippet-path)
+# name: agenda-block
+# key: agenda
+# --
+#+BEGIN: org-ql :query (and (todo "TODO" "PROGRESS") (scheduled :on today)) :file org-agenda-files :sort date :columns (heading todo category)
+`(format "#+END:")`
+$0
+#+end_src
 ** Capture
 :PROPERTIES:
 :ID:       5fe33daf-9f01-4348-91fd-e438e4381e50
