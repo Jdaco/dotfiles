@@ -426,6 +426,7 @@ templates"
       :m "j" #'org-agenda-next-item
       :m "k" #'org-agenda-previous-item
       :m "!" #'org-agenda-toggle-deadlines
+      :m "C-*" #'org-agenda-toggle-time-grid
       :m "W" #'org-agenda-week-view
       :m "D" #'org-agenda-day-view
       :m "C-=" #'text-scale-increase
