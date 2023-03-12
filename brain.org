@@ -29,6 +29,15 @@ These are my configurations needed to work with my main notes and agendas. These
 (package! emacsql-sqlite3)
 #+end_src
 
+Capture Templates
+
+#+begin_src elisp :noweb-ref capture-templates
+("Task" :keys "t" :file (lambda () (ccc/find-areas)) :olp ("Tasks") :template "* TODO %?")
+("Event" :keys "e" :file (lambda () (ccc/find-areas)) :olp ("Events") :template-file ,(f-join dotfiles-directory "templates" "org" "event.org"))
+("Art" :keys "a" :file ,(f-join org-directory "areas/art.org") :id "23909e75-68b8-44ff-a26a-6dab908122c0" :template-file ,(f-join dotfiles-directory "templates" "org" "art.org"))
+
+#+end_src
+
 ** Search
 *** Deft
 
@@ -447,10 +456,6 @@ Used to capture books I want to read into the right category
 ("Book" :keys "b" :function (lambda () (goto-or-create-heading "Books"))
     :book (lambda () (citar-select-ref))
     :template-file "~/roam/areas/org/templates/book.org")
-
-("Task" :keys "t" :file (lambda () (ccc/find-areas)) :olp ("Tasks") :template "* TODO %?")
-("Event" :keys "e" :file (lambda () (ccc/find-areas)) :olp ("Events") :template-file ,(f-join dotfiles-directory "templates" "org" "event.org"))
-
 #+end_src
 ** Tasks
 

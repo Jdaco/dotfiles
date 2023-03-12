@@ -1,0 +1,9 @@
+* WISH %^{Name}
+:PROPERTIES:
+:Cost: %^{Cost}
+:Artist: %^{Artist}
+:Link:  %^{Link}
+:Type:  %^{Type|Print|Canvas}
+:END:
+
+%?
