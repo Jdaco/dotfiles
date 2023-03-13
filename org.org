@@ -174,7 +174,7 @@ $0
 # name: agenda-block
 # key: agenda
 # --
-#+BEGIN: org-ql :query (and (todo "TODO" "PROGRESS") (scheduled :on today)) :file org-agenda-files :sort date :columns (heading todo category)
+#+BEGIN: org-ql :query "todo:TODO,PROGRESS scheduled:from=-7,to=today" :file org-agenda-files :sort date :columns (heading todo category)
 `(format "#+END:")`
 $0
 #+end_src
