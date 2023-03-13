@@ -121,6 +121,18 @@ alias gdl gallery-dl -o browser=firefox $*
       "C-l" (cmd! () (consult-file-externally (image-dired-original-file-name)))
       )
 
+
+(defun ccc/convert (extension)
+  "Convert WEBP images to another format"
+  (interactive (list (completing-read "Extension: " '(png jpg))))
+  (let* ((filename (dired-get-filename)))
+    (shell-command (format "dwebp %s -o %s" filename (f-swap-ext filename extension)) nil)
+    (revert-buffer)
+    ))
+
+(map! :map dired-mode-map
+      :n "#" #'ccc/convert)
+
 ;; Sometimes dired thumbnails gets stuck if you delete the last file it had open
 (defun ccc/reset-image-dired ()
   (interactive)
