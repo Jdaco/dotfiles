@@ -137,6 +137,12 @@ alias gdl gallery-dl -o browser=firefox $*
 (defun ccc/reset-image-dired ()
   (interactive)
   (setq image-dired-queue nil image-dired-queue-active-jobs 0))
+
+(defun ccc/imv-dir (dir)
+  (interactive)
+  (let* ((images (split-string
+                    (shell-command-to-string (format "find %s -type f | shuf | head -n 10000" dir)) "\n" t)))
+    (apply #'start-process "imv" "imv" "imv" images)))
 #+end_src
 
 *** IMV

@@ -660,13 +660,8 @@ I use ~consult-dir~ to quickly find files and add their patt to the current mini
 (defun ccc/consult-home ()
     (let ((consult-find-args "find . -type d -not ( -wholename */.* -prune )")
           (default-directory "~"))
-      (concat "~/" (consult--find "Dir: " (consult--find-make-builder) ""))))
+      (concat "~/" (consult--find "Dir: " (consult--find-make-builder nil) ""))))
 
-(defun ccc/imv-dir (dir)
-  (interactive)
-  (let* ((images (split-string
-                    (shell-command-to-string (format "find %s -type f | shuf | head -n 10000" dir)) "\n" t)))
-    (apply #'start-process "imv" "imv" "imv" images)))
 
 (defun ccc/find-file-in (&optional arg)
   (interactive "P")
