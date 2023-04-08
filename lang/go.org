@@ -1,0 +1,29 @@
+#+title: Go
+
+* Snippets
+:PROPERTIES:
+:snippet_mode: go-mode
+:header-args:  :tangle (get-snippet-path)
+:END:
+
+** func
+#+begin_src snippet
+# name: function
+# key: func
+# uuid: func
+# --
+func ${1:name}($2) $3 {
+    $0
+}
+#+end_src
+
+** test
+#+begin_src snippet
+# name: test
+# key: test
+# uuid: test
+# --
+func ${1:name}(t *testing.T) {
+    $0
+}
+#+end_src

@@ -29,3 +29,4 @@ These are the base layers that will be installed on every system
 #+INCLUDE: ./lang/cloud/aws.org
 #+INCLUDE: ./lang/elisp.org
 #+INCLUDE: ./lang/graphql.org
+#+INCLUDE: ./lang/go.org
