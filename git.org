@@ -30,10 +30,6 @@ Most of my git work is done in Emacs's [[https://magit.vc/][Magit]] interface, b
     current  =  "white"
     local    =  "239"
 
-[status]
-    short               =  yes
-    showuntrackedfiles  =  no
-
 [merge]
     ff = no
 
