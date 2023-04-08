@@ -316,7 +316,6 @@ For example, an org-ql dynamic block header could look like:
                                     :target "notes/%<%Y%m%d%H%M%S>-${slug}"))
       )
 
-(embark-define-keymap embark-org-roam-map "Keymap or Org-Roam")
 (map! :map embark-org-roam-map
       :desc "Open in other window" "o" (cmd!! #'org-roam-node-find '(4))
       )
