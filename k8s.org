@@ -104,6 +104,21 @@ alias kls k3d cluster ls $*
   (let* ((command (k3d-cluster-create--get-command name args)))
     (async-shell-command command k3d-buffer-name)))
 
+(defun k3d-cluster-create-from-config (config &optional args)
+  (interactive
+   (list (read-file-name "Config file: ")
+    (transient-args transient-current-command)))
+  (let* ((command (k3d-cluster-create--get-command "" `("--config" ,config))))
+    (async-shell-command command k3d-buffer-name)))
+
+(defun k3d-cluster-create-from-project-config (_ &optional args)
+  (interactive (transient-args transient-current-command))
+  (let* ((default-directory (projectile-project-root))
+         (config (f-join default-directory "k3d.yaml"))
+         (command (k3d-cluster-create--get-command "" `("--config" ,config))))
+    (with-current-directory )
+    (async-shell-command command k3d-buffer-name)))
+
 
 (defun k3d-cluster-delete (&rest args)
   (interactive)
@@ -125,7 +140,8 @@ alias kls k3d cluster ls $*
   ["Actions"
    ("c" "Create" k3d-cluster-create)
    ;; TODO Not implemented yet
-   ("C" "From config file" k3d-cluster-create)
+   ("C" "From config file" k3d-cluster-create-from-config)
+   ("p" "From project config file" k3d-cluster-create-from-project-config)
    ("x" "Copy command" k3d-cluster-create-copy-command)
    ]
 )
