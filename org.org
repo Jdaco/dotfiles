@@ -194,10 +194,6 @@ Org-mode comes with a [[https://orgmode.org/manual/Capture.html][capture]] syste
 (defvar cookie-path (f-join dotfiles-directory "cookies")
 "Path to cookie dierectory")
 
-(defun choose (prompt choices)
-"Choose an option from CHOICES"
-(completing-read prompt choices))
-
 (defun cookie-get-path ()
 "Generate the path to tangle src block to
 Intended to be used in the form of `:tangle (cookie-get-path) on files that are meant
@@ -305,7 +301,7 @@ Intended to be used as `%(cookie-prompt PROP INITIAL)' from the cookie templates
 Returns an empty string
 Intended to be used as `%(cookie-choice PROP CHOICE CHOICE ...)' from the cookie
 templates"
-(org-entry-put (org-capture-get :cookie-mark) var (choose (format "%s: " var) choices))
+(org-entry-put (org-capture-get :cookie-mark) var (completing-read (format "%s: " var) choices))
 "")
 
 (defun cookie-copy-assets ()
