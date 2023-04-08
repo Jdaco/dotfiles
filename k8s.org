@@ -229,3 +229,11 @@ kind: Kustomization
 resources:
 - $1
 #+END_SRC
+
+** date
+#+BEGIN_SRC snippet :tangle (get-snippet-path)
+# name: date
+# key: date
+# --
+`(org-read-date)`
+#+END_SRC
