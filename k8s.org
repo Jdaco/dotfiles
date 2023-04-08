@@ -253,3 +253,48 @@ resources:
 # --
 `(org-read-date)`
 #+END_SRC
+
+** service
+#+BEGIN_SRC snippet :tangle (get-snippet-path)
+# name: service
+# key: service
+# expand-env: ((yas-indent-line 'fixed))
+# --
+apiVersion: v1
+kind: Service
+metadata:
+  name: $1
+spec:
+  type: $2
+  selector:
+    service: $3
+  ports:
+  - port: $4
+#+END_SRC
+** deployment
+#+BEGIN_SRC snippet :tangle (get-snippet-path)
+# name: deployment
+# key: deployment
+# expand-env: ((yas-indent-line 'fixed))
+# --
+apiVersion: v1
+kind: Deployment
+metadata:
+  name: $1
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      service: $1
+  template:
+    metadata:
+      labels:
+        service: $1
+    spec:
+      containers:
+      - name: $1
+        image: $2
+        imagePullPolicy: Always
+#+END_SRC
