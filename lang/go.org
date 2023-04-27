@@ -23,7 +23,162 @@ func ${1:name}($2) $3 {
 # key: test
 # uuid: test
 # --
-func ${1:name}(t *testing.T) {
+func Test${1:name}(t *testing.T) {
     $0
 }
+#+end_src
+
+** var
+#+begin_src snippet
+# name: var
+# key: var
+# uuid: var
+# --
+var ${1:name} ${2:type} = ${3:value}$0
+#+end_src
+** const
+#+begin_src snippet
+# name: const
+# key: const
+# uuid: const
+# --
+const ${1:name} ${2:type} = ${3:value}$0
+#+end_src
+** switch
+#+begin_src snippet
+# name: switch
+# key: switch
+# uuid: switch
+# --
+switch {
+    case ${1:cond}:
+         $0
+}
+#+end_src
+** struct
+#+begin_src snippet
+# name: struct
+# key: struct
+# uuid: struct
+# --
+type $1 struct {
+    `%`$0
+}
+#+end_src
+** select
+#+begin_src snippet
+# name: select
+# key: select
+# uuid: select
+# --
+select {
+      case ${1:cond}:
+      $0
+}
+#+end_src
+** method
+#+begin_src snippet
+# name: method
+# key: method
+# uuid: method
+# --
+func (${1:target}) ${2:name}(${3:args})${4: return type} {
+    $0
+}
+#+end_src
+** interface
+#+begin_src snippet
+# name: interface
+# key: interface
+# uuid: interface
+# --
+type $1 interface {
+    `%`$0
+}
+#+end_src
+** iferr
+#+begin_src snippet
+# name: iferr
+# key: iferr
+# uuid: iferr
+# --
+if err != nil {
+    `%`$0
+}
+#+end_src
+** ife
+#+begin_src snippet
+# name: ife
+# key: ife
+# uuid: ife
+# --
+if ${1:condition} {
+	`%`$2
+} else {
+	$0
+}
+#+end_src
+** if
+#+begin_src snippet
+# name: if
+# key: if
+# uuid: if
+# --
+if ${1:condition} {
+	`%`$0
+}
+#+end_src
+** gof
+#+begin_src snippet
+# name: gof
+# key: gof
+# uuid: gof
+# --
+go func (${1:args}) {
+    $0
+}(${2:values})
+#+end_src
+** foreach
+#+begin_src snippet
+# name: foreach
+# key: foreach
+# uuid: foreach
+# --
+for ${1:key}, ${2:value} := range ${3:target} {
+    `%`$0
+}
+#+end_src
+** while
+#+begin_src snippet
+# name: while
+# key: while
+# uuid: while
+# --
+for $1 {
+    `%`$0
+}
+#+end_src
+** append
+#+begin_src snippet
+# name: append
+# key: append
+# uuid: append
+# --
+${1:type} = append($1, ${2:elems})
+#+end_src
+** pr
+#+begin_src snippet
+# name: pr
+# key: pr
+# uuid: pr
+# --
+fmt.Printf("$1\n"${2:, ${3:str}})
+#+end_src
+** prln
+#+begin_src snippet
+# name: prln
+# key: prln
+# uuid: prln
+# --
+fmt.Println("${1:msg}")$0
 #+end_src
