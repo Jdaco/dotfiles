@@ -25,16 +25,16 @@
             BackgroundColor cornflowerblue
     }
     :depth(1) {
-            BackgroundColor skyblue
+            BackgroundColor mediumpurple
     }
     :depth(2) {
-            BackgroundColor aquamarine
+            BackgroundColor plum
     }
     :depth(3) {
-            BackgroundColor mediumspringgreen
+            BackgroundColor palevioletred
     }
     :depth(4) {
-            BackgroundColor palegreen
+            BackgroundColor white
     }
 
     .unsure {
@@ -45,9 +45,7 @@
             LineColor red
             LineThickness 2
     }
-    .nope {
-            BackgroundColor #666
-    }
+
 </style>
 + $0
 @endmindmap
