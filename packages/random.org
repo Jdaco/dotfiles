@@ -1,0 +1,46 @@
+#+title: Random
+
+#+begin_src elisp :noweb-ref configs
+(defun ccc/random-get-selections ()
+  (-non-nil
+   (org-ql-select (current-buffer)
+     '(and (not (tags "ignore")) (or (property "select") (property "select_min") (property "select_max")))
+     :action #'ccc/random-get-selection)))
+
+(defun ccc/random-get-children (id)
+  (org-ql-select (current-buffer)
+    `(and (not (tags "ignore")) (parent (property "id" ,id))) :action 'element))
+
+(defun ccc/random-get-path (element)
+  (let* ((lineage (seq-filter (lambda (it) (eq 'headline (car it))) (org-element-lineage element nil t)))
+        (titles (--map (org-element-property :raw-value it) (reverse lineage))))
+    (s-join "/" titles))
+  )
+
+(defun ccc/random-get-selection ()
+  (let* ((element (org-element-at-point))
+         (id (org-id-get (point) t))
+         (select (org-element-property :SELECT element))
+         (select-min (org-element-property :SELECT_MIN element))
+         (select-max (org-element-property :SELECT_MAX element))
+         (weight (org-entry-get (point) "weight" t))
+         (weight-p (< (random 100) (or (when weight (string-to-number weight)) 100)))
+         (children (ccc/random-get-children id))
+         (num (or (when select (string-to-number select))
+                  (seq-random-elt (number-sequence (or (when select-min (string-to-number select-min)) 0)
+                                                   (min (or (when select-max (string-to-number select-max)) (length children)) (length children))))))
+         (results)
+         )
+    (when (and (> num 0) weight-p)
+      (dotimes (i num)
+        (let ((result (seq-random-elt children)))
+          (setq results (cons result results))
+          (setq children (remove result children))
+        )))
+    (when results
+      `(:title ,(ccc/random-get-path element)
+        :selection ,(--map (org-element-property :raw-value it) results)))))
+#+end_src
+
+#+RESULTS:
+: ccc/random-get-selection

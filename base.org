@@ -19,6 +19,8 @@ These are the base layers that will be installed on every system
 #+INCLUDE: ./k8s.org
 #+INCLUDE: ./diagrams.org
 
+#+INCLUDE: ./packages/random.org
+
 
 #+INCLUDE: ./ansible.org
 #+INCLUDE: ./lang/makefile.org
