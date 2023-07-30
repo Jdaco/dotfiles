@@ -417,6 +417,43 @@ templates"
   (org-super-agenda-mode)
   )
 
+(defun ccc/num-days (&optional time)
+  (let ((time-zone-offset (car (current-time-zone))))
+    (truncate (/ (+ time-zone-offset (float-time time)) 3600 24))))
+
+(defun ccc/adjust-day ()
+  (let* ((deadline? nil)
+       (scheduled-days (ccc/num-days (org-get-scheduled-time (point))))
+       (time-diff (- (ccc/num-days) scheduled-days)))
+    (save-excursion
+	   (org-back-to-heading t)
+	   (let ((regexp (if deadline? org-deadline-time-regexp
+			   org-scheduled-time-regexp)))
+	     (if (not (re-search-forward regexp (line-end-position 2) t))
+	         (user-error (if deadline? "No deadline information to update"
+			       "No scheduled information to update"))
+	       (let* ((begin (match-beginning 1)))
+	         (goto-char begin)
+           (org-timestamp-up-day time-diff))))
+           (org-entry-get (point) "SCHEDULED"))))
+
+(defun ccc/org-agenda-adjust-day (&optional arg)
+  (interactive "P")
+  (if (not org-agenda-bulk-marked-entries)
+      (save-excursion (org-agenda-bulk-mark)))
+  (dolist (marker org-agenda-bulk-marked-entries)
+    (let* ((buffer (marker-buffer marker))
+ 	        (pos (marker-position marker))
+            ts)
+      (org-with-remote-undo buffer
+        (with-current-buffer buffer
+ 	        (widen)
+ 	        (goto-char pos)
+          (setq ts (ccc/adjust-day)))
+        (goto-char (text-property-any (point-min) (point-max) 'org-hd-marker marker))
+        (org-agenda-show-new-time (org-get-at-bol 'org-marker) ts " S"))))
+  (unless org-agenda-persistent-marks (org-agenda-bulk-unmark-all)))
+
 (evil-set-initial-state 'org-agenda-mode 'emacs)
 (map! :map org-agenda-mode-map
       :m "j" #'org-agenda-next-item
@@ -426,7 +463,9 @@ templates"
       :m "W" #'org-agenda-week-view
       :m "D" #'org-agenda-day-view
       :m "C-=" #'text-scale-increase
-      :m "C--" #'text-scale-decrease)
+      :m "C--" #'text-scale-decrease
+      :m "C-:" #'ccc/org-agenda-adjust-day
+      )
 #+end_src
 
 #+begin_src elisp :noweb-ref packages
