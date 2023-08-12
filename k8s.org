@@ -81,7 +81,7 @@ alias kls k3d cluster ls $*
     (format "%s:/tmp/k3dvol" dir)))
 
 (defun k3d-cluster-create--get-command (name args)
-  (format "%s cluster create %s %s" k3d-binary-path name (s-join " " args)))
+  (format "K3D_FIX_DNS=1 %s cluster create %s %s" k3d-binary-path name (s-join " " args)))
 
 (defun k3d-cluster-create-copy-command (name &optional args)
   (interactive
