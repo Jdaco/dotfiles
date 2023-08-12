@@ -5,6 +5,7 @@ metadata:
   name: kubernetes-dashboard
 spec:
   chart: kubernetes-dashboard
+  version: "6.0.8"
   repo: https://kubernetes.github.io/dashboard/
   targetNamespace: kube-system
   valuesContent: |-
@@ -25,7 +26,7 @@ spec:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: kubernetes-dashboard
+  name: kubernetes-dashboard-admin
   namespace: kube-system
 roleRef:
   apiGroup: rbac.authorization.k8s.io
