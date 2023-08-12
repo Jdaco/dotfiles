@@ -299,3 +299,10 @@ spec:
         image: $2
         imagePullPolicy: Always
 #+END_SRC
+* k9s
+
+#+begin_src elisp :noweb-ref bookmarks
+("k9s"
+  (handler . ccc/bookmark-alacritty)
+  (command "/home/chaise/.local/bin/k9s"))
+#+end_src
