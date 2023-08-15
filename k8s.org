@@ -1,4 +1,4 @@
-#+title: K8s
+#+title: Kubernetes
 
 #+begin_src elisp :noweb-ref packages
 (package! kubernetes)
@@ -6,12 +6,11 @@
 #+end_src
 
 #+begin_src elisp :noweb-ref configs
-(after! kuberenetes
-(require 'kubernetes-evil))
+(require 'kubernetes-evil)
 (map! :leader
       :nv "k" #'kubernetes-overview)
-(map! :map kubernetes-mode-map
-      :m "s" #'kubernetes-set-namespace)
+(map! :map kubernetes-overview-mode-map
+      :nvm "C-n" #'kubernetes-set-namespace)
 #+end_src
 
 #+begin_src shell :noweb-ref aliases
@@ -108,7 +107,8 @@ alias kls k3d cluster ls $*
   (interactive
    (list (read-file-name "Config file: ")
     (transient-args transient-current-command)))
-  (let* ((command (k3d-cluster-create--get-command "" `("--config" ,config))))
+  (let* ((default-directory (f-dirname config))
+         (command (k3d-cluster-create--get-command "" `("--config" ,config))))
     (async-shell-command command k3d-buffer-name)))
 
 (defun k3d-cluster-create-from-project-config (_ &optional args)
@@ -116,7 +116,6 @@ alias kls k3d cluster ls $*
   (let* ((default-directory (projectile-project-root))
          (config (f-join default-directory "k3d.yaml"))
          (command (k3d-cluster-create--get-command "" `("--config" ,config))))
-    (with-current-directory )
     (async-shell-command command k3d-buffer-name)))
 
 
