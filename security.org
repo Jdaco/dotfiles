@@ -44,6 +44,30 @@ Arch Linux packages
 #+begin_src text :noweb-ref arch-packages
 pass
 #+end_src
+** Password prompts
+This is a more flexible way to configure the password prompts in shell buffers that emacs looks for
+
+#+begin_src elisp :noweb-ref configs
+(defvar ccc/comint-password-prompts '())
+
+(defun ccc/comint-watch-for-password-prompt (string)
+  "Custom version of comint-watch-for-password-prompt to handle
+more flexible configuration of password promts "
+  (when (let ((case-fold-search t))
+          (and ccc/comint-password-prompts
+	  (string-match (s-join "\\|" ccc/comint-password-prompts)
+                        (string-replace "\r" "" string))))
+    (let ((comint--prompt-recursion-depth (1+ comint--prompt-recursion-depth)))
+      (if (> comint--prompt-recursion-depth 10)
+          (message "Password prompt recursion too deep")
+        ;; (message string)
+        (comint-send-invisible
+         (string-trim string "[ \n\r\t\v\f\b\a]+" "\n+"))
+        ))))
+
+(add-to-list 'comint-output-filter-functions #'ccc/comint-watch-for-password-prompt)
+#+end_src
+
 
 ** GnuPG
 *** gpg-agent
