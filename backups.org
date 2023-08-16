@@ -1,0 +1,134 @@
+#+title: Backups
+
+* Terraform
+Set up an s3 bucket to store your backups
+
+#+begin_src terraform
+data "aws_caller_identity" "current" {}
+
+locals {
+  account_id               = data.aws_caller_identity.current.account_id
+}
+
+module "backup_bucket" {
+  source  = "terraform-aws-modules/s3-bucket/aws"
+  version = "v3.14.1"
+
+  bucket = "${account_id}-backups"
+
+  attach_public_policy    = true
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+
+  intelligent_tiering = {
+    general = {
+      status = "Enabled"
+      # filter = {
+      #   prefix = "/"
+      #   tags = {
+      #     Environment = "dev"
+      #   }
+      # }
+      tiering = {
+        ARCHIVE_ACCESS = {
+          days = 125
+        }
+        DEEP_ARCHIVE_ACCESS = {
+          days = 200
+        }
+      }
+    },
+  }
+
+  versioning = {
+    enabled = false
+  }
+
+  server_side_encryption_configuration = {
+    rule = {
+      apply_server_side_encryption_by_default = {
+        sse_algorithm = "AES256"
+      }
+    }
+  }
+}
+#+end_src
+
+* Duplicity
+
+#+begin_src elisp :noweb-ref configs
+(defvar ccc/backup-source "~/dotfiles")
+(defvar ccc/backup-destination nil)
+(defvar ccc/backup-buffer-name "*duplicity*")
+(defvar ccc/backup-encryption-key nil)
+(defvar ccc/backup-signing-key nil)
+(add-to-list 'ccc/comint-password-prompts "\\(^GnuPG passphrase for signing key: *\\)")
+
+(defun duplicity-get-command (action args)
+  (let* ((fmt "duplicity %s %s %s %s")
+         (opts (remove-if (apply-partially #'string-match "dest\\|source") args))
+         (source (transient-arg-value "--source=" args))
+         (destination (transient-arg-value "--destination=" args)))
+    (format fmt action (s-join " " opts) source destination)
+  ))
+
+(defun duplicity-copy-command (&rest args)
+  (interactive (transient-args transient-current-command))
+  (let ((command (duplicity-get-command "full" args)))
+    (message "Command: %s" command)
+    (kill-new command))
+  )
+
+(defun duplicity-backup-full (&rest args)
+  (interactive (transient-args transient-current-command))
+  (let* ((command (duplicity-get-command "full" args)))
+   (async-shell-command command ccc/backup-buffer-name)))
+
+(defun duplicity-backup-incremental (&rest args)
+  (interactive (transient-args transient-current-command))
+  (let* ((command (duplicity-get-command "incremental" args)))
+   (async-shell-command command ccc/backup-buffer-name)))
+
+(transient-define-prefix transient-duplicity-backup ()
+  "Duplicity backup"
+  ;; :value '("--port=8080:80@loadbalancer" "--agents=2")
+  ["Arguments"
+   ("-p" "Progress" "--progress")
+   ("-v" "Verbosity" "--verbosity="
+    :prompt "Verbosity: "
+    :init-value (lambda (o) (oset o value "info"))
+    )
+   ("-e" "Encryption key" "--encrypt-key="
+    :prompt "Encryption Key: "
+    :init-value (lambda (o) (oset o value ccc/backup-encryption-key))
+    )
+   ("-s" "Signing key" "--sign-key="
+    :prompt "Signing Key: "
+    :init-value (lambda (o) (oset o value ccc/backup-signing-key))
+    )
+   ("s" "Source" "--source="
+    :init-value (lambda (o) (oset o value ccc/backup-source))
+    :always-read t
+    :reader transient-read-existing-directory
+    :prompt "Source: ")
+   ("d" "Destination" "--destination="
+    :init-value (lambda (o) (oset o value ccc/backup-destination))
+    :always-read t
+    :prompt "Destination: ")
+
+   ]
+  ["Actions"
+   ("f" "Full" duplicity-backup-full)
+   ("i" "Incremental" duplicity-backup-incremental)
+   ("x" "Copy command" duplicity-copy-command)
+   ]
+)
+
+(set-popup-rule! (regexp-quote ccc/backup-buffer-name) :side 'right :size 0.3 :select nil :quit 'current)
+
+(map! (:leader
+      :desc "Backup"       :n "a b" #'transient-duplicity-backup
+      ))
+#+end_src
