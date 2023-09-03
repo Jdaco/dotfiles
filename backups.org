@@ -64,14 +64,17 @@ module "backup_bucket" {
 (defvar ccc/backup-buffer-name "*duplicity*")
 (defvar ccc/backup-encryption-key nil)
 (defvar ccc/backup-signing-key nil)
+(defvar ccc/backup-excludes '("~/proj" "~/.cache" "~/.trash" "~/.local/share" "~/.vagrant.d" "~/go" "~/.npm" "~/.emacs.d" "~/.mozilla"))
 (add-to-list 'ccc/comint-password-prompts "\\(^GnuPG passphrase for signing key: *\\)")
+(add-to-list 'ccc/comint-password-prompts "\\(^GnuPG passphrase for decryption: *\\)")
 
 (defun duplicity-get-command (action args)
   (let* ((fmt "duplicity %s %s %s %s")
+         (excludes (mapcar (apply-partially #'concat "--exclude ") ccc/backup-excludes))
          (opts (remove-if (apply-partially #'string-match "dest\\|source") args))
          (source (transient-arg-value "--source=" args))
          (destination (transient-arg-value "--destination=" args)))
-    (format fmt action (s-join " " opts) source destination)
+    (format fmt action (s-join " " (append excludes opts)) source destination)
   ))
 
 (defun duplicity-copy-command (&rest args)
