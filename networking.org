@@ -22,6 +22,10 @@
 (add-to-list 'embark-keymap-alist '(ip-address embark-ip-address-map))
 #+end_src
 
+#+begin_src sh :noweb-ref aliases
+alias dgw 'ip route | grep default | cut -f 3 -d " "'
+#+end_src
+
 ** File Sharing
 *** Syncthing
 
