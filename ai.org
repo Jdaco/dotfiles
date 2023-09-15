@@ -1,0 +1,15 @@
+#+title: Ai
+
+* ChatGPT
+#+begin_src elisp :noweb-ref packages
+(package! gptel)
+#+end_src
+
+#+begin_src elisp :noweb-ref configs
+(after! gptel
+  (setq gptel-default-mode #'org-mode)
+  )
+
+(map! :leader
+      "a G" #'gptel)
+#+end_src
