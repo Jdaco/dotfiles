@@ -12,4 +12,8 @@
 
 (map! :leader
       "a G" #'gptel)
+
+(map! :mode gptel-mode
+      :nvmi
+      "C-m" #'gptel-menu)
 #+end_src
