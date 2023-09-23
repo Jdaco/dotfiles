@@ -717,11 +717,11 @@ I use ~consult-dir~ to quickly find files and add their patt to the current mini
 (map! :leader
       "f -" #'dired-jump)
 
-(map! :map 'dired-mode-map
-      :n
+(map! :map dired-mode-map
+      :nvm
       "g h" (cmd! () (find-file "~"))
       "C-k" #'dired-kill-line
-      "C-K" #'dired-kill-subdir
+      "C-S-k" #'dired-do-kill-lines
       "Z" #'dired-do-compress
       "c" #'dired-do-compress-to
       :localleader
