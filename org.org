@@ -47,6 +47,7 @@ I use [[https://orgmode.org/][Org mode]] for:
       "M-k" #'calendar-forward-day
       )
 
+(add-to-list '+ligatures-in-modes 'org-mode)
 (map! :leader
       "A" #'org-archive-to-archive-sibling)
 
