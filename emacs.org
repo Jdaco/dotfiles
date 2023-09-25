@@ -8,131 +8,6 @@ I do prefer the [[https://github.com/emacs-evil/evil][EVIL]] keybindings over th
 
 I use the [[https://github.com/hlissner/doom-emacs][Doom Emacs]] configuration framework. I agree with most of it's decisions out of the box, but I like that it stays out of your way so you can configure things your way
 
-** Completion
-
-#+begin_src elisp :noweb-ref configs
-
-(setq vertico-multiform-categories '((t reverse))
-      vertico-multiform-commands '((execute-extended-command grid reverse))
-)
-
-(map! :map vertico-reverse-map
-      :g "C-j" #'vertico-previous
-      :g "C-k" #'vertico-next)
-
-(defun ccc/vertico-cycle ()
-  (interactive)
-  (let* ((rev vertico-reverse-mode)
-         (grid vertico-grid-mode))
-    (if grid
-
-      (vertico-multiform-vertical)
-      (vertico-multiform-grid))
-    ))
-
-(map! :map vertico-map
-      :nvieg "M-/" #'vertico-quick-jump
-      :nvieg "C-h" #'vertico-grid-left
-      :nvieg "C-l" #'vertico-grid-right
-      :nvieg "C-l" #'vertico-grid-right
-      :nvieg "C-c C-c" #'ccc/vertico-cycle
-      :nvieg "C-c C-g" (cmd! (vertico-multiform--temporary-mode 'vertico-grid-mode (if vertico-grid-mode -1 1)))
-      :nvieg "C-c C-r" (cmd! (vertico-multiform--temporary-mode 'vertico-reverse-mode (if vertico-reverse-mode -1 1)))
-      "C-:" (cmd! () (delete-minibuffer-contents) (insert (ccc/consult-home)))
-      )
-(vertico-multiform-mode t)
-#+end_src
-
-** Editing
-#+begin_src elisp :noweb-ref configs
-;; Evil
-(require 'evil-collection)
-(setq evil-escape-key-sequence ";a"
-      evil-escape-unordered-key-sequence t)
-
-;; Files
-(map! :leader
-      :nv "f S" #'evil-write-all)
-
-(map! :nvm "M-a" #'evil-scroll-up
-      :nvm "M-;" #'evil-scroll-down
-      )
-#+end_src
-
-*** Snippets
-
-I use the [[https://github.com/joaotavora/yasnippet][yasnippet]] emacs package for snippets
-
-#+begin_src elisp :noweb-ref packages
-(package! yasnippet)
-#+end_src
-
-#+begin_src elisp :noweb-ref configs
-(require 'yasnippet)
-(add-to-list 'yas-snippet-dirs "~/.config/doom/snippets")
-(yas-global-mode)
-
-(map! :i "M-a" #'yas-previous-field
-      :i "M-;" #'yas-next-field
-      :i "M-:" #'yas-expand)
-#+end_src
-*** Buffers
-
-#+begin_src elisp :noweb-ref exwm-keys
-([?\s-b] . switch-to-buffer)
-#+end_src
-*** Diff
-#+begin_src elisp :noweb-ref configs :results none
-(defun ccc/ediff-current-file ()
-  (interactive)
-  (let ((current-file (current-buffer))
-        (other-file (find-file-noselect (read-file-name "File to diff: "))))
-    (ediff-buffers current-file other-file)))
-#+end_src
-*** Search
-
-#+begin_src elisp :noweb-ref configs
-(map! :n "/" #'isearch-forward
-      :n "?" #'isearch-backward
-      :n "n" #'isearch-repeat-forward
-      :n "N" #'isearch-repeat-backward
-      :n "C-/" #'+default/search-buffer
-      :n "C-?" #'+vertico/search-symbol-at-point
-      :n "M-/" #'avy-isearch
-      :n "M-?" #'isearch-occur
-      :n "C-'" #'iedit-mode
-      )
-#+end_src
-** Bookmarks
-[[https://www.gnu.org/software/emacs/manual/html_node/emacs/Bookmarks.html][Bookmarks]] let you save your position in commonly used files
-
-#+begin_src elisp :noweb-ref configs
-(setq bookmark-default-file "~/.emacs.d/.local/etc/bookmarks")
-
-(defun ccc/bookmark-alacritty (bmk-record)
-  "Open a command in alacritty"
-  (interactive)
-  (let* ((command (car (bookmark-prop-get bmk-record 'command)))
-         (name (format "alacritty-%s" command)))
-    (start-process-shell-command name nil (format "alacritty -e '%s'" command))))
-
-(after! consult
-  (add-to-list 'consult-bookmark-narrow
-               `(?t "Terminal" ,#'ccc/bookmark-alacritty))
-  )
-#+end_src
-
-#+begin_src elisp :tangle .emacs.d/.local/etc/bookmarks
-;;;; Emacs Bookmark Format Version 1 ;;;; -*- coding: utf-8-emacs -*-
-;;; This format is meant to be slightly human-readable;
-;;; nevertheless, you probably don't want to edit it.
-;;; -*- End Of Bookmark File Format Version Stamp -*-
-(
-("Downloads"
-  (filename . "~/Downloads"))
-<<bookmarks>>
-)
-#+end_src
 ** Doom
 
 Doom Emacs configuration is broken into 3 files:
@@ -528,6 +403,131 @@ git clone https://github.com/hlissner/doom-emacs ~/.emacs.d
       )
 #+end_src
 
+** Completion
+
+#+begin_src elisp :noweb-ref configs
+
+(setq vertico-multiform-categories '((t reverse))
+      vertico-multiform-commands '((execute-extended-command grid reverse))
+)
+
+(map! :map vertico-reverse-map
+      :g "C-j" #'vertico-previous
+      :g "C-k" #'vertico-next)
+
+(defun ccc/vertico-cycle ()
+  (interactive)
+  (let* ((rev vertico-reverse-mode)
+         (grid vertico-grid-mode))
+    (if grid
+
+      (vertico-multiform-vertical)
+      (vertico-multiform-grid))
+    ))
+
+(map! :map vertico-map
+      :nvieg "M-/" #'vertico-quick-jump
+      :nvieg "C-h" #'vertico-grid-left
+      :nvieg "C-l" #'vertico-grid-right
+      :nvieg "C-l" #'vertico-grid-right
+      :nvieg "C-c C-c" #'ccc/vertico-cycle
+      :nvieg "C-c C-g" (cmd! (vertico-multiform--temporary-mode 'vertico-grid-mode (if vertico-grid-mode -1 1)))
+      :nvieg "C-c C-r" (cmd! (vertico-multiform--temporary-mode 'vertico-reverse-mode (if vertico-reverse-mode -1 1)))
+      "C-:" (cmd! () (delete-minibuffer-contents) (insert (ccc/consult-home)))
+      )
+(vertico-multiform-mode t)
+#+end_src
+
+** Editing
+#+begin_src elisp :noweb-ref configs
+;; Evil
+(require 'evil-collection)
+(setq evil-escape-key-sequence ";a"
+      evil-escape-unordered-key-sequence t)
+
+;; Files
+(map! :leader
+      :nv "f S" #'evil-write-all)
+
+(map! :nvm "M-a" #'evil-scroll-up
+      :nvm "M-;" #'evil-scroll-down
+      )
+#+end_src
+
+*** Snippets
+
+I use the [[https://github.com/joaotavora/yasnippet][yasnippet]] emacs package for snippets
+
+#+begin_src elisp :noweb-ref packages
+(package! yasnippet)
+#+end_src
+
+#+begin_src elisp :noweb-ref configs
+(require 'yasnippet)
+(add-to-list 'yas-snippet-dirs "~/.config/doom/snippets")
+(yas-global-mode)
+
+(map! :i "M-a" #'yas-previous-field
+      :i "M-;" #'yas-next-field
+      :i "M-:" #'yas-expand)
+#+end_src
+*** Buffers
+
+#+begin_src elisp :noweb-ref exwm-keys
+([?\s-b] . switch-to-buffer)
+#+end_src
+*** Diff
+#+begin_src elisp :noweb-ref configs :results none
+(defun ccc/ediff-current-file ()
+  (interactive)
+  (let ((current-file (current-buffer))
+        (other-file (find-file-noselect (read-file-name "File to diff: "))))
+    (ediff-buffers current-file other-file)))
+#+end_src
+*** Search
+
+#+begin_src elisp :noweb-ref configs
+(map! :n "/" #'isearch-forward
+      :n "?" #'isearch-backward
+      :n "n" #'isearch-repeat-forward
+      :n "N" #'isearch-repeat-backward
+      :n "C-/" #'+default/search-buffer
+      :n "C-?" #'+vertico/search-symbol-at-point
+      :n "M-/" #'avy-isearch
+      :n "M-?" #'isearch-occur
+      :n "C-'" #'iedit-mode
+      )
+#+end_src
+** Bookmarks
+[[https://www.gnu.org/software/emacs/manual/html_node/emacs/Bookmarks.html][Bookmarks]] let you save your position in commonly used files
+
+#+begin_src elisp :noweb-ref configs
+(setq bookmark-default-file "~/.emacs.d/.local/etc/bookmarks")
+
+(defun ccc/bookmark-alacritty (bmk-record)
+  "Open a command in alacritty"
+  (interactive)
+  (let* ((command (car (bookmark-prop-get bmk-record 'command)))
+         (name (format "alacritty-%s" command)))
+    (start-process-shell-command name nil (format "alacritty -e '%s'" command))))
+
+(after! consult
+  (add-to-list 'consult-bookmark-narrow
+               `(?t "Terminal" ,#'ccc/bookmark-alacritty))
+  )
+#+end_src
+
+#+begin_src elisp :tangle .emacs.d/.local/etc/bookmarks
+;;;; Emacs Bookmark Format Version 1 ;;;; -*- coding: utf-8-emacs -*-
+;;; This format is meant to be slightly human-readable;
+;;; nevertheless, you probably don't want to edit it.
+;;; -*- End Of Bookmark File Format Version Stamp -*-
+(
+("Downloads"
+  (filename . "~/Downloads"))
+<<bookmarks>>
+)
+#+end_src
 ** Help
 *** Info
 
