@@ -724,6 +724,8 @@ I use ~consult-dir~ to quickly find files and add their patt to the current mini
       "C-S-k" #'dired-do-kill-lines
       "Z" #'dired-do-compress
       "c" #'dired-do-compress-to
+      "<tab>" #'dired-subtree-toggle
+      "<backtab>" #'dired-subtree-cycle
       :localleader
       "t"  (cmd! () (dired-toggle-marks) (image-dired-display-thumbs) (dired-unmark-all-marks))
       )
@@ -734,6 +736,8 @@ I use ~consult-dir~ to quickly find files and add their patt to the current mini
       "l" #'dired-open-file)
 
 (add-hook! 'dired-mode-hook #'dired-hide-details-mode)
+(add-hook! 'dired-subtree-after-insert-hook #'nerd-icons-dired--refresh)
+(add-hook! 'dired-subtree-after-remove-hook #'nerd-icons-dired--refresh)
 
 (setq dired-listing-switches "-algho --group-directories-first"
 
