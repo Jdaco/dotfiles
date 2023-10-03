@@ -151,14 +151,6 @@ ln -s /mnt/gpg ~/.gnupg
   + Store them on the machine at =~/.ssh/keys=
 - SSH keys are stored under ~ssh~ on my USB key
 
-*** Installation
-
-I store my SSH keys and config on my external USB key, so symlinux to the ssh_config
-
-#+begin_src shell :results none
-ln -s ~/.ssh/config /mnt/ssh_config
-#+end_src
-
 *** Shell aliases
 #+begin_src shell :noweb-ref aliases
 # -t ed25519 : Use the Ed25519 algorithm. The most secure right now
