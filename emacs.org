@@ -707,7 +707,7 @@ I use ~consult-dir~ to quickly find files and add their patt to the current mini
       "C" #'projectile-configure-project
       "r" #'projectile-run-project
       "/" #'projectile-find-readme
-      "'" #'projectile-run-eshell)
+      "'" #'project-eshell)
       )
 
 

@@ -8,6 +8,9 @@ alias shreddisk shred --iterations 1 --random-source /dev/random --verbose $*
 alias entropy cat /proc/sys/kernel/random/entropy_avail
 #+end_src
 
+** Secrets
+I keep my secrets in =~/.secrets=. This directory is contains subdirectories that symlinked into my home directory. This directory is synced between computers using Syncthing
+
 ** Passwords
 
 I use [[https://www.passwordstore.org/][Pass]] to manage my passwords
@@ -68,7 +71,7 @@ Config
 #+begin_src conf
 default-cache-ttl 3600
 # allow-loopback-pinentry
-# pinentry-program /usr/bin/pinentry-emacs
+pinentry-program /usr/bin/pinentry-emacs
 # allow-emacs-pinentry
 #+end_src
 
