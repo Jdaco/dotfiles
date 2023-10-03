@@ -74,4 +74,5 @@
     "jq"
     "multipath-tools"
     "gcc"
+    "k9s"
     ))
