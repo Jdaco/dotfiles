@@ -7,6 +7,7 @@
     ;;  Fonts
     "font-linuxlibertine"
     "font-liberation"
+    "font-victor-mono"
     ;;  Disk Utilities
     "gparted"
     "nvme-cli"
@@ -21,23 +22,26 @@
     "ncdu"
     "acpi"
     "lsof"
+    "lshw"
     ;;  Media
     "imv"
     "imagemagick"
     "ffmpeg"
     "pulsemixer"
     "mpv"
-    "youtube-dl"
+    "yt-dlp"
+    "gallery-dl"
     ;; Security
     "pinentry-qt"
+    "pinentry-emacs"
     "password-store"
     "gnupg"
-    "nmap"
     ;; Xorg
     "xclip"
     "xdg-utils"
     "xmodmap"
     "alacritty"
+    "xset"
     ;; File utils
     "zip"
     "unzip"
@@ -51,14 +55,15 @@
     "scribus"
     "offlineimap"
     ;; Network
+    "nmap"
     "sshfs"
     "nfs-utils"
     "syncthing"
     "curl"
     "wget"
-    ;;  Fonts
-    "font-victor-mono"
+    "rsync"
     ;;
+    "go"
     "stow"
     "bpytop"
     "icecat"
@@ -68,4 +73,5 @@
     "ledger"
     "jq"
     "multipath-tools"
+    "gcc"
     ))
