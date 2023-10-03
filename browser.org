@@ -13,6 +13,7 @@ https://addons.mozilla.org/en-US/firefox/addon/multi-account-containers/
 https://addons.mozilla.org/en-US/firefox/addon/canvasblocker/
 https://addons.mozilla.org/en-US/firefox/addon/chameleon-ext/
 https://github.com/kuanyui/copy-as-org-mode
+https://addons.mozilla.org/en-US/firefox/addon/firefox-color/
 ** Settings
 - Startup
   + Restore previous session
@@ -33,5 +34,6 @@ https://github.com/kuanyui/copy-as-org-mode
        ("Youtube" "https://youtube.com/results?aq=f&oq=&search_query=%s")
        ("Wolfram alpha" "https://wolframalpha.com/input/?i=%s")
        ("Wikipedia" "https://wikipedia.org/search-redirect.php?language=en&go=Go&search=%s")
-       ("MDN" "https://developer.mozilla.org/en-US/search?q=%s")))
+       ("MDN" "https://developer.mozilla.org/en-US/search?q=%s")
+       ("Odysee" "https://odysee.com/$/search?q=%s")))
 #+end_src
