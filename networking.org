@@ -130,6 +130,68 @@ I use [[https://syncthing.net/][Syncthing]] to sync data between my different de
 (map! :leader
       :n "a r" #'transient-rsync)
 #+end_src
+*** s5cmd
+
+#+begin_src elisp :noweb-ref configs
+(defvar s5cmd-buffer-name "*s5cmd*")
+
+(defun s5cmd-get-command (command args)
+  "Returns s5cmd command from arguments"
+  (interactive)
+  (let* ((source (transient-arg-value "--source=" args))
+        (dest (transient-arg-value "--dest=" args))
+        (numworkers (transient-arg-value "--numworkers=" args))
+        (dry-run (if (transient-arg-value "--dry-run" args) "--dry-run" ""))
+        (stat (if (transient-arg-value "--stat" args) "--stat" ""))
+        (opts (remove-if (apply-partially #'string-match "dest\\|source\\|numworkers\\|dry-run\\|stat") args)))
+    (format "s5cmd --numworkers=%s %s %s %s %s %s %s" numworkers dry-run stat command (s-join " " opts) source dest)))
+
+(defun s5cmd-copy-command (&rest args)
+  "Copy the s5cmd command to clipboard"
+  (interactive (transient-args transient-current-command))
+  (kill-new (message (s5cmd-get-command "cp" args))))
+
+(defun s5cmd-copy (&rest args)
+  "Use s5cmd to copy files"
+  (interactive (transient-args transient-current-command))
+  (let ((command (s5cmd-get-command "cp" args)))
+    (async-shell-command command s5cmd-buffer-name))
+  )
+
+(defun s5cmd-sync (&rest args)
+  "Use s5cmd to sync files"
+  (interactive (transient-args transient-current-command))
+  (let ((command (s5cmd-get-command "copy" args)))
+    (async-shell-command command s5cmd-buffer-name))
+  )
+
+(transient-define-prefix transient-s5cmd ()
+  "Transient for the s5cmd CLI tool"
+  :value '("--numworkers=16" "--stat" "--dest=s3://jdaco-gamma-backup/")
+  ["Arguments"
+   ("-n" "Number of workers" "--numworkers=" :reader transient-read-number-N+)
+   ("-N" "Dry run" "--dry-run")
+   ("-s" "Stats" "--stat")
+   ("s" "Source" "--source="
+    :init-value (lambda (o) (oset o value (file-name-directory (or (buffer-file-name) (dired-dwim-target-directory)))))
+    :always-read t
+    :prompt "Source: ")
+   ("d" "Destination" "--dest="
+    :always-read t
+    :prompt "Destination: ")
+   ]
+  ["Actions"
+   ("s" "sync" s5cmd-sync)
+   ("c" "Copy" s5cmd-copy)
+   ("x" "Copy command" s5cmd-copy-command)
+   ]
+)
+
+(set-popup-rule! (regexp-quote s5cmd-buffer-name) :side 'right :size 0.4 :select nil :quit 'current)
+
+(map! :leader
+      :n "a s s" #'transient-s5cmd)
+#+end_src
 
 ** nmap
 #+begin_src elisp :noweb-ref configs
