@@ -31,19 +31,6 @@ Emacs packages
 (package! password-generator)
 #+end_src
 
-*** Installation
-
-I store my passwords on a USB drive, so symlink the =~/.password-store= to the path that I mount the key
-
-#+begin_src sh :noweb-ref install-user
-ln -s /mnt/key/passwords ~/.password-store
-#+end_src
-
-Arch Linux packages
-
-#+begin_src text :noweb-ref arch-packages
-pass
-#+end_src
 ** Password prompts
 This is a more flexible way to configure the password prompts in shell buffers that emacs looks for
 
@@ -149,12 +136,6 @@ ln -s /mnt/gpg ~/.gnupg
 
 *Note*: If you don't want to symlink, you can also use ~gpg~ with your detached keyring using ~gpg --homedir /mnt/gpg~
 
-Arch Linux packages
-
-#+begin_src text :noweb-ref arch-packages
-gnupg
-pinentry
-#+end_src
 ** SSH
 
 - Create one SSH key per *identity*

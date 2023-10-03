@@ -71,12 +71,6 @@ The screen locking package needs to be specified in your =config.scm=
 ([?\s-C] . scrot-select)
 #+end_src
 
-Packages for Arch linux
-
-#+begin_src text :noweb-ref arch-packages
-scrot
-#+end_src
-
 ** EXWM
 :PROPERTIES:
 :ID:       adb6de39-b7dd-4359-a026-c5b8c5c6a029

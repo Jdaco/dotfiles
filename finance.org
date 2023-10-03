@@ -111,13 +111,6 @@ I put my ledger configuration data (everthing in ledger besides actual transacit
 
 #+end_src
 
-** Installation
-
-Arch Linux packages
-
-#+begin_src text :noweb-ref arch-packages
-ledger
-#+end_src
 ** Snippets
 :PROPERTIES:
 :snippet_mode: ledger-mode
