@@ -23,6 +23,10 @@ I use [[https://www.passwordstore.org/][Pass]] to manage my passwords
       )
 
 (setq password-store-password-length 25)
+
+;; Set password-store as an emacs auth source
+(require 'auth-source-pass)
+(auth-source-pass-enable)
 #+end_src
 
 Emacs packages
