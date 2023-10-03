@@ -12,7 +12,7 @@
 (define-public s5cmd
   (package
     (name "s5cmd")
-    (version "1.4.0")
+    (version "2.2.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -21,10 +21,11 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "01kfgxkbssh9yy42jah2klykpyy689f4v0d65qmgnc4jkqqwlrnp"))))
+                "0np2jwqbas0bwfbqv28ijhrdaqxqm1rczbgm901z19gnlcdk44p4"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/peak/s5cmd"))
+     (list #:import-path "github.com/peak/s5cmd/v2"
+           #:go go-1.19))
     (home-page "https://github.com/peak/s5cmd")
     (synopsis "s5cmd")
     (description
