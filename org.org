@@ -224,8 +224,8 @@ to be tangled'"
     (with-current-buffer (find-file-noselect (expand-file-name ".gitignore" (cookie-root)))
     (end-of-buffer)
     (insert "\n.project.org\n")
-    (dolist name (doct-get :gitignore)
-            (gitignore-templates-insert (doct-get :gitignore)))
+    (dolist (name (doct-get :gitignore))
+            (gitignore-templates-insert name))
     (save-buffer)))
 )
 
