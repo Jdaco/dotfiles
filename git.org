@@ -88,7 +88,7 @@ Most of my git work is done in Emacs's [[https://magit.vc/][Magit]] interface, b
 #+end_src
 ** Keys
 
-#+begin_src conf :table "~/.ssh/config"
+#+begin_src conf :tangle "~/.ssh/config"
 Host github
     hostname github.com
     user git
