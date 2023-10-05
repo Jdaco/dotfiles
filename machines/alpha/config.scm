@@ -1,26 +1,22 @@
+(define-module (machines alpha config))
 (use-modules (gnu packages ssh))
 (use-modules (gnu))
+(use-modules (gnu)
+             (nongnu packages linux)
+             (nongnu system linux-initrd)
+             )
 (use-service-modules desktop networking ssh xorg docker pm virtualization)
 
-;; (define syncthing-service
-;;   (service-type
-;;    (name 'syncthing)
-;;    (extensions
-;;     (list (service-extension shepherd-root-service-type guix-shepherd-service)
-;;           ))
-
-;;    (default-value (guix-configuration))
-
-;;    ))
-
 (operating-system
+ (kernel linux)
+ (initrd microcode-initrd)
+ (firmware (list linux-firmware))
  (locale "en_US.utf8")
  (timezone "America/Los_Angeles")
  (keyboard-layout (keyboard-layout "us"))
  (host-name "alpha")
  (users (cons* (user-account
                 (name "chaise")
-                (comment "Chaise")
                 (group "users")
                 (home-directory "/home/chaise")
                 (supplementary-groups
@@ -33,6 +29,7 @@
    (list (specification->package "emacs")
          (specification->package "emacs-exwm")
          (specification->package "emacs-pdf-tools")
+         ;; (specification->package "emacs-emacsql-sqlite3")
          (specification->package "emacs-desktop-environment")
                                         ; Required by org-roam
          (specification->package "sqlite")
@@ -45,7 +42,6 @@
          (specification->package "git")
          (specification->package "file")
          (specification->package "nss-certs")
-         (specification->package "rsync")
          (specification->package "gnupg")
          (specification->package "password-store")
          (specification->package "duplicity")
@@ -82,12 +78,12 @@
  (file-systems
   (cons* (file-system
           (mount-point "/boot/efi")
-          (device (uuid "2F4D-3557" 'fat32))
+          (device (uuid "4DCC-B536" 'fat32))
           (type "vfat"))
          (file-system
           (mount-point "/")
           (device
-           (uuid "fd0ee01a-0f0a-4f64-b434-25367b58ebf4"
+           (uuid "9691e892-1564-4fec-91f7-c3d4c2d8aa73"
                  'btrfs))
           (type "btrfs"))
          %base-file-systems)))

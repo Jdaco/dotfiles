@@ -1,3 +1,4 @@
+(define-module (machines gamma config))
 (use-modules (gnu packages ssh))
 (use-modules (gnu packages wm))
 (use-modules (gnu))
@@ -19,20 +20,17 @@
                   (group "users")
                   (home-directory "/home/chaise")
                   (supplementary-groups
-                    '("dialout" "wheel" "netdev" "audio" "video" "lp")))
+                    '("dialout" "wheel" "netdev" "audio" "video" "lp" "docker")))
                 %base-user-accounts))
+ (groups (cons* (user-group (name "docker"))
+                %base-groups))
   (packages
     (append
       (list (specification->package "emacs")
             (specification->package "emacs-exwm")
             (specification->package "emacs-pdf-tools")
+            ;; (specification->package "emacs-emacsql-sqlite3")
             (specification->package "emacs-desktop-environment")
-            (specification->package "emacs-pdf-tools")
-            (specification->package "emacs-desktop-environment")
-            (specification->package "emacs-emacsql-sqlite3")
-            (specification->package "emacs-all-the-icons")
-            (specification->package "emacs-all-the-icons-dired")
-            (specification->package "adwaita-icon-theme")
             ; Required by org-roam
             (specification->package "sqlite")
             (specification->package "xrandr")
@@ -44,7 +42,6 @@
             (specification->package "git")
             (specification->package "file")
             (specification->package "nss-certs")
-            (specification->package "rsync")
             (specification->package "gnupg")
             (specification->package "password-store")
             (specification->package "duplicity")
@@ -74,7 +71,6 @@
       (bootloader grub-efi-bootloader)
       (target "/boot/efi")
       (keyboard-layout keyboard-layout)))
-  (swap-devices '("/swapfile"))
   (mapped-devices
    (list (mapped-device
           (source (uuid "d2706825-09fb-4564-9832-6a17c88d2758"))
