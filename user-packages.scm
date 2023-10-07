@@ -31,6 +31,7 @@
     "mpv"
     "yt-dlp"
     "gallery-dl"
+    "nerd-dictation"
     ;; Security
     "pinentry-qt"
     "pinentry-emacs"

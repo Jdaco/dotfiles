@@ -178,3 +178,6 @@ r = rotate by 90
 #+begin_src elisp :noweb-ref packages
 (package! pulseaudio-control)
 #+end_src
+** Speech to Text
+
+I use [[https://github.com/ideasman42/nerd-dictation][nerd-dictation]]
