@@ -35,5 +35,7 @@ https://addons.mozilla.org/en-US/firefox/addon/firefox-color/
        ("Wolfram alpha" "https://wolframalpha.com/input/?i=%s")
        ("Wikipedia" "https://wikipedia.org/search-redirect.php?language=en&go=Go&search=%s")
        ("MDN" "https://developer.mozilla.org/en-US/search?q=%s")
-       ("Odysee" "https://odysee.com/$/search?q=%s")))
+       ("Odysee" "https://odysee.com/$/search?q=%s")
+       ("Helm Charts" "https://artifacthub.io/packages/search?ts_query_web=%s")))
+
 #+end_src
