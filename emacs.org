@@ -697,7 +697,8 @@ I use ~consult-dir~ to quickly find files and add their patt to the current mini
                (find-file (car fpaths))
              (message "README doesn't exist"))))
 
-(setq projectile-project-root-files '())
+(setq projectile-project-root-files '()
+      +workspaces-switch-project-function #'magit-status)
 
 (after! projectile
   (add-to-list 'projectile-commander-methods `(?E "Eshell" ,#'projectile-run-eshell)))
