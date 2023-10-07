@@ -93,6 +93,16 @@ Use ~mpv~ to view your webcam
 
 *** gallery-dl
 
+#+begin_src json  :tangle ~/.config/gallery-dl/config.json
+{
+    "downloader": {
+        "ytdl": {
+            "module": "yt_dlp"
+        }
+    }
+}
+#+end_src
+
 #+begin_src sh :noweb-ref aliases
 alias gdl gallery-dl -o browser=firefox $*
 #+end_src
