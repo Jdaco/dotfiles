@@ -54,6 +54,7 @@
     "plantuml"
     "scribus"
     "offlineimap"
+    "wordnet"
     ;; Network
     "nmap"
     "sshfs"
