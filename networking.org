@@ -1,8 +1,11 @@
 * Networking
 #+begin_src elisp :noweb-ref configs
-(defun ccc/eshell-ssh (host)
-  (with-temp-buffer
-    (find-file (read-file-name "Find file: " (format "/ssh:%s:/" host)))))
+(require 'ipcalc)
+(defun ccc/ssh (host)
+    (let* ((user (read-string "Username: " nil nil "chaise"))
+           (path (format "/ssh:%s@%s:~/" user host)))
+      (find-file (read-file-name "Find file: " path)))
+    )
 
 (defvar ip-address-regex (rx (? (1+ alnum) "@") (1+ digit) "." (1+ digit) "." (1+ digit) "." (1+ digit)))
 
@@ -15,15 +18,12 @@
         (when (string-match ip-address-regex str)
           `(ip-address . ,str)))))
 
+ (defvar embark-ip-address-map (make-sparse-keymap) "Embark keymap for ip addresses")
 (map! :map embark-ip-address-map
-      "H" #'ccc/eshell-ssh)
+      "H" #'ccc/ssh)
 
 (add-to-list 'embark-target-finders #'ccc/embark-find-ip-address)
 (add-to-list 'embark-keymap-alist '(ip-address embark-ip-address-map))
-#+end_src
-
-#+begin_src sh :noweb-ref aliases
-alias dgw 'ip route | grep default | cut -f 3 -d " "'
 #+end_src
 
 ** File Sharing
@@ -194,21 +194,58 @@ I use [[https://syncthing.net/][Syncthing]] to sync data between my different de
 #+end_src
 
 ** nmap
-#+begin_src elisp :noweb-ref configs
-(defun eshell/nmap-ping (&rest args)
-  (with-temp-buffer
-    (eshell-command "nmap -sP 192.168.1.0/24" t)
-    (buffer-string)))
 
-(defun ccc/eshell-make-pipe (&rest commands)
-  (format "bash -c \"%s\"" (s-join " | " commands))
-  )
-
-;; (set-eshell-alias!
-;;  "network" (ccc/eshell-make-pipe "ip route list" "sed 1d" "awk '{print \\$1}'")
-;;  "hosts" "network | xargs -n 1 nmap -sP | grep 'scan report' | awk '{print \$5}'"
- ;; )
+    #+begin_src elisp :noweb-ref packages
+;; This package is required to manipulate ip addresses in elisp
+(package! ipcalc)
 #+end_src
+
+#+begin_src elisp :noweb-ref configs
+(defvar nmap-buffer-name "*Nmap*")
+
+(defun nmap-ping--get-command (args)
+  "Returns Nmap ping command from arguments"
+  (interactive)
+  (let* ((interface (transient-arg-value "--interface=" args))
+         (info (network-info interface)))
+    (format "nmap -sP %s/%s" (plist-get info :network) (plist-get info :cidr))))
+
+
+(defun nmap-ping (&rest args)
+  (interactive (transient-args transient-current-command))
+  (let* ((command (nmap-ping--get-command args)))
+    (async-shell-command command nmap-buffer-name)))
+
+(defun network-info (interface)
+  (let* ((info (network-interface-info interface))
+         (ip (format-network-address (nth 0 info) t))
+         (subnet (format-network-address (nth 2 info) t))
+         (cidr (s-count-matches "1" (ipcalc-octets-as-binary (ipcalc-ip-to-octets subnet))))
+         (network (ipcalc-binary-to-ip (ipcalc-network ip (int-to-string cidr)))))
+    `(:ip ,ip :subnet ,subnet :cidr ,cidr :network ,network)))
+
+(defun default-interface ()
+  (car (car (network-interface-list)))
+ )
+
+(transient-define-prefix nmap ()
+  "Nmap"
+  :value '("--port=8080:80@loadbalancer" "--agents=2")
+  ["Arguments"
+        ("i" "Interface" "--interface="
+         :init-value (lambda (o) (oset o value (default-interface))))
+   ]
+  ["Actions"
+   ("p" "Ping" nmap-ping)
+   ]
+)
+
+(set-popup-rule! (regexp-quote nmap-buffer-name) :side 'right :size 0.3 :select nil :ttl 0)
+
+(map! :leader
+      :desc "Nmap"       :n "a n" #'nmap)
+#+end_src
+
 ** REST
 
 #+begin_src elisp :noweb-ref packages
