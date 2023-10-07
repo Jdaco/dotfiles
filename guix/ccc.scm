@@ -32,9 +32,19 @@
                (base32
                 "0np2jwqbas0bwfbqv28ijhrdaqxqm1rczbgm901z19gnlcdk44p4"))))
     (build-system go-build-system)
-    (arguments
-     (list #:import-path "github.com/peak/s5cmd/v2"
-           #:go go-1.19))
+     (arguments
+      `(#:import-path "github.com/peak/s5cmd/v2"
+           #:go ,go-1.19
+           #:phases
+           (modify-phases %standard-phases
+         (add-after 'install 'rename-binaries
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((out (assoc-ref outputs "out")))
+               (rename-file
+                     (string-append out "/bin/v2")
+                     (string-append out "/bin/s5cmd"))
+               #t))))))
+
     (home-page "https://github.com/peak/s5cmd")
     (synopsis "s5cmd")
     (description
