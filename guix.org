@@ -35,3 +35,12 @@ My dotfiles repository is also it's own Guix channel, wich the package definitio
 %default-channels)
 
 #+end_src
+** Shells
+
+I need my =.profile= to include the path to my guix profile so that Eshell over TRAMP will pick up my guix binaries. The =.profile= is source when you include ='tramp-own-remote-path= in =tramp-remote-path=
+
+#+begin_src sh :tangle "~/.profile"
+#!/usr/bin/env sh
+
+export PATH=${HOME}/.guix-profile/bin:$PATH
+#+end_src

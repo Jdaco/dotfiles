@@ -868,7 +868,13 @@ Set =ansi-colors= to match =term-colors= (=ansi-colors= are used by Eshell and o
 )
 #+end_src
 
-** ibuffer-tramp
+** TRAMP
+
+#+begin_src elisp :noweb-ref configs
+(add-hook! 'tramp--startup-hook (add-to-list 'tramp-remote-path 'tramp-own-remote-path))
+#+end_src
+
+*** ibuffer-tramp
 
 [[https://github.com/svend/ibuffer-tramp/blob/bcad0bda3a67f55d1be936bf8fa9ef735fe1e3f3/ibuffer-tramp.el][ibuffer-tramp]] groups buffers by TRAMP connection in your ibuffer list
 
