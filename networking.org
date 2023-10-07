@@ -161,7 +161,7 @@ I use [[https://syncthing.net/][Syncthing]] to sync data between my different de
 (defun s5cmd-sync (&rest args)
   "Use s5cmd to sync files"
   (interactive (transient-args transient-current-command))
-  (let ((command (s5cmd-get-command "copy" args)))
+  (let ((command (s5cmd-get-command "cp" args)))
     (async-shell-command command s5cmd-buffer-name))
   )
 
@@ -181,7 +181,7 @@ I use [[https://syncthing.net/][Syncthing]] to sync data between my different de
     :prompt "Destination: ")
    ]
   ["Actions"
-   ("s" "sync" s5cmd-sync)
+   ("y" "sync" s5cmd-sync)
    ("c" "Copy" s5cmd-copy)
    ("x" "Copy command" s5cmd-copy-command)
    ]
