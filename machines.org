@@ -190,7 +190,7 @@ My primary laptop
 
 #+begin_src elisp :noweb-ref bookmarks
 ("inbox"
-  (filename . "~/inbox.org"))
+  (filename . "~/Downloads/inbox.org"))
 #+end_src
 
 *** Monitors
