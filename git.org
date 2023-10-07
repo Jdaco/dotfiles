@@ -93,7 +93,7 @@ Host github
     hostname github.com
     user git
     port 22
-    identityfile "~/.secrets/ssh/github/jdaco"
+    identityfile "~/.secrets/ssh/github/main"
 #+end_src
 
 ** Packages
