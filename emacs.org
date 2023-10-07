@@ -587,6 +587,11 @@ I use [[https://www.gnu.org/software/emacs/manual/html_mono/eshell.html][Eshell]
 :ID:       d14e235d-95ff-4976-bed9-4c0253a576e3
 :END:
 
+#+begin_src sh :tangle "~/.config/doom/eshell/profile"
+export GUIX_PROFILE="~/.guix-profile"
+export GUIX_PYTHONPATH="$GUIX_PROFILE/lib/python3.10/site-packages"
+#+end_src
+
 #+begin_src elisp :noweb-ref configs
 (defun eshell/mktemp (&rest args)
   "Alias for mktemp that removes the trailing newline"
