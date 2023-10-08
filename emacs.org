@@ -476,6 +476,24 @@ I use the [[https://github.com/joaotavora/yasnippet][yasnippet]] emacs package f
 #+begin_src elisp :noweb-ref exwm-keys
 ([?\s-b] . switch-to-buffer)
 #+end_src
+
+#+begin_src elisp :noweb-ref configs
+(defun ccc/ibuffer-set-filter-groups ()
+(let ((filter-groups '(("Special" (name . "\\*.+\\*"))
+                       ("Areas" (directory . "roam/areas"))
+                       ("Notes" (directory . "roam/notes"))
+                       ("Books" (directory . "roam/books")))))
+  (setq ibuffer-filter-groups (append (ibuffer-projectile-generate-filter-groups) filter-groups)
+        ibuffer-sorting-mode 'alphabetic)
+  (when-let ((ibuf (get-buffer "*Ibuffer*")))
+    (with-current-buffer ibuf
+      (pop-to-buffer ibuf)
+      (ibuffer-update nil t)))
+  ))
+(remove-hook 'ibuffer-hook 'ibuffer-projectile-set-filter-groups)
+(add-hook 'ibuffer-hook 'ccc/ibuffer-set-filter-groups)
+#+end_src
+
 *** Diff
 #+begin_src elisp :noweb-ref configs :results none
 (defun ccc/ediff-current-file ()
