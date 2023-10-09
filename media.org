@@ -80,32 +80,48 @@ Use ~mpv~ to view your webcam
 
 (set-popup-rule! (regexp-quote yt-dlp-buffer-name) :side 'bottom :size 0.3 :select nil :quit 'current)
 
-(defun yt-dlp-download (url)
-  (interactive "sURL: ")
-  (async-shell-command (format "yt-dlp %s" url) yt-dlp-buffer-name)
-  )
-
-(defun yt-dlp-download-batch (file)
-  (interactive "fURL File: ")
-  (async-shell-command (format "yt-dlp --batch-file=%s" file) yt-dlp-buffer-name)
-  )
-
-(defun yt-dlp-download-clip ()
+(defun yt-dlp-get-command (args)
+  "Returns yt-dlp command from arguments"
   (interactive)
+  (format "yt-dlp %s" (s-join " " args))
+  )
+
+(defun yt-dlp-download (url args)
+  (interactive (list (read-string "URL: ") (transient-args transient-current-command)))
+  (async-shell-command (yt-dlp-get-command (append args (list url))) yt-dlp-buffer-name)
+  )
+
+(defun yt-dlp-download-batch (file args)
+  (interactive (list (read-file-name "URL File: ") (transient-args transient-current-command)))
+  (async-shell-command (yt-dlp-get-command (cons (concat "--batch-file=" file) args)) yt-dlp-buffer-name)
+  )
+
+(defun yt-dlp-download-clip (args)
+  (interactive (transient-args transient-current-command))
   (let* ((urls (x-get-clipboard))
          (hash (secure-hash 'sha1 urls))
          (fname (concat "/tmp/url-" hash)))
     (f-write urls 'utf-8 fname)
-    (yt-dlp-download-batch fname))
+    (yt-dlp-download-batch fname args))
   )
 
+(transient-define-prefix transient-yt-dlp ()
+  "yt-dlp transient"
+  :value '("--paths=~/Downloads")
+  ["Arguments"
+   ("-p" "Download Path" "--paths=" :always-read t :reader transient-read-existing-directory)
+   ]
+  ["Actions"
+   ("y" "Single" yt-dlp-download)
+   ("b" "Batch" yt-dlp-download-batch)
+   ("c" "Clipboard" yt-dlp-download-clip)
+   ]
+)
+
 (map! :leader
-      :desc "Download Video"  :n "a s y y" #'yt-dlp-download
-      :desc "Download Videos (Batch)"  :n "a s y b" #'yt-dlp-download-batch
-      :desc "Download Videos (Clip)"  :n "a s y c" #'yt-dlp-download-clip
+      :desc "yt-dlp"  :n "a s y" #'transient-yt-dlp
       )
 #+end_src
-
 
 *** gallery-dl
 

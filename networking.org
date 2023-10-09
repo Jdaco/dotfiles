@@ -120,7 +120,7 @@ I use [[https://syncthing.net/][Syncthing]] to sync data between my different de
     :prompt "Destination: ")
    ]
   ["Actions"
-   ("r" "Copy" rsync-copy)
+   ("r" "Run" rsync-copy)
    ("x" "Copy command" rsync-copy-command)
    ]
 )
