@@ -96,9 +96,9 @@ Use ~mpv~ to view your webcam
   (async-shell-command (yt-dlp-get-command (cons (concat "--batch-file=" file) args)) yt-dlp-buffer-name)
   )
 
-(defun yt-dlp-download-clip (args)
+(defun yt-dlp-download-clip (&rest args)
   (interactive (transient-args transient-current-command))
-  (let* ((urls (x-get-clipboard))
+  (let* ((urls (s-replace " " "\n" (x-get-clipboard)))
          (hash (secure-hash 'sha1 urls))
          (fname (concat "/tmp/url-" hash)))
     (f-write urls 'utf-8 fname)
