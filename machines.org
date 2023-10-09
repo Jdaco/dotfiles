@@ -61,6 +61,7 @@ My primary workstation
 #+include: ./brain.org
 #+include: ./vm.org
 #+include: ./ai.org
+#+include: ./social.org
 
 *** X
 **** Autorandr
@@ -187,6 +188,7 @@ My primary laptop
 #+include: ./brain.org
 #+include: ./vm.org
 #+include: ./ai.org
+#+include: ./social.org
 
 #+begin_src elisp :noweb-ref bookmarks
 ("inbox"
