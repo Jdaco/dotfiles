@@ -140,12 +140,59 @@ Use ~mpv~ to view your webcam
 alias gdl gallery-dl -o browser=firefox $*
 #+end_src
 
+#+begin_src elisp :noweb-ref configs
+(defvar gallery-dl-buffer-name "*gallery-dl*")
+
+(set-popup-rule! (regexp-quote gallery-dl-buffer-name) :side 'bottom :size 0.3 :select nil :quit 'current)
+
+(defun gallery-dl-get-command (args)
+  "Returns gallery-dl command from arguments"
+  (interactive)
+  (format "gallery-dl %s" (s-join " " args))
+  )
+
+(defun gallery-dl-download (url args)
+  (interactive (list (read-string "URL: ") (transient-args transient-current-command)))
+  (async-shell-command (gallery-dl-get-command (append args (list url))) gallery-dl-buffer-name)
+  )
+
+(defun gallery-dl-download-batch (file args)
+  (interactive (list (read-file-name "URL File: ") (transient-args transient-current-command)))
+  (async-shell-command (gallery-dl-get-command (cons (concat "--input-file=" (expand-file-name file)) args)) gallery-dl-buffer-name)
+  )
+
+(defun gallery-dl-download-clip (&rest args)
+  (interactive (transient-args transient-current-command))
+  (let* ((urls (s-replace " " "\n" (x-get-clipboard)))
+         (hash (secure-hash 'sha1 urls))
+         (fname (concat "/tmp/gdl-" hash)))
+    (f-write urls 'utf-8 fname)
+    (gallery-dl-download-batch fname args))
+  )
+
+(transient-define-prefix transient-gallery-dl ()
+  "gallery-dl transient"
+  :value '("--destination=~/Downloads/gallery-dl")
+  ["Arguments"
+   ("-d" "Destination" "--destination=" :always-read t :reader transient-read-existing-directory)
+   ]
+  ["Actions"
+   ("g" "Single" gallery-dl-download)
+   ("b" "Batch" gallery-dl-download-batch)
+   ("c" "Clipboard" gallery-dl-download-clip)
+   ]
+)
+
+(map! :leader
+      :desc "gallery-dl"  :n "a s g" #'transient-gallery-dl
+      )
+#+end_src
 
 ** Images
 
 #+begin_src elisp
-("^\\*image-dired\\*$" :vslot -1 :slot 2 :select t :height 0.9)
-("^\\*image-dired-display-image\\*$" :vslot -1 :slot 2 :select t :height 0.9 :width 0.9)
+(add-to-list 'default-frame-alist '("^\\*image-dired\\*$" :vslot -1 :slot 2 :select t :height 0.9))
+(add-to-list 'default-frame-alist '("^\\*image-dired-display-image\\*$" :vslot -1 :slot 2 :select t :height 0.9 :width 0.9))
 #+end_src
 
 
