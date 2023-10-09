@@ -90,9 +90,19 @@ Use ~mpv~ to view your webcam
   (async-shell-command (format "yt-dlp --batch-file=%s" file) yt-dlp-buffer-name)
   )
 
+(defun yt-dlp-download-clip ()
+  (interactive)
+  (let* ((urls (x-get-clipboard))
+         (hash (secure-hash 'sha1 urls))
+         (fname (concat "/tmp/url-" hash)))
+    (f-write urls 'utf-8 fname)
+    (yt-dlp-download-batch fname))
+  )
+
 (map! :leader
       :desc "Download Video"  :n "a s y y" #'yt-dlp-download
       :desc "Download Videos (Batch)"  :n "a s y b" #'yt-dlp-download-batch
+      :desc "Download Videos (Clip)"  :n "a s y c" #'yt-dlp-download-clip
       )
 #+end_src
 
