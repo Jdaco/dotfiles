@@ -479,10 +479,10 @@ I use the [[https://github.com/joaotavora/yasnippet][yasnippet]] emacs package f
 
 #+begin_src elisp :noweb-ref configs
 (defun ccc/ibuffer-set-filter-groups ()
-(let ((filter-groups '(("Special" (name . "\\*.+\\*"))
-                       ("Areas" (directory . "roam/areas"))
+(let ((filter-groups '(("Areas" (directory . "roam/areas"))
                        ("Notes" (directory . "roam/notes"))
-                       ("Books" (directory . "roam/books")))))
+                       ("Books" (directory . "roam/books"))
+                       ("Special" (name . "\\*.+\\*")))))
   (setq ibuffer-filter-groups (append (ibuffer-projectile-generate-filter-groups) filter-groups)
         ibuffer-sorting-mode 'alphabetic)
   (when-let ((ibuf (get-buffer "*Ibuffer*")))
