@@ -204,10 +204,10 @@ alias gdl gallery-dl -o browser=firefox $*
 (set-popup-rule! (regexp-quote gallery-dl-buffer-name) :side 'bottom :size 0.3 :select nil :quit 'current)
 
 (defun gallery-dl--read-max-date (prompt initial history)
-  (format "'date >= datetime(%s)'" (string-replace "-" ", " (transient-read-date prompt initial history))))
+  (format "'date >= datetime(%s)'" (replace-regexp-in-string "-0?" ", " (transient-read-date prompt initial history))))
 
 (defun gallery-dl--read-min-date (prompt initial history)
-  (format "'date <= datetime(%s)'" (string-replace "-" ", " (transient-read-date prompt initial history))))
+  (format "'date <= datetime(%s)'" (replace-regexp-in-string "-0?" ", " (transient-read-date prompt initial history))))
 
 (defun gallery-dl-get-command (args)
   "Returns gallery-dl command from arguments"
@@ -245,6 +245,7 @@ alias gdl gallery-dl -o browser=firefox $*
   :value '("--directory=~/Downloads/gallery-dl")
   ["Arguments"
    ("-v" "Verbose" "--verbose")
+   ("-n" "Dry Run" "--no-download")
    ("-m" "Min Date" "--filter=" :reader gallery-dl--read-min-date)
    ("-M" "Max Date" "--filter=" :reader gallery-dl--read-max-date)
    ("-f" "Filter" "--filter=" :prompt "Filter: ")
