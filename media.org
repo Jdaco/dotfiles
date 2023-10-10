@@ -124,6 +124,64 @@ Use ~mpv~ to view your webcam
       )
 #+end_src
 
+** Images
+
+#+begin_src elisp
+(add-to-list 'default-frame-alist '("^\\*image-dired\\*$" :vslot -1 :slot 2 :select t :height 0.9))
+(add-to-list 'default-frame-alist '("^\\*image-dired-display-image\\*$" :vslot -1 :slot 2 :select t :height 0.9 :width 0.9))
+#+end_src
+
+
+#+begin_src elisp :noweb-ref configs :results none
+; Image keybinds
+(map! :map image-mode-map
+      "C-k" #'image-previous-file
+      "C-j" #'image-next-file
+      )
+(setq image-dired-thumb-size 250
+      image-dired-thumb-width 250
+      image-dired-thumb-height 250
+      image-use-external-converter t
+      image-dired-marking-shows-next nil)
+
+(map! :map 'image-dired-thumbnail-mode-map
+      "C-l" (cmd! () (consult-file-externally (image-dired-original-file-name)))
+      )
+
+
+(defun ccc/convert (extension)
+  "Convert WEBP images to another format"
+  (interactive (list (completing-read "Extension: " '(png jpg))))
+  (let* ((filename (dired-get-filename)))
+    (shell-command (format "dwebp %s -o %s" filename (f-swap-ext filename extension)) nil)
+    (revert-buffer)
+    ))
+
+(map! :map dired-mode-map
+      :n "#" #'ccc/convert)
+
+;; Sometimes dired thumbnails gets stuck if you delete the last file it had open
+(defun ccc/reset-image-dired ()
+  (interactive)
+  (setq image-dired-queue nil image-dired-queue-active-jobs 0))
+
+(defun ccc/imv-dir (dir)
+  (interactive)
+  (let* ((images (split-string
+                    (shell-command-to-string (format "find %s -type f | shuf | head -n 10000" dir)) "\n" t)))
+    (apply #'start-process "imv" "imv" "imv" images)))
+#+end_src
+
+*** IMV
+
+Config:
+
+#+begin_src conf :tangle .config/imv/config
+[binds]
+<Ctrl+Shift+K> = exec rm -v "$imv_current_file"; close
+r = rotate by 90
+#+end_src
+
 *** gallery-dl
 
 #+begin_src json  :tangle ~/.config/gallery-dl/config.json
@@ -172,9 +230,12 @@ alias gdl gallery-dl -o browser=firefox $*
 
 (transient-define-prefix transient-gallery-dl ()
   "gallery-dl transient"
-  :value '("--destination=~/Downloads/gallery-dl")
+  :value '("--directory=~/Downloads/gallery-dl")
   ["Arguments"
-   ("-d" "Destination" "--destination=" :always-read t :reader transient-read-existing-directory)
+   ("-v" "Verbose" "--verbose")
+   ("-r" "Range" "--range=" :prompt "Range: ")
+   ("-d" "Destination" "--destination=" :reader transient-read-directory)
+   ("-D" "Directory" "--directory=" :reader transient-read-directory)
    ]
   ["Actions"
    ("g" "Single" gallery-dl-download)
@@ -186,63 +247,6 @@ alias gdl gallery-dl -o browser=firefox $*
 (map! :leader
       :desc "gallery-dl"  :n "a s g" #'transient-gallery-dl
       )
-#+end_src
-
-** Images
-
-#+begin_src elisp
-(add-to-list 'default-frame-alist '("^\\*image-dired\\*$" :vslot -1 :slot 2 :select t :height 0.9))
-(add-to-list 'default-frame-alist '("^\\*image-dired-display-image\\*$" :vslot -1 :slot 2 :select t :height 0.9 :width 0.9))
-#+end_src
-
-
-#+begin_src elisp :noweb-ref configs :results none
-; Image keybinds
-(map! :map image-mode-map
-      "C-k" #'image-previous-file
-      "C-j" #'image-next-file
-      )
-(setq image-dired-thumb-size 250
-      image-dired-thumb-width 250
-      image-dired-thumb-height 250
-      image-use-external-converter t)
-
-(map! :map 'image-dired-thumbnail-mode-map
-      "C-l" (cmd! () (consult-file-externally (image-dired-original-file-name)))
-      )
-
-
-(defun ccc/convert (extension)
-  "Convert WEBP images to another format"
-  (interactive (list (completing-read "Extension: " '(png jpg))))
-  (let* ((filename (dired-get-filename)))
-    (shell-command (format "dwebp %s -o %s" filename (f-swap-ext filename extension)) nil)
-    (revert-buffer)
-    ))
-
-(map! :map dired-mode-map
-      :n "#" #'ccc/convert)
-
-;; Sometimes dired thumbnails gets stuck if you delete the last file it had open
-(defun ccc/reset-image-dired ()
-  (interactive)
-  (setq image-dired-queue nil image-dired-queue-active-jobs 0))
-
-(defun ccc/imv-dir (dir)
-  (interactive)
-  (let* ((images (split-string
-                    (shell-command-to-string (format "find %s -type f | shuf | head -n 10000" dir)) "\n" t)))
-    (apply #'start-process "imv" "imv" "imv" images)))
-#+end_src
-
-*** IMV
-
-Config:
-
-#+begin_src conf :tangle .config/imv/config
-[binds]
-<Ctrl+Shift+K> = exec rm -v "$imv_current_file"; close
-r = rotate by 90
 #+end_src
 
 ** Audio
