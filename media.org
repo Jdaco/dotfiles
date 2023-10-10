@@ -203,11 +203,22 @@ alias gdl gallery-dl -o browser=firefox $*
 
 (set-popup-rule! (regexp-quote gallery-dl-buffer-name) :side 'bottom :size 0.3 :select nil :quit 'current)
 
+(defun gallery-dl--read-max-date (prompt initial history)
+  (format "'date >= datetime(%s)'" (string-replace "-" ", " (transient-read-date prompt initial history))))
+
+(defun gallery-dl--read-min-date (prompt initial history)
+  (format "'date <= datetime(%s)'" (string-replace "-" ", " (transient-read-date prompt initial history))))
+
 (defun gallery-dl-get-command (args)
   "Returns gallery-dl command from arguments"
-  (interactive)
-  (format "gallery-dl %s" (s-join " " args))
+  (format "gallery-dl -o browser=firefox %s" (s-join " " args))
   )
+
+(defun gallery-dl-copy-command (&rest args)
+  (interactive (transient-args transient-current-command))
+  (let ((command (gallery-dl-get-command args)))
+    (print command)
+    (kill-new command)))
 
 (defun gallery-dl-download (url args)
   (interactive (list (read-string "URL: ") (transient-args transient-current-command)))
@@ -216,7 +227,8 @@ alias gdl gallery-dl -o browser=firefox $*
 
 (defun gallery-dl-download-batch (file args)
   (interactive (list (read-file-name "URL File: ") (transient-args transient-current-command)))
-  (async-shell-command (gallery-dl-get-command (cons (concat "--input-file=" (expand-file-name file)) args)) gallery-dl-buffer-name)
+  (print (gallery-dl-get-command (cons (concat "--input-file=" (expand-file-name file)) args)))
+  ;(async-shell-command (gallery-dl-get-command (cons (concat "--input-file=" (expand-file-name file)) args)) gallery-dl-buffer-name)
   )
 
 (defun gallery-dl-download-clip (&rest args)
@@ -233,6 +245,9 @@ alias gdl gallery-dl -o browser=firefox $*
   :value '("--directory=~/Downloads/gallery-dl")
   ["Arguments"
    ("-v" "Verbose" "--verbose")
+   ("-m" "Min Date" "--filter=" :reader gallery-dl--read-min-date)
+   ("-M" "Max Date" "--filter=" :reader gallery-dl--read-max-date)
+   ("-f" "Filter" "--filter=" :prompt "Filter: ")
    ("-r" "Range" "--range=" :prompt "Range: ")
    ("-d" "Destination" "--destination=" :reader transient-read-directory)
    ("-D" "Directory" "--directory=" :reader transient-read-directory)
@@ -241,6 +256,7 @@ alias gdl gallery-dl -o browser=firefox $*
    ("g" "Single" gallery-dl-download)
    ("b" "Batch" gallery-dl-download-batch)
    ("c" "Clipboard" gallery-dl-download-clip)
+   ("x" "Copy command" gallery-dl-copy-command)
    ]
 )
 
@@ -248,6 +264,9 @@ alias gdl gallery-dl -o browser=firefox $*
       :desc "gallery-dl"  :n "a s g" #'transient-gallery-dl
       )
 #+end_src
+
+#+RESULTS:
+: transient-gallery-dl
 
 ** Audio
 *** Pulsemixer
