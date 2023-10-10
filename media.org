@@ -227,8 +227,7 @@ alias gdl gallery-dl -o browser=firefox $*
 
 (defun gallery-dl-download-batch (file args)
   (interactive (list (read-file-name "URL File: ") (transient-args transient-current-command)))
-  (print (gallery-dl-get-command (cons (concat "--input-file=" (expand-file-name file)) args)))
-  ;(async-shell-command (gallery-dl-get-command (cons (concat "--input-file=" (expand-file-name file)) args)) gallery-dl-buffer-name)
+  (async-shell-command (gallery-dl-get-command (cons (concat "--input-file=" (expand-file-name file)) args)) gallery-dl-buffer-name)
   )
 
 (defun gallery-dl-download-clip (&rest args)
