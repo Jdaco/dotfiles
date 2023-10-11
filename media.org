@@ -209,6 +209,11 @@ alias gdl gallery-dl -o browser=firefox $*
 (defun gallery-dl--read-min-date (prompt initial history)
   (format "'date <= datetime(%s)'" (replace-regexp-in-string "-0?" ", " (transient-read-date prompt initial history))))
 
+(defun gallery-dl--file-extension (prompt initial history)
+  (let* ((extensions-raw (read-string prompt initial))
+         (extensions (string-replace "," "\", \"" extensions-raw)))
+    (format "'extension in (\"%s\")'" extensions)))
+
 (defun gallery-dl-get-command (args)
   "Returns gallery-dl command from arguments"
   (format "gallery-dl -o browser=firefox %s" (s-join " " args))
@@ -244,6 +249,7 @@ alias gdl gallery-dl -o browser=firefox $*
   :value '("--directory=~/Downloads/gallery-dl")
   ["Arguments"
    ("-v" "Verbose" "--verbose")
+   ("-e" "Extension" "--filter=" :prompt "Extensions: " :reader gallery-dl--file-extension)
    ("-n" "Dry Run" "--no-download")
    ("-m" "Min Date" "--filter=" :reader gallery-dl--read-min-date)
    ("-M" "Max Date" "--filter=" :reader gallery-dl--read-max-date)
