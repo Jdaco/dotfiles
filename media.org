@@ -179,6 +179,8 @@ Config:
 #+begin_src conf :tangle .config/imv/config
 [binds]
 <Ctrl+Shift+K> = exec rm -v "$imv_current_file"; close
+<Ctrl+Shift+L> = next 1
+<Ctrl+Shift+H> = prev 1
 r = rotate by 90
 #+end_src
 
