@@ -5,15 +5,16 @@ I prefer to interact with my emails inside of Emacs using [[https://github.com/d
 The directory that I store my emails in
 
 #+name: maildir
-#+begin_src conf
+#+begin_src conf :exports code
 ~/mail
 #+end_src
 
 Once you have ~offlineimap~ and ~mu~ installed you'll need to run the below commands to download and index your emails
 
-#+BEGIN_SRC sh
+#+BEGIN_SRC sh :var maildir=maildir
+mkdir -p $maildir
 offlineimap -o
-mu init --maildir <<maildir>> --my-address email@example.com
+mu init --maildir $maildir --my-address chaisecanz@gmail.com
 mu index
 #+END_SRC
 
