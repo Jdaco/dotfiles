@@ -132,6 +132,10 @@ I use [[https://syncthing.net/][Syncthing]] to sync data between my different de
 #+end_src
 *** s5cmd
 
+#+begin_src sh :noweb-ref aliases
+alias s3 s5cmd $*
+#+end_src
+
 #+begin_src elisp :noweb-ref configs
 (defvar s5cmd-buffer-name "*s5cmd*")
 
