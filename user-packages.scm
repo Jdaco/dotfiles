@@ -48,6 +48,8 @@
     "unzip"
     "exa"
     "ripgrep"
+    "duplicity"
+    "python-boto3"                      ; required by duplicity
     ;; Office
     "mupdf"
     "libreoffice"
@@ -76,5 +78,4 @@
     "jq"
     "multipath-tools"
     "gcc"
-    "k9s"
-    ))
+    "k9s"))
