@@ -178,6 +178,7 @@ My primary laptop
       scrot-directory download-directory
       magit-repository-directories `((,dotfiles-directory . 0))
       org-roam-database-connector 'sqlite3
+      ccc/backup-destination "boto3+s3://jdaco-gamma-backup/gamma/"
       )
 #+end_src
 
@@ -189,6 +190,7 @@ My primary laptop
 #+include: ./vm.org
 #+include: ./ai.org
 #+include: ./social.org
+#+include: ./backups.org
 
 #+begin_src elisp :noweb-ref bookmarks
 ("inbox"

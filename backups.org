@@ -59,12 +59,12 @@ module "backup_bucket" {
 * Duplicity
 
 #+begin_src elisp :noweb-ref configs
-(defvar ccc/backup-source "~/dotfiles")
+(defvar ccc/backup-source "~")
 (defvar ccc/backup-destination nil)
 (defvar ccc/backup-buffer-name "*duplicity*")
 (defvar ccc/backup-encryption-key nil)
 (defvar ccc/backup-signing-key nil)
-(defvar ccc/backup-excludes '("~/proj" "~/.cache" "~/.trash" "~/.local/share" "~/.vagrant.d" "~/go" "~/.npm" "~/.emacs.d" "~/.mozilla"))
+(defvar ccc/backup-excludes '("~/proj" "~/.cache" "~/.trash" "~/.local/share" "~/.vagrant.d" "~/go" "~/.npm" "~/.emacs.d" "~/.mozilla" "~/mail"))
 (add-to-list 'ccc/comint-password-prompts "\\(^GnuPG passphrase for signing key: *\\)")
 (add-to-list 'ccc/comint-password-prompts "\\(^GnuPG passphrase for decryption: *\\)")
 
@@ -103,6 +103,7 @@ module "backup_bucket" {
     :prompt "Verbosity: "
     :init-value (lambda (o) (oset o value "info"))
     )
+   ("-n" "Dry run" "--dry-run")
    ("-e" "Encryption key" "--encrypt-key="
     :prompt "Encryption Key: "
     :init-value (lambda (o) (oset o value ccc/backup-encryption-key))
