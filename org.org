@@ -361,6 +361,7 @@ templates"
 (package! gitignore-templates)
 #+end_src
 ** Agenda
+
 #+begin_src elisp :noweb-ref configs
 (defun ccc/org-remove-priority (state)
   (let ((position (plist-get state :position))
@@ -472,6 +473,56 @@ templates"
 #+begin_src elisp :noweb-ref packages
 (package! org-super-agenda)
 #+end_src
+*** Timeblock
+
+I use the [[https://github.com/ichernyshovvv/org-timeblock][org-timeblock]] package to visualize the duration of my tasks
+
+#+begin_src elisp :noweb-ref packages
+(package! org-timeblock :recipe (:host github :repo "ichernyshovvv/org-timeblock"))
+#+end_src
+
+#+begin_src elisp :noweb-ref configs
+(evil-set-initial-state 'org-timeblock-mode 'emacs)
+(evil-set-initial-state 'org-timeblock-list-mode 'normal)
+(map! :leader
+      "n T" #'org-timeblock)
+(map! :map org-agenda-mode-map
+      "C-t" #'org-timeblock)
+(map! :map org-timeblock-mode-map
+      "j" #'org-timeblock-forward-block
+      "k" #'org-timeblock-backward-block
+      "h" #'org-timeblock-backward-column
+      "l" #'org-timeblock-forward-column
+      )
+(map! :map org-timeblock-mode-map
+      "j" #'org-timeblock-forward-block
+      "k" #'org-timeblock-backward-block
+      "h" #'org-timeblock-backward-column
+      "l" #'org-timeblock-forward-column
+      "v" #'org-timeblock-switch-view
+      "t" #'org-timeblock-toggle-timeblock-list
+      "C-j" #'org-timeblock-day-later
+      "C-k" #'org-timeblock-day-earlier
+      "J" #'org-timeblock-jump-to-day
+      )
+#+end_src
+
+I overwrite this function to filter out archived headings
+
+#+begin_src elisp :noweb-ref configs
+(after! org-timeblock
+(defadvice! ccc/org-timeblock-get-entries (fun &rest args)
+  :around #'org-timeblock-get-entries
+  (let ((output (apply fun args)))
+    (seq-filter
+     (lambda (entry)
+       (not (seq-contains (get-text-property 0 'tags entry) "ARCHIVE")))
+     output))
+  )
+)
+
+#+end_src
+
 ** Babel
 #+begin_src elisp :noweb-ref configs
 ; Allow links to info pages
