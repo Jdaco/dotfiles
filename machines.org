@@ -46,7 +46,9 @@ My primary workstation
       org-agenda-files `(,(f-join org-roam-directory "areas"))
       download-directory "~/Downloads"
       scrot-directory download-directory
-      magit-repository-directories `((,dotfiles-directory . 0)))
+      magit-repository-directories `((,dotfiles-directory . 0))
+      ccc/backup-destination "boto3+s3://jdaco-gamma-backup/alpha/"
+      )
 #+end_src
 
 #+begin_src elisp :noweb-ref bookmarks
