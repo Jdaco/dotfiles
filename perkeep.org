@@ -1,0 +1,72 @@
+#+title: Perkeep
+
+I use [[https://perkeep.org/][Perkeep]] to store all of my personal data. It is a content-addressed blob/file store that can be backed by a filesystem or an object store like S3
+
+* Eshell
+#+begin_src sh :noweb-ref aliases
+alias pkf pk put file --filenodes $*
+#+end_src
+
+* Prodigy
+#+begin_src elisp :noweb-ref prodigy-services
+(prodigy-define-service
+    :name "Perkeep"
+    :command "perkeepd")
+#+end_src
+* Transient
+
+#+begin_src elisp :noweb-ref configs
+(defvar ccc/perkeep-buffer-name "*perkeep*")
+
+(defun perkeep-put-get-command (files args)
+  (let* ((fmt "~/go/bin/pk-put file %s %s")
+         (files (s-join " " (mapcar #'f-expand files))))
+    (format fmt (s-join " " args) files)
+  ))
+
+(defun perkeep-put-copy-command (&rest args)
+  (interactive (transient-args transient-current-command))
+  (let ((command (perkeep-put-get-command '() args)))
+    (message "Command: %s" command)
+    (kill-new command))
+  )
+
+(defun perkeep-put-directory (dir args)
+  (interactive (list
+                (read-directory-name "Directory: ")
+                (transient-args transient-current-command)))
+  (let* ((command (perkeep-put-get-command (list (format "%s/*.*" dir)) args)))
+   (async-shell-command command ccc/perkeep-buffer-name)))
+
+(defun perkeep-put-file (file args)
+  (interactive (list
+                (read-file-name "File: ")
+                (transient-args transient-current-command)))
+  (let* ((command (perkeep-put-get-command (list (shell-quote-argument (f-expand file))) args)))
+   (async-shell-command command ccc/perkeep-buffer-name)))
+
+(transient-define-prefix transient-perkeep-put ()
+  "Perkeep Put"
+  :value '("--filenodes")
+  ["Arguments"
+   ("-p" "Permanode" "--permanode")
+   ("-f" "Filenodes" "--filenodes")
+   ("-t" "Tags" "--tag=" :prompt "Tags: ")
+   ("-d" "Delete after upload" "--delete_after_upload")
+   ("-n" "Dry run" "--du")
+   ("-e" "Exif time" "--exiftime")
+   ]
+  ["Actions"
+   ("d" "Directory" perkeep-put-directory)
+   ("f" "File" perkeep-put-file)
+   ("x" "Copy command" perkeep-put-copy-command)
+   ]
+)
+
+(set-popup-rule! (regexp-quote ccc/perkeep-buffer-name) :side 'right :size 0.3 :select nil :quit 'current)
+
+(map! (:leader
+      :desc "Perkeep"       :n "a p" #'transient-perkeep-put
+      ))
+
+#+end_src
