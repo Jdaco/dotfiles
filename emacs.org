@@ -658,6 +658,17 @@ alias mnt mount $1 ${mktemp -d}
 (add-to-list 'exec-path (expand-file-name "/usr/bin"))
 (setq eshell-path-env (s-join ":" exec-path))
 #+end_src
+**** Snippets
+:PROPERTIES:
+:snippet_mode: eshell-mode
+:END:
+
+#+begin_src snippet :tangle (get-snippet-path)
+# name: For loop
+# key: for
+# --
+for f in ${1:*} { ${2:echo} "$f"; $3} $0
+#+end_src
 
 ** Filesystem
 *** Navigation
