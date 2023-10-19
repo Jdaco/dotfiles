@@ -1,0 +1,46 @@
+#+title: Translation
+
+* go-translate
+:RESOURCES:
+https://github.com/lorniu/go-translate
+:END:
+
+#+begin_src elisp :noweb-ref packaages
+(package! go-translate)
+#+end_src
+
+#+begin_src elisp :noweb-ref configs
+(setq gts-translate-list '(("en" "es")))
+
+(setq gts-default-translator
+      (gts-translator
+       :picker (gts-prompt-picker)
+       :engines (list (gts-bing-engine) (gts-google-engine))
+       :render (gts-buffer-render)))
+
+(map! :leader "a T g" #'gts-do-translate)
+#+end_src
+
+
+* immersive-translate
+:RESOURCES:
+[[https://github.com/Elilif/emacs-immersive-translate][GitHub - Elilif/emacs-immersive-translate: Immersive-translate provides bilin...]]
+:END:
+
+#+begin_src elisp :noweb-ref packaages
+(package! immersive-translate)
+#+end_src
+
+#+begin_src elisp :noweb-ref configs
+(require 'immersive-translate)
+
+(setq immersive-translate-backend 'chatgpt
+      immersive-translate-chatgpt-host "api.openai.com"
+      immersive-translate-chatgpt-user-prompt "You will be provided with text delimited by triple backticks, your task is to translate the wrapped text into Spanish. You should only output the translated text. \n```%s```"
+      )
+
+(map! :leader
+      "a T p" #'immersive-translate-paragraph
+      "a T c" #'immersive-translate-clear
+      )
+#+end_src
