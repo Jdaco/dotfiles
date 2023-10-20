@@ -505,6 +505,11 @@ I use the [[https://github.com/ichernyshovvv/org-timeblock][org-timeblock]] pack
       "C-k" #'org-timeblock-day-earlier
       "J" #'org-timeblock-jump-to-day
       )
+
+(setq org-timeblock-fast-todo-commands '(("TODO" . "1")
+                                         ("DONE" . "D")
+                                         ("CANCELLED" . "c")
+                                         ("PROGRESS" . "p")))
 #+end_src
 
 I overwrite this function to filter out archived headings
