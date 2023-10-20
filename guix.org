@@ -8,6 +8,8 @@
       :n "a g g" #'guix
       :desc "Guix Pull"                :n "a g p" (cmd! (async-shell-command "guix pull" guix-buffer-name))
       :desc "Guix Upgrade"             :n "a g u" (cmd! (async-shell-command "guix upgrade" guix-buffer-name))
+      :desc "Guix Pull+Upgrade"        :n "a g U" (cmd! (async-shell-command "guix upgrade && guix upgrade" guix-buffer-name))
+      :desc "Guix System Reconfigure"  :n "a g S" (cmd! (async-shell-command "sudo guix system reconfigure /etc/config.scm" guix-buffer-name))
       :desc "Find package definition"  :n "a g d" #'guix-find-package-definition
       )
 #+end_src
