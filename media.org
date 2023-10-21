@@ -277,13 +277,16 @@ alias gdl gallery-dl -o browser=firefox $*
 : transient-gallery-dl
 
 ** Audio
+
 *** Pulsemixer
 #+begin_src elisp :noweb-ref configs
 (add-hook! 'eshell-mode-hook (add-to-list 'eshell-visual-commands "pulsemixer"))
 
 (map! "<XF86AudioMute>" #'pulseaudio-control-toggle-current-sink-mute
       "<XF86AudioRaiseVolume>" #'pulseaudio-control-increase-volume
-      "<XF86AudioLowerVolume>" #'pulseaudio-control-decrease-volume)
+      "<XF86AudioLowerVolume>" #'pulseaudio-control-decrease-volume
+      :leader
+      "a P '" (cmd! (ccc/vterm-run "pulsemixer")))
 #+end_src
 
 #+begin_src elisp :noweb-ref packages
