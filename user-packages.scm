@@ -67,6 +67,7 @@
     "wget"
     "rsync"
     ;;
+    "libvterm"                          ;; This is needed to compile emacs-vterma
     "go"
     "stow"
     "bpytop"
