@@ -199,7 +199,7 @@ alias s3 s5cmd $*
 
 ** nmap
 
-    #+begin_src elisp :noweb-ref packages
+#+begin_src elisp :noweb-ref packages
 ;; This package is required to manipulate ip addresses in elisp
 (package! ipcalc)
 #+end_src
@@ -255,4 +255,23 @@ alias s3 s5cmd $*
 #+begin_src elisp :noweb-ref packages
 (package! restclient)
 (package! ob-restclient)
+#+end_src
+** Bluetooth
+
+#+begin_src elisp :noweb-ref configs
+(defvar bluetooth-buffer-name "*bluetooth*")
+(set-popup-rule! (regexp-quote bluetooth-buffer-name) :side 'bottom :size 0.3 :select nil :ttl 0)
+
+(defun ccc/connect-bluetooth ()
+  "Select a bluetooth device and connect to it"
+  (interactive)
+(let* ((devices (split-string (shell-command-to-string "bluetoothctl devices") "\n" t))
+       (device-regex (rx (seq (+ (not space)) (+ space) (group (+ (not space))) (+ space) (group (+ nonl)))))
+       (device-alist (seq-map (lambda (device) (reverse (cdr (s-match device-regex device)))) devices))
+       (chosen (assoc (completing-read "Device: " device-alist nil t) device-alist))
+       (id (cadr chosen))
+       )
+  (async-shell-command (format "bluetoothctl connect %s" id) bluetooth-buffer-name)))
+
+(map! :leader :desc "Bluetooth" :n "a B" #'ccc/connect-bluetooth)
 #+end_src
