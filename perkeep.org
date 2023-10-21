@@ -45,6 +45,12 @@ alias pkf pk put file --filenodes $*
   (let* ((command (perkeep-put-get-command (list (shell-quote-argument (f-expand file))) args)))
    (async-shell-command command ccc/perkeep-buffer-name)))
 
+(defun perkeep-put-marked-files (&rest args)
+  (interactive (transient-args transient-current-command))
+  (let* ((files (seq-map (-compose #'f-expand #' shell-quote-argument) (dired-get-marked-files)))
+         (command (perkeep-put-get-command files args)))
+   (async-shell-command command ccc/perkeep-buffer-name)))
+
 (transient-define-prefix transient-perkeep-put ()
   "Perkeep Put"
   :value '("--filenodes")
@@ -59,6 +65,7 @@ alias pkf pk put file --filenodes $*
   ["Actions"
    ("d" "Directory" perkeep-put-directory)
    ("f" "File" perkeep-put-file)
+   ("m" "Marked" perkeep-put-marked-files)
    ("x" "Copy command" perkeep-put-copy-command)
    ]
 )
