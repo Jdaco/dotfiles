@@ -670,6 +670,27 @@ alias mnt mount $1 ${mktemp -d}
 for f in ${1:*} { ${2:echo} "$f"; $3} $0
 #+end_src
 
+*** Vterm
+
+#+begin_src elisp :noweb-ref configs
+(defun ccc/vterm-run-on-file (file command)
+  (interactive "fFile: \nsCommand: ")
+  (let ((final-command (format "%s '%s'" command file)))
+    (ccc/vterm-run final-command)))
+
+(defun ccc/vterm-run (command)
+  (interactive "sCommand: ")
+  (let* ((buffer (vterm t))
+         (final-command (format "%s && exit" command)))
+    (with-current-buffer buffer
+      (vterm-send-string final-command)
+      (vterm-send-return))
+    ))
+
+(map! :map embark-file-map
+      "T" #'ccc/vterm-run-on-file)
+#+end_src
+
 ** Filesystem
 *** Navigation
 
