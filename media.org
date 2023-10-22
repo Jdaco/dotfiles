@@ -11,11 +11,15 @@ demuxer-readahead-secs=300
 ytdl-format=bestvideo[height<=?720]+bestaudio/best
 script-opts=ytdl_hook-ytdl_path=yt-dlp
 screenshot-directory=~/Downloads
-force-window=true
+force-window=yes
 #+end_src
 
 #+begin_src conf :tangle .config/mpv/input.conf
-Ctrl+o script_message locate-current-file
+# Ctrl+o run "/bin/bash" "-c" "directory=`dirname \"${path}\"`/finished; mkdir -p \"${directory}\" && mv \"${path}\" \"${directory}\""
+Ctrl+O run "/bin/bash" "-c" "mkdir -p `dirname \"${path}\"`/finished && mv \"${path}\" `dirname \"${path}\"`/finished"; playlist-next
+Ctrl+K run "/bin/bash" "-c" "rm -v \"${path}\""; playlist-next
+Ctrl+L playlist-next
+Ctrl+H playlist-prev
 Ctrl+l seek  5
 Ctrl+h seek -5
 Ctrl+j seek  60
@@ -181,6 +185,7 @@ Config:
 <Ctrl+Shift+K> = exec rm -v "$imv_current_file"; close
 <Ctrl+Shift+L> = next 1
 <Ctrl+Shift+H> = prev 1
+<Ctrl+Shift+O> = exec mkdir -vp `dirname "$imv_current_file"`"/finished"; exec mv -v "$imv_current_file" `dirname "$imv_current_file"`"/finished"; close
 r = rotate by 90
 #+end_src
 
