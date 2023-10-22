@@ -275,3 +275,21 @@ alias s3 s5cmd $*
 
 (map! :leader :desc "Bluetooth" :n "a B" #'ccc/connect-bluetooth)
 #+end_src
+** Tor
+
+#+begin_src elisp :noweb-ref prodigy-services
+(prodigy-define-service
+    :name "Tor"
+    :command "tor"
+    :port "9050"
+    :kill-process-buffer-on-stop nil)
+#+end_src
+** I2P
+
+#+begin_src elisp :noweb-ref prodigy-services
+(prodigy-define-service
+    :name "I2P"
+    :command "i2pd"
+    :url "http://localhost:7070"
+    :kill-process-buffer-on-stop nil)
+#+end_src

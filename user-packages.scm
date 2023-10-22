@@ -66,6 +66,8 @@
     "curl"
     "wget"
     "rsync"
+    "tor"
+    "i2pd"
     ;;
     "libvterm"                          ;; This is needed to compile emacs-vterma
     "go"
