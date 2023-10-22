@@ -11,6 +11,7 @@ alias pkf pk put file --filenodes $*
 #+begin_src elisp :noweb-ref prodigy-services
 (prodigy-define-service
     :name "Perkeep"
+    :url "http://localhost:3179"
     :command "perkeepd")
 #+end_src
 * Transient
