@@ -810,12 +810,23 @@ I use ~consult-dir~ to quickly find files and add their patt to the current mini
                               )
       dired-omit-files (rx (seq bol "." (* any) eol))
       )
+
+(defun ccc/randomize-file-name (filename)
+  (format "%s%s.%s" (file-name-directory filename) (password-generator-phonetic 64 t) (file-name-extension filename)))
+
+(defun ccc/dired-randomize-marked ()
+  "Rename all marked dired files to random names"
+  (interactive)
+  (let ((files (dired-get-marked-files)))
+    (dolist (file files)
+      (dired-rename-file file (ccc/randomize-file-name file) nil))))
 #+end_src
 
 #+begin_src elisp :noweb-ref packages
 (package! dired-open)
 (package! dired-subtree)
 #+end_src
+
 *** Trash
 #+begin_src elisp :noweb-ref configs
 (setq delete-by-moving-to-trash t
