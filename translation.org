@@ -30,7 +30,7 @@ https://github.com/lorniu/go-translate
 [[https://github.com/Elilif/emacs-immersive-translate][GitHub - Elilif/emacs-immersive-translate: Immersive-translate provides bilin...]]
 :END:
 
-#+begin_src elisp :noweb-ref packaages
+#+begin_src elisp :noweb-ref packages
 (package! immersive-translate)
 #+end_src
 
