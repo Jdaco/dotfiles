@@ -18,6 +18,7 @@ alias k kubectl $*
 alias kga kubectl get all --all-namespaces $*
 alias kap kubectl apply --filename $*
 alias kapk kubectl apply --prune --all --kustomize $*
+alias kb kustomize build $*
 #+end_src
 
 * Docker
