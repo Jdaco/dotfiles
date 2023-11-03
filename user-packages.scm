@@ -68,8 +68,12 @@
     "rsync"
     "tor"
     "i2pd"
+    ;; Containers
+    "docker"
+    "docker-cli"
+    "containerd"
     ;;
-    "libvterm"                          ;; This is needed to compile emacs-vterma
+    "libvterm" ;; This is needed to compile emacs-vterma
     "go"
     "stow"
     "bpytop"
