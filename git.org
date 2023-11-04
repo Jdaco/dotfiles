@@ -86,9 +86,11 @@ Most of my git work is done in Emacs's [[https://magit.vc/][Magit]] interface, b
           (:help-echo "Local changes not in upstream")))
         ("Path"    99 magit-repolist-column-path ())))
 #+end_src
-** Keys
+** SSH Hosts
 
-#+begin_src conf :tangle "~/.ssh/config"
+This goes into your =~/.ssh/config= to configure git for different hosts
+
+#+begin_src conf :noweb-ref ssh-host
 Host github
     hostname github.com
     user git

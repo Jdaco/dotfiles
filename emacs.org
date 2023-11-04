@@ -228,6 +228,7 @@ git clone https://github.com/hlissner/doom-emacs ~/.emacs.d
 :PROPERTIES:
 :ID:       197382ca-b112-444f-90a0-f38e5b3ad0f4
 :END:
+
 #+begin_src elisp :tangle .config/doom/config.el
 ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
 

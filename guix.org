@@ -1,4 +1,7 @@
 * Guix
+
+** Emacs Configs
+
 #+begin_src elisp :noweb-ref configs
 (defvar guix-buffer-name "*guix*")
 
@@ -15,6 +18,7 @@
       )
 #+end_src
 
+*** Doom Packages
 #+begin_src elisp :noweb-ref packages
 (package! guix)
 #+end_src

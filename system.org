@@ -2,12 +2,14 @@
 
 ** Monitoring
 
-- I use [[https://github.com/aristocratos/bpytop][bpytop]] as a terminal-based system monitor
+*** bpytop
+I use [[https://github.com/aristocratos/bpytop][bpytop]] as a terminal-based system monitor
 
 #+begin_src elisp :noweb-ref configs
 (add-hook! 'eshell-mode-hook (add-to-list 'eshell-visual-commands "bpytop"))
 #+end_src
 
+Create an emacs bookmark for spawning ~bpytop~
 
 #+begin_src elisp :noweb-ref bookmarks
 ("bpytop"
@@ -15,7 +17,10 @@
   (command "bpytop"))
 #+end_src
 
+
 *** Battery
+
+Show the battery status in the emacs modeline
 
 #+begin_src elisp :noweb-ref configs
 (display-battery-mode)

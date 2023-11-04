@@ -1,6 +1,6 @@
 * Security
 
-General security shell aliases
+General security eshell aliases
 
 #+begin_src sh :noweb-ref aliases
 alias shred shred --iterations 3 --random-source /dev/random  --verbose --zero $*
@@ -32,7 +32,7 @@ I use [[https://www.passwordstore.org/][Pass]] to manage my passwords
 (auth-source-pass-enable)
 #+end_src
 
-Emacs packages
+*** Doom Packages
 
 #+begin_src elisp :noweb-ref packages
 (package! password-generator)

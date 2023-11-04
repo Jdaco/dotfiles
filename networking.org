@@ -1,12 +1,27 @@
 * Networking
+
+** Emacs Network Configs
 #+begin_src elisp :noweb-ref configs
 (require 'ipcalc)
-(defun ccc/ssh (host)
-    (let* ((user (read-string "Username: " nil nil "chaise"))
-           (path (format "/ssh:%s@%s:~/" user host)))
-      (find-file (read-file-name "Find file: " path)))
-    )
 
+(defun default-interface ()
+  (car (car (network-interface-list)))
+ )
+
+(defun network-info (interface)
+  "Create property list of network information"
+  (let* ((info (network-interface-info interface))
+         (ip (format-network-address (nth 0 info) t))
+         (subnet (format-network-address (nth 2 info) t))
+         (cidr (s-count-matches "1" (ipcalc-octets-as-binary (ipcalc-ip-to-octets subnet))))
+         (network (ipcalc-binary-to-ip (ipcalc-network ip (int-to-string cidr)))))
+    `(:ip ,ip :subnet ,subnet :cidr ,cidr :network ,network)))
+
+#+end_src
+
+Teach Embark how to act on IP addresses
+
+#+begin_src elisp :noweb-ref configs
 (defvar ip-address-regex (rx (? (1+ alnum) "@") (1+ digit) "." (1+ digit) "." (1+ digit) "." (1+ digit)))
 
 (defun ccc/embark-find-ip-address ()
@@ -18,7 +33,9 @@
         (when (string-match ip-address-regex str)
           `(ip-address . ,str)))))
 
- (defvar embark-ip-address-map (make-sparse-keymap) "Embark keymap for ip addresses")
+;; Start a new embark keymap for IP addresses
+(defvar embark-ip-address-map (make-sparse-keymap) "Embark keymap for ip addresses")
+
 (map! :map embark-ip-address-map
       "H" #'ccc/ssh)
 
@@ -26,12 +43,36 @@
 (add-to-list 'embark-keymap-alist '(ip-address embark-ip-address-map))
 #+end_src
 
+*** Doom Packages
+#+begin_src elisp :noweb-ref packages
+;; This package is required to manipulate ip addresses in elisp
+(package! ipcalc)
+#+end_src
+
+
+** SSH
+
+#+begin_src elisp :noweb-ref configs
+(defun ccc/ssh (host)
+  "Open a file on a remote machine over ssh"
+    (let* ((user (read-string "Username: " nil nil "chaise"))
+           (path (format "/ssh:%s@%s:~/" user host)))
+      (find-file (read-file-name "Find file: " path)))
+    )
+#+end_src
+
+*** Config
+
+#+begin_src conf :tangle "~/.ssh/config"
+<<ssh-host>>
+#+end_src
+
 ** File Sharing
 *** Syncthing
 
 I use [[https://syncthing.net/][Syncthing]] to sync data between my different devices
 
-**** Services
+**** Prodigy Services
 #+begin_src elisp :noweb-ref prodigy-services
 (prodigy-define-service
     :name "Syncthing"
@@ -196,44 +237,28 @@ alias s3 s5cmd $*
 (map! :leader
       :n "a s s" #'transient-s5cmd)
 #+end_src
-
 ** nmap
 
-#+begin_src elisp :noweb-ref packages
-;; This package is required to manipulate ip addresses in elisp
-(package! ipcalc)
-#+end_src
+This is a transient for running nmap commands
 
 #+begin_src elisp :noweb-ref configs
 (defvar nmap-buffer-name "*Nmap*")
 
 (defun nmap-ping--get-command (args)
-  "Returns Nmap ping command from arguments"
+  "Returns Nmap ping command from transient arguments"
   (interactive)
   (let* ((interface (transient-arg-value "--interface=" args))
          (info (network-info interface)))
     (format "nmap -sP %s/%s" (plist-get info :network) (plist-get info :cidr))))
 
-
 (defun nmap-ping (&rest args)
+  "Run NMAP ping from transient arguemnts"
   (interactive (transient-args transient-current-command))
   (let* ((command (nmap-ping--get-command args)))
     (async-shell-command command nmap-buffer-name)))
 
-(defun network-info (interface)
-  (let* ((info (network-interface-info interface))
-         (ip (format-network-address (nth 0 info) t))
-         (subnet (format-network-address (nth 2 info) t))
-         (cidr (s-count-matches "1" (ipcalc-octets-as-binary (ipcalc-ip-to-octets subnet))))
-         (network (ipcalc-binary-to-ip (ipcalc-network ip (int-to-string cidr)))))
-    `(:ip ,ip :subnet ,subnet :cidr ,cidr :network ,network)))
-
-(defun default-interface ()
-  (car (car (network-interface-list)))
- )
-
 (transient-define-prefix nmap ()
-  "Nmap"
+  "Nmap transient"
   :value '("--port=8080:80@loadbalancer" "--agents=2")
   ["Arguments"
         ("i" "Interface" "--interface="
@@ -252,10 +277,13 @@ alias s3 s5cmd $*
 
 ** REST
 
+*** Doom Packages
 #+begin_src elisp :noweb-ref packages
+;; These are useful for interacting with REST APIs
 (package! restclient)
 (package! ob-restclient)
 #+end_src
+
 ** Bluetooth
 
 #+begin_src elisp :noweb-ref configs
@@ -277,6 +305,7 @@ alias s3 s5cmd $*
 #+end_src
 ** Tor
 
+*** Prodigy Service
 #+begin_src elisp :noweb-ref prodigy-services
 (prodigy-define-service
     :name "Tor"
@@ -286,6 +315,7 @@ alias s3 s5cmd $*
 #+end_src
 ** I2P
 
+*** Prodigy Service
 #+begin_src elisp :noweb-ref prodigy-services
 (prodigy-define-service
     :name "I2P"
