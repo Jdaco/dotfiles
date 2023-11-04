@@ -30,15 +30,15 @@ add Control = Control_L
 
 I use [[https://github.com/Raymo111/i3lock-color][i3lock-color]] for locking my screen
 
-#+begin_src elisp :noweb-ref configs
+#+begin_src elisp :noweb-ref exwm-configs
 ; X Lock Screen
-(defvar lock-command "i3lock -n -B 5")
+(defvar lock-command "i3lock -n -B 8")
 
 (defun lock () (interactive) (shell-command lock-command))
 #+end_src
 
 #+begin_src elisp :noweb-ref exwm-keys
-;; ([?\s-L] . lock)
+([?\s-L] . lock)
 #+end_src
 
 The screen locking package needs to be specified in your =config.scm=
@@ -111,7 +111,6 @@ The screen locking package needs to be specified in your =config.scm=
             ([?\s-F] . exwm-layout-toggle-fullscreen)
             ([?\s-m] . exwm-workspace-move-window)
             ([?\s-l] . ace-jump-line-mode)
-            <<exwm-keys>>
             ;; Launch application.
             ([?\s-r] . (lambda (command)
                          (interactive (list (read-shell-command "$ ")))
@@ -178,7 +177,6 @@ I use ~autorandr~ to manage monitor orientation
       :n "W R" #'cc/mon-reload)
 #+end_src
 
-#+RESULTS:
 ** Screen Drawing
 I use [[https://github.com/bk138/gromit-mpx][gromit-mpx]] to draw on my screen
 
