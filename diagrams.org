@@ -1,10 +1,12 @@
 #+title: Diagrams
 
+* Plantuml
+
 #+begin_src elisp :noweb-ref configs
 (set-popup-rule! "\\*PLANTUML Preview\\*" :side 'right :size 0.7)
 #+end_src
 
-* Snippets
+** Snippets
 :PROPERTIES:
 :snippet_mode: plantuml-mode
 :END:
@@ -50,3 +52,23 @@
 + $0
 @endmindmap
 #+END_SRC
+
+* Mermaid
+
+[[https://mermaid.js.org/intro/][Mermaid]] is a diagrams-as-code tool that has pretty good default styles and automatic rendering by platforms like Github
+
+Here is an example of a Mermaid diagram
+
+#+begin_src mermaid
+flowchart LR
+
+A[Hard] -->|Text| B(Round)
+B --> C{Decision}
+C -->|One| D[Result 1]
+C -->|Two| E[Result 2]
+#+end_src
+
+#+begin_src elisp :noweb-ref packages
+(package! ob-mermaid)
+(package! mermaid-mode)
+#+end_src
