@@ -63,7 +63,7 @@ git clone https://github.com/hlissner/doom-emacs ~/.emacs.d
        ;; helm              ; the *other* search engine for love and life
        ;;ido               ; the other *other* search engine...
        ;; (ivy +icons)               ; a search engine for love and life
-       (vertico +icons)           ; the search engine of the future
+       (vertico +icons +childframe)           ; the search engine of the future
 
 
        :ui
@@ -406,12 +406,9 @@ git clone https://github.com/hlissner/doom-emacs ~/.emacs.d
 
 ** Completion
 
+I use Vertico as my completion system
+
 #+begin_src elisp :noweb-ref configs
-
-(setq vertico-multiform-categories '((t reverse))
-      vertico-multiform-commands '((execute-extended-command grid reverse))
-)
-
 (map! :map vertico-reverse-map
       :g "C-j" #'vertico-previous
       :g "C-k" #'vertico-next)
@@ -436,7 +433,16 @@ git clone https://github.com/hlissner/doom-emacs ~/.emacs.d
       :nvieg "C-c C-r" (cmd! (vertico-multiform--temporary-mode 'vertico-reverse-mode (if vertico-reverse-mode -1 1)))
       "C-:" (cmd! () (delete-minibuffer-contents) (insert (ccc/consult-home)))
       )
-(vertico-multiform-mode t)
+;; Disable until I get this to work with vertico-posframe
+;; (vertico-reverse-mode t)
+
+
+;; Uncomment thiss if you want to use vertico-multiform
+;; (setq vertico-multiform-categories '((t reverse))
+;;       vertico-multiform-commands '((execute-extended-command grid reverse))
+;; )
+;; (vertico-multiform-mode t)
+
 #+end_src
 
 ** Editing
