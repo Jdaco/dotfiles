@@ -30,11 +30,36 @@ add Control = Control_L
 
 I use [[https://github.com/Raymo111/i3lock-color][i3lock-color]] for locking my screen
 
-#+begin_src elisp :noweb-ref exwm-configs
-; X Lock Screen
-(defvar lock-command "i3lock -n -B 8")
+#+begin_src elisp :noweb-ref configs
 
-(defun lock () (interactive) (shell-command lock-command))
+(defvar lock-args
+  '(("--nofork")
+    ("--clock")
+    ("--date-pos" "tx:ty+100 ")
+    ("--date-align" "2")
+    ("--date-size" "75")
+    ("--date-color" "6e6e6eaa")
+    ("--date-font" "Iosevka")
+    ("--time-pos" "w-50:h-170")
+    ("--time-align" "2")
+    ("--time-size" "75")
+    ("--time-color" "6e6e6eaa")
+    ("--time-font" "Iosevka")
+    ("--ring-width" "4")
+    ("--image" "<image>")
+    ("--ring-color" "9a32cd77")
+    ("--keyhl-color" "fc008577")
+   ))
+
+(defvar lock-image "~/Downloads/wallpapers/artstation_2360861_7859742_Railway Inferno IV, V, VI.jpg")
+
+(defun lock-command ()
+  (let* ((args (s-join " " (seq-map (apply-partially #'s-join "=") lock-args))))
+    (format "i3lock %s" (s-replace "<image>" (shell-quote-argument (f-expand lock-image)) args))))
+
+(defun lock ()
+  (interactive)
+  (shell-command (lock-command)))
 #+end_src
 
 #+begin_src elisp :noweb-ref exwm-keys
