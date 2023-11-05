@@ -182,6 +182,8 @@ My primary laptop
       org-roam-database-connector 'sqlite3
       ccc/backup-destination "boto3+s3://jdaco-gamma-backup/gamma/"
       )
+
+(start-process-shell-command "xmodmap" nil "xmodmap ~/.Xmodmap")
 #+end_src
 
 #+include: ./base.org
