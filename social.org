@@ -5,8 +5,10 @@
 I use the [[https://app.element.io][web]] and [[https://github.com/alphapapa/ement.el][emacs]] client for Matrix
 
 #+begin_src elisp :noweb-ref configs
+(defvar ccc/matrix-user "@jdaco2:matrix.org")
+
 (map! :leader
-      "a m m" #'ement-connect
+      "a m m" (cmd! (ement-connect :user ccc/matrix-user))
       "a m l" #'ement-list-rooms
       "a m j" #'ement-join-room
       "a m K" #'ement-kill-buffers)
