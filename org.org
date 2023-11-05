@@ -420,13 +420,15 @@ templates"
   )
 
 (defun ccc/num-days (&optional time)
+  "Return number of days since epoch
+If time is specified, return number days that time is since epoch"
   (let ((time-zone-offset (car (current-time-zone))))
     (truncate (/ (+ time-zone-offset (float-time time)) 3600 24))))
 
-(defun ccc/adjust-day ()
+(defun ccc/adjust-day (&optional time)
   (let* ((deadline? nil)
        (scheduled-days (ccc/num-days (org-get-scheduled-time (point))))
-       (time-diff (- (ccc/num-days) scheduled-days)))
+       (time-diff (- (ccc/num-days time) scheduled-days)))
     (save-excursion
 	   (org-back-to-heading t)
 	   (let ((regexp (if deadline? org-deadline-time-regexp
@@ -451,7 +453,7 @@ templates"
         (with-current-buffer buffer
  	        (widen)
  	        (goto-char pos)
-          (setq ts (ccc/adjust-day)))
+          (setq ts (ccc/adjust-day (when arg (time-convert (org-read-date nil t) 'integer)))))
         (goto-char (text-property-any (point-min) (point-max) 'org-hd-marker marker))
         (org-agenda-show-new-time (org-get-at-bol 'org-marker) ts " S"))))
   (unless org-agenda-persistent-marks (org-agenda-bulk-unmark-all)))
