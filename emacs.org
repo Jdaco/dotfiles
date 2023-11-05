@@ -585,9 +585,7 @@ I use [[https://github.com/rejeep/prodigy.el][Prodigy]] to manage user-level bac
 
 *** Prodigy
 #+begin_src elisp :noweb-ref configs
-(after! prodigy
-  <<prodigy-services>>
-  )
+<<prodigy-services>>
 
 (map! :leader
       "o y" #'prodigy)

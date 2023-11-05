@@ -70,6 +70,28 @@ The screen locking package needs to be specified in your =config.scm=
 ([?\s-c] . scrot)
 ([?\s-C] . scrot-select)
 #+end_src
+** Compositor
+
+I use picom as my compositor
+
+A compositor is required to enable transparency in emacs
+
+#+begin_src elisp :noweb-ref configs
+;; (set-frame-parameter nil 'alpha-background 90)
+;; (add-to-list 'default-frame-alist '(alpha-background . 90))
+(set-frame-parameter nil 'alpha 97)
+(add-to-list 'default-frame-alist '(alpha . 97))
+#+end_src
+
+#+begin_src elisp :noweb-ref prodigy-services :results raw
+(prodigy-define-service
+    :name "Picom"
+    :command "picom"
+    :kill-process-buffer-on-stop t)
+
+;; Autostart picom service
+(prodigy-start-service (prodigy-find-service "Picom"))
+#+end_src
 
 ** EXWM
 :PROPERTIES:
