@@ -72,8 +72,12 @@
     "docker"
     "docker-cli"
     "containerd"
+    ;; X
+    "picom"
+    "xwallpaper"
     ;; This is needed for vertico-posframe to show on the correct monitor
     "xwininfo"
+
     ;;
     "libvterm" ;; This is needed to compile emacs-vterma
     "go"
