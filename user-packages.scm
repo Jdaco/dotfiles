@@ -8,6 +8,7 @@
     "font-linuxlibertine"
     "font-liberation"
     "font-victor-mono"
+    "font-iosevka"
     ;;  Disk Utilities
     "gparted"
     "nvme-cli"
@@ -77,7 +78,6 @@
     "xwallpaper"
     ;; This is needed for vertico-posframe to show on the correct monitor
     "xwininfo"
-
     ;;
     "libvterm" ;; This is needed to compile emacs-vterma
     "go"
