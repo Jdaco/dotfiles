@@ -16,6 +16,9 @@
       :desc "Guix System Reconfigure"  :n "a g S" (cmd! (async-shell-command "sudo guix system reconfigure /etc/config.scm" guix-buffer-name))
       :desc "Find package definition"  :n "a g d" #'guix-find-package-definition
       )
+
+(map! :map +vertico/embark-doom-package-map
+      :desc "Guix install" "g" (lambda (package) (async-shell-command (format "guix install %s" package) guix-buffer-name)))
 #+end_src
 
 *** Doom Packages
