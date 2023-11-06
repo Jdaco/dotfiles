@@ -441,24 +441,25 @@ If time is specified, return number days that time is since epoch"
            (org-timestamp-up-day time-diff))))
            (org-entry-get (point) "SCHEDULED"))))
 
-(defun ccc/org-agenda-adjust-day (&optional arg)
-  (interactive "P")
+(defun ccc/org-agenda-adjust-day (&optional date)
+  (interactive (list (when current-prefix-arg (time-convert (org-read-date nil t) 'integer))))
   (if (not org-agenda-bulk-marked-entries)
       (save-excursion (org-agenda-bulk-mark)))
-  (dolist (marker org-agenda-bulk-marked-entries)
-    (let* ((buffer (marker-buffer marker))
+    (dolist (marker org-agenda-bulk-marked-entries)
+    (let ((buffer (marker-buffer marker))
  	        (pos (marker-position marker))
             ts)
       (org-with-remote-undo buffer
         (with-current-buffer buffer
  	        (widen)
  	        (goto-char pos)
-          (setq ts (ccc/adjust-day (when arg (time-convert (org-read-date nil t) 'integer)))))
+          (setq ts (ccc/adjust-day date)))
         (goto-char (text-property-any (point-min) (point-max) 'org-hd-marker marker))
         (org-agenda-show-new-time (org-get-at-bol 'org-marker) ts " S"))))
+
   (unless org-agenda-persistent-marks (org-agenda-bulk-unmark-all)))
 
-(evil-set-initial-state 'org-agenda-mode 'emacs)
+;; (evil-set-initial-state 'org-agenda-mode 'emacs)
 (map! :map org-agenda-mode-map
       :m "j" #'org-agenda-next-item
       :m "k" #'org-agenda-previous-item
@@ -469,6 +470,7 @@ If time is specified, return number days that time is since epoch"
       :m "C-=" #'text-scale-increase
       :m "C--" #'text-scale-decrease
       :m "C-:" #'ccc/org-agenda-adjust-day
+      :m ">" (cmd! (ccc/org-agenda-adjust-day (+ (float-time) 86400)))
       )
 #+end_src
 
