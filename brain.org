@@ -174,9 +174,12 @@ I use [[https://jblevins.org/projects/deft/][Deft]] to search my org files using
 [[https://www.orgroam.com/][org-roam]] applies the [[https://zettelkasten.de/posts/overview/][Zettelkasten Method]] to Emacs and Org mode. The idea is that you have many small note files with no strict structure, that link use hyperlinks to relate to each other. Org-roam helps in this by keeping track of the *backlinks* so you can easily see which notes link to the note that you're currently looking at.
 
 #+begin_src elisp :noweb-ref configs :results none
+(defun ccc/roam-filter (node)
+  (let ((path (org-roam-node-file node)))
+    (not (file-in-directory-p path (f-join org-roam-directory "areas")))))
 
 (setq org-roam-tag-sources '(prop last-directory)
-      org-roam-file-exclude-regexp (concat (expand-file-name org-roam-directory) "areas")
+      org-roam-file-exclude-regexp "other/.*"
       org-roam-capture-templates '(("d" "default" plain "%?"
                                     :target (file+head "notes/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n\n- tags :: ")
                                     :unnarrowed t)
@@ -201,6 +204,9 @@ I use [[https://jblevins.org/projects/deft/][Deft]] to search my org files using
                                     (file "~/roam/areas/software/templates/programming_language.org")
                                     :target "notes/%<%Y%m%d%H%M%S>-${slug}"))
       )
+
+(map! :leader
+      :n "n r f" (cmd! (org-roam-node-find nil nil #'ccc/roam-filter)))
 
 (map! :map embark-org-roam-map
       :desc "Open in other window" "o" (cmd!! #'org-roam-node-find '(4))
