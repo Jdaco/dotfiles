@@ -22,7 +22,7 @@
 Teach Embark how to act on IP addresses
 
 #+begin_src elisp :noweb-ref configs
-(defvar ip-address-regex (rx (? (1+ alnum) "@") (1+ digit) "." (1+ digit) "." (1+ digit) "." (1+ digit)))
+(setq ip-address-regex (rx line-start (? (1+ alnum) "@") (1+ digit) "." (1+ digit) "." (1+ digit) "." (1+ digit) line-end))
 
 (defun ccc/embark-find-ip-address ()
   "If the word at point is an IP address, returns (ip-address . WORD)"
