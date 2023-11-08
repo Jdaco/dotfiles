@@ -780,8 +780,16 @@ I use ~consult-dir~ to quickly find files and add their patt to the current mini
 (map! :leader
       "f -" #'dired-jump)
 
+(defun ccc/dired-ediff ()
+  (interactive)
+  (let* ((files (dired-get-marked-files))
+         (file-a (or (car files) (dired-file-name-at-point)))
+         (file-b (or (car (cdr files)) (read-file-name "File B: "))))
+    (ediff file-a file-b)))
+
 (map! :map dired-mode-map
       :nvm
+      "M-=" #'ccc/dired-ediff
       "g h" (cmd! () (find-file "~"))
       "C-k" #'dired-kill-line
       "C-S-k" #'dired-do-kill-lines
