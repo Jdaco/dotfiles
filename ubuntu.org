@@ -8,7 +8,7 @@
 (set-popup-rule! (regexp-quote apt-buffer-name) :side 'bottom :size 0.3 :select nil :ttl 0)
 
 (map! :leader
-      :desc "Apt Update"   :n "a p u" (cmd! (async-shell-command "sudo apt update -y" apt-buffer-name))
-      :desc "Apt Upgrade"  :n "a p U" (cmd! (async-shell-command "sudo apt upgrade -y" apt-buffer-name))
+      :desc "Apt Update"   :n "a u u" (cmd! (async-shell-command "sudo apt update -y" apt-buffer-name))
+      :desc "Apt Upgrade"  :n "a u U" (cmd! (async-shell-command "sudo apt upgrade -y" apt-buffer-name))
       )
 #+end_src
