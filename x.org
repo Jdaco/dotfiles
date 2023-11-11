@@ -48,8 +48,9 @@ I use [[https://github.com/Raymo111/i3lock-color][i3lock-color]] for locking my 
 #+begin_src elisp :noweb-ref configs
 
 (defvar ccc/lock-args
-  '(("--nofork")
-    ("--clock")
+  '(("--clock")
+    ("--fill")
+    ("--image" "<image>")
     ("--date-pos" "tx:ty+100 ")
     ("--date-align" "2")
     ("--date-size" "75")
@@ -61,16 +62,15 @@ I use [[https://github.com/Raymo111/i3lock-color][i3lock-color]] for locking my 
     ("--time-color" "6e6e6eaa")
     ("--time-font" "Iosevka")
     ("--ring-width" "4")
-    ("--image" "<image>")
     ("--ring-color" "9a32cd77")
     ("--keyhl-color" "fc008577")
    ))
 
-(defvar ccc/lock-image )
+(defvar ccc/lock-image)
 
 (defun lock-command ()
   (let* ((args (s-join " " (seq-map (apply-partially #'s-join "=") ccc/lock-args))))
-    (format "i3lock %s" (s-replace "<image>" (shell-quote-argument (f-expand ccc/lock-image)) args))))
+    (format "i3lock --nofork %s" (s-replace "<image>" (shell-quote-argument (f-expand ccc/lock-image)) args))))
 
 (defun lock ()
   (interactive)
@@ -118,10 +118,12 @@ A compositor is required to enable transparency in emacs
 
 #+begin_src elisp :noweb-ref configs
 (defvar ccc/alpha 96)
+
+;; 'alpha-background doesn't seem to work with my emacs version
 ;; (set-frame-parameter nil 'alpha-background 90)
 ;; (add-to-list 'default-frame-alist '(alpha-background . 90))
 (set-frame-parameter nil 'alpha ccc/alpha)
-(add-to-list 'default-frame-alist '(alpha . ,ccc/alpha))
+(add-to-list 'default-frame-alist `(alpha . ,ccc/alpha))
 #+end_src
 
 #+begin_src elisp :noweb-ref prodigy-services :results raw
