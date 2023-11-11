@@ -1067,3 +1067,11 @@ using a TRAMP connection"
 
 (provide 'ibuffer-tramp)
 #+end_src
+
+** Annotations
+
+I use the [[https://github.com/bastibe/annotate.el][annotate.el]] to annotate text files
+
+#+begin_src elisp :noweb-ref packages
+(package! annotate)
+#+end_src
