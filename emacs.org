@@ -548,8 +548,13 @@ I use the [[https://github.com/joaotavora/yasnippet][yasnippet]] emacs package f
 ;;; nevertheless, you probably don't want to edit it.
 ;;; -*- End Of Bookmark File Format Version Stamp -*-
 (
+("Home"
+  (filename . "~"))
 ("Downloads"
   (filename . "~/Downloads"))
+("Instances (AWS)"
+ (link . "https://instances.vantage.sh/")
+ (handler . ccc/org-bookmark-handler))
 <<bookmarks>>
 )
 #+end_src
