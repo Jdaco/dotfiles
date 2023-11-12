@@ -169,10 +169,10 @@ Use ~mpv~ to view your webcam
   (interactive)
   (setq image-dired-queue nil image-dired-queue-active-jobs 0))
 
-(defun ccc/imv-dir (dir)
+(defun ccc/imv-dir (dir &optional not-random)
   (interactive)
-  (let* ((images (split-string
-                    (shell-command-to-string (format "find %s -type f | shuf | head -n 10000" dir)) "\n" t)))
+  (let* ((images (split-string (shell-command-to-string
+                                (format "find %s -type f | %s | head -n 10000" dir (if not-random "cat - " "shuf"))) "\n" t)))
     (apply #'start-process "imv" "imv" "imv" images)))
 #+end_src
 

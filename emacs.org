@@ -431,7 +431,7 @@ I use Vertico as my completion system
       :nvieg "C-c C-c" #'ccc/vertico-cycle
       :nvieg "C-c C-g" (cmd! (vertico-multiform--temporary-mode 'vertico-grid-mode (if vertico-grid-mode -1 1)))
       :nvieg "C-c C-r" (cmd! (vertico-multiform--temporary-mode 'vertico-reverse-mode (if vertico-reverse-mode -1 1)))
-      "C-:" (cmd! () (delete-minibuffer-contents) (insert (ccc/consult-home)))
+      "C-:" (cmd! (delete-minibuffer-contents) (insert (ccc/find-file-in "~/" nil "directory")))
       )
 ;; Disable until I get this to work with vertico-posframe
 ;; (vertico-reverse-mode t)
@@ -704,15 +704,10 @@ for f in ${1:*} { ${2:echo} "$f"; $3} $0
 ** Filesystem
 *** Navigation
 
-I use ~consult-dir~ to quickly find files and add their patt to the current minibuffer selection
-
-#+begin_src elisp :noweb-ref packages
-(package! consult-dir)
-#+end_src
-
 #+begin_src elisp :noweb-ref configs
 (require 'consult)
-(setq consult-dir-shadow-filenames nil)
+
+(setq +vertico-consult-fd-args "fd --color=never -i -E .git --regex ")
 
 (defun ccc/find-bookmark-handler (record)
   (let ((search-dir (bookmark-prop-get record 'location))
@@ -724,25 +719,30 @@ I use ~consult-dir~ to quickly find files and add their patt to the current mini
   (let ((link (bookmark-prop-get record 'link)))
     (org-link-open-from-string link)))
 
-(defun ccc/consult-home ()
-    (let ((consult-find-args "find . -type d -not ( -wholename */.* -prune )")
-          (default-directory "~"))
-      (concat "~/" (consult--find "Dir: " (consult--find-make-builder nil) ""))))
-
-
-(defun ccc/find-file-in (&optional arg)
-  (interactive "P")
-  (if arg
-      (+vertico/find-file-in "~")
-    (+vertico/find-file-in))
-  )
+(defun ccc/find-file-in (&optional dir initial type)
+  "Jump to file under DIR (recursive).
+If INITIAL is non-nil, use as initial input."
+  (interactive)
+  (require 'consult)
+  (let* ((default-directory (or dir default-directory))
+         (prompt-dir (consult--directory-prompt "Find" default-directory))
+         (cmd (append
+               (split-string-and-unquote +vertico-consult-fd-args " ")
+               (when type `("-t" ,type)))))
+     (f-join default-directory
+             (consult--read
+              (split-string (cdr (apply #'doom-call-process cmd)) "\n" t)
+              :prompt default-directory
+              :sort nil
+              :initial (if initial (shell-quote-argument initial))
+              :add-history (thing-at-point 'filename)
+              :category 'file
+              :history '(:input +vertico/find-file-in--history)))))
 
 (map! :leader
-      "H" (cmd! () (find-file (ccc/consult-home)))
-      "o I" (cmd! () (ccc/imv-dir (ccc/consult-home)))
-      "f d"  #'consult-dir
-      "f r"  #'consult-find
-      "f F"  #'ccc/find-file-in
+      "o i" (cmd! (ccc/imv-dir (ccc/find-file-in "~/" nil "directory") current-prefix-arg))
+      "f d"  (cmd! (find-file (ccc/find-file-in (when current-prefix-arg "~/") nil "directory")))
+      "f F"  (cmd! (find-file (ccc/find-file-in (when current-prefix-arg "~/"))))
       )
 #+end_src
 
