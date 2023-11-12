@@ -33,7 +33,7 @@ add Control = Control_L
 (defun ccc/set-wallpaper (&optional image)
   (let ((wallpaper (or image ccc/wallpaper)))
     (if wallpaper
-        (start-process-shell-command "xwallpaper" nil (format "xwallpaper --center %s" (shell-quote-argument (f-expand wallpaper))))
+        (start-process-shell-command "xwallpaper" nil (format "feh --bg-fill %s" (shell-quote-argument (f-expand wallpaper))))
       (message "No wallpaper selected"))
     ))
 

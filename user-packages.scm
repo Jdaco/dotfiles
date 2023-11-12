@@ -75,7 +75,7 @@
     "containerd"
     ;; X
     "picom"
-    "xwallpaper"
+    "feh"
     ;; This is needed for vertico-posframe to show on the correct monitor
     "xwininfo"
     ;;
