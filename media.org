@@ -262,6 +262,7 @@ alias gdl gallery-dl -o browser=firefox $*
    ("-M" "Max Date" "--filter=" :reader gallery-dl--read-max-date)
    ("-f" "Filter" "--filter=" :prompt "Filter: ")
    ("-r" "Range" "--range=" :prompt "Range: ")
+   ("-o" "Options" "--option=" :prompt "Options: ")
    ("-d" "Destination" "--destination=" :reader transient-read-directory)
    ("-D" "Directory" "--directory=" :reader transient-read-directory)
    ]
@@ -277,9 +278,6 @@ alias gdl gallery-dl -o browser=firefox $*
       :desc "gallery-dl"  :n "a s g" #'transient-gallery-dl
       )
 #+end_src
-
-#+RESULTS:
-: transient-gallery-dl
 
 ** Audio
 
