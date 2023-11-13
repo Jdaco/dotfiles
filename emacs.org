@@ -590,10 +590,13 @@ I use [[https://github.com/rejeep/prodigy.el][Prodigy]] to manage user-level bac
 
 *** Prodigy
 #+begin_src elisp :noweb-ref configs
-<<prodigy-services>>
+(defun ccc/prodigy-find-service ()
+  (let ((service-alist (mapcar (lambda (service) `(,(plist-get service :name) . ,(list service))) prodigy-services)))
+    (nth 1 (assoc (completing-read "Service: " service-alist) service-alist))))
 
 (map! :leader
-      "o y" #'prodigy)
+      "o y" #'prodigy
+      "o Y" (cmd! (browse-url (prodigy-single-url (ccc/prodigy-find-service)))))
 
 (map! :after prodigy
       :mode prodigy-view-mode
@@ -604,6 +607,13 @@ I use [[https://github.com/rejeep/prodigy.el][Prodigy]] to manage user-level bac
 (add-hook! prodigy-mode
            (evil-snipe-local-mode 0))
 #+end_src
+
+**** Services
+
+#+begin_src elisp :noweb-ref configs
+<<prodigy-services>>
+#+end_src
+
 
 ** Shell
 
