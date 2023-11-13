@@ -192,8 +192,8 @@ My primary laptop
       magit-repository-directories `((,dotfiles-directory . 0))
       org-roam-database-connector 'sqlite3
       ccc/backup-destination "boto3+s3://jdaco-gamma-backup/gamma/"
-      ccc/wallpaper "~/Downloads/wallpapers/imgur_0PXdpOX_002_BEdYO6y.png"
-      ccc/lock-image "~/Downloads/wallpapers/artstation_2360861_7859742_Railway Inferno IV, V, VI.jpg"
+      ccc/wallpaper "~/Downloads/wallpapers/ji1fy6gu5fe2nu6hu1fu8ci1no7zu6gy9py5gi4vo3xu4pi7ke2hu5du3xi9re9z.jpg"
+      ccc/lock-image "~/Downloads/wallpapers/cy9ho2vi7su4hi3ga6ra7ja7na4ca1ja2nu9bo4vi5fe4ti2pa2zy8se1co9gi1d.jpg"
       )
 
 (start-process-shell-command "xmodmap" nil "xmodmap ~/.Xmodmap")
