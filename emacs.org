@@ -454,7 +454,8 @@ I use Vertico as my completion system
       evil-escape-unordered-key-sequence t)
 
 ;; Files
-(map! :leader
+(map! :nvim "M-f" #'evil-write-all
+      :leader
       :nv "f S" #'evil-write-all)
 
 (map! :nvm "M-a" #'evil-scroll-up
