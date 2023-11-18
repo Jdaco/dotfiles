@@ -471,6 +471,9 @@ If time is specified, return number days that time is since epoch"
       :m "C--" #'text-scale-decrease
       :m "C-:" #'ccc/org-agenda-adjust-day
       :m ">" (cmd! (ccc/org-agenda-adjust-day (+ (float-time) 86400)))
+      :map evil-org-agenda-mode-map
+      :nvm "g s" nil
+      :m "g s s" #'avy-goto-char-2
       )
 #+end_src
 
