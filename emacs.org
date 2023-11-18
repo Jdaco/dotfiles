@@ -627,11 +627,6 @@ I use [[https://www.gnu.org/software/emacs/manual/html_mono/eshell.html][Eshell]
 :ID:       d14e235d-95ff-4976-bed9-4c0253a576e3
 :END:
 
-#+begin_src sh :tangle "~/.config/doom/eshell/profile"
-export GUIX_PROFILE="~/.guix-profile"
-export GUIX_PYTHONPATH="$GUIX_PROFILE/lib/python3.10/site-packages"
-#+end_src
-
 #+begin_src elisp :noweb-ref configs
 (defun eshell/mktemp (&rest args)
   "Alias for mktemp that removes the trailing newline"
@@ -640,6 +635,7 @@ export GUIX_PYTHONPATH="$GUIX_PROFILE/lib/python3.10/site-packages"
 #+end_src
 
 #+begin_src shell :tangle .config/doom/eshell/aliases
+alias cdm 'mkdir $1 && cd $1'
 alias doom ~/.emacs.d/bin/doom $*
 alias guixupdate sudo guix system reconfigure /etc/config.scm
 alias ls exa --long --color=always --group-directories-first $*
@@ -673,6 +669,11 @@ alias mnt mount $1 ${mktemp -d}
 #+end_src
 
 **** PATH
+#+begin_src sh :tangle "~/.config/doom/eshell/profile"
+export GUIX_PROFILE="~/.guix-profile"
+export GUIX_PYTHONPATH="$GUIX_PROFILE/lib/python3.10/site-packages"
+#+end_src
+
 #+begin_src elisp :noweb-ref configs
 (add-to-list 'exec-path (expand-file-name "~/.local/bin"))
 (add-to-list 'exec-path (expand-file-name "~/dotfiles/bin"))
