@@ -245,6 +245,7 @@ I use [[https://github.com/weirdNox/org-noter][org-noter]] when I'm taking notes
 
 *** Bibtex
 #+begin_src elisp :noweb-ref configs
+(defvar ccc/books-dir "~/roam/books")
 (after! citar
     (setq
             citar-bibliography '("~/roam/books/books.bib")
@@ -274,9 +275,15 @@ I use [[https://github.com/weirdNox/org-noter][org-noter]] when I'm taking notes
             (save-buffer)))))
   )
 
+(defun ccc/add-book (file citekey)
+  (interactive (list (read-file-name "Add file: ") (citar-select-ref)))
+  (let ((new-path (format "%s/%s.%s" ccc/books-dir citekey (f-ext file))))
+    (copy-file file new-path)))
+
 (map! :leader
       "o B" #'citar-open-files)
-
+(map! :map embark-file-map
+      "b" #'ccc/add-book)
 #+end_src
 
 #+begin_src elisp :noweb-ref packages
