@@ -805,6 +805,19 @@ If INITIAL is non-nil, use as initial input."
          (file-b (or (car (cdr files)) (read-file-name "File B: "))))
     (ediff file-a file-b)))
 
+(defun ccc/format-size (size)
+  "Converts a number of bytes to a human-readable format."
+  (cond
+   ((< size 1024)                   (format "%d B" size))
+   ((< size (* 1024 1024))          (format "%.1f kB" (/ size 1024.0)))
+   ((< size (* 1024 1024 1024))     (format "%.1f MB" (/ size (* 1024.0 1024))))
+   (t                               (format "%.1f GB" (/ size (* 1024 1024 1024))))))
+
+
+(defun ccc/show-file-size (file)
+  (interactive "fFile: ")
+  (message (ccc/format-size (f-size file))))
+
 (map! :map dired-mode-map
       :nvm
       "M-=" #'ccc/dired-ediff
@@ -819,8 +832,12 @@ If INITIAL is non-nil, use as initial input."
       "t"  (cmd! () (dired-toggle-marks) (image-dired-display-thumbs) (dired-unmark-all-marks))
       )
 
+(map! :map embark-file-map
+      "s" #'ccc/show-file-size)
+
 (evil-collection-define-key 'normal 'dired-mode-map
       "h" #'dired-up-directory
+
       "we" (cmd! () (consult-file-externally (car (dired-get-marked-files))))
       "l" #'dired-open-file)
 
