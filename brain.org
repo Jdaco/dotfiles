@@ -208,6 +208,8 @@ I use [[https://jblevins.org/projects/deft/][Deft]] to search my org files using
 (map! :leader
       :n "n r f" (cmd! (org-roam-node-find nil nil #'ccc/roam-filter)))
 
+(defvar embark-org-roam-map (make-sparse-keymap))
+
 (map! :map embark-org-roam-map
       :desc "Open in other window" "o" (cmd!! #'org-roam-node-find '(4))
       )
