@@ -1,5 +1,16 @@
 * Networking
 
+#+begin_src elisp :noweb-ref prodigy-services
+;; Start a web server for sharing files on the LAN
+(prodigy-define-service
+    :name "Web Server"
+    :command "python3"
+    :args `("-m" "http.server" "-d" ,(f-expand "~")  "1234")
+    :url "http://localhost:1234"
+    :kill-process-buffer-on-stop t)
+#+end_src
+
+
 ** Emacs Network Configs
 #+begin_src elisp :noweb-ref configs
 (require 'ipcalc)
@@ -48,7 +59,6 @@ Teach Embark how to act on IP addresses
 ;; This package is required to manipulate ip addresses in elisp
 (package! ipcalc)
 #+end_src
-
 
 ** SSH
 
