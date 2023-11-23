@@ -139,7 +139,6 @@ alias kls k3d cluster ls $*
    ]
   ["Actions"
    ("c" "Create" k3d-cluster-create)
-   ;; TODO Not implemented yet
    ("C" "From config file" k3d-cluster-create-from-config)
    ("p" "From project config file" k3d-cluster-create-from-project-config)
    ("x" "Copy command" k3d-cluster-create-copy-command)

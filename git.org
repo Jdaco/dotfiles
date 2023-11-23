@@ -110,3 +110,20 @@ To fix magit starting up with =emacs= evil-state
 (after! evil-collection-magit
   (evil-collection-magit-set-initial-states))
 #+end_src
+
+I use the [[https://github.com/alphapapa/magit-todos][magit-todos]] package (included in Doom) to track todos in my project
+
+#+begin_src elisp :noweb-ref configs
+(after! magit-todos
+  (magit-todos-mode t))
+#+end_src
+
+I use [[https://github.com/liuyinz/consult-todo][consult-todo]] to search all todos in a project
+
+#+begin_src elisp :noweb-ref packages
+(package! consult-todo)
+
+;; Youc an also use flycheck-hl-todo to make todos show up in flycheck
+;; I don't find that useful, but maybe someday I will
+(package! flycheck-hl-todo)
+#+end_src
