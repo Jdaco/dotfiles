@@ -9,6 +9,7 @@
     "font-liberation"
     "font-victor-mono"
     "font-iosevka"
+    "font-google-noto-emoji"
     ;;  Disk Utilities
     "gparted"
     "nvme-cli"

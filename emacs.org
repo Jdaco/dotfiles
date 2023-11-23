@@ -71,7 +71,7 @@ git clone https://github.com/hlissner/doom-emacs ~/.emacs.d
        doom              ; what makes DOOM look the way it does
        doom-dashboard    ; a nifty splash screen for Emacs
        doom-quit         ; DOOM quit-message prompts when you quit Emacs
-       (emoji +unicode +github)  ; 🙂
+       ;; (emoji +unicode +github)  ; 🙂
        ;;fill-column       ; a `fill-column' indicator
        hl-todo           ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
        hydra
@@ -842,6 +842,7 @@ If INITIAL is non-nil, use as initial input."
       dired-omit-files (rx (seq bol "." (* any) eol))
       )
 
+
 (defun ccc/randomize-file-name (filename)
   (format "%s%s.%s" (file-name-directory filename) (password-generator-phonetic 64 t) (file-name-extension filename)))
 
@@ -1087,4 +1088,14 @@ I use the [[https://github.com/bastibe/annotate.el][annotate.el]] to annotate te
 
 #+begin_src elisp :noweb-ref packages
 (package! annotate)
+#+end_src
+** Emojis
+
+#+begin_src elisp :noweb-ref configs
+(map! :nvim "C-x e" nil
+      :prefix "C-x e"
+      :i "l" #'emoji-list
+      :i "i" #'emoji-insert
+      :i "s" #'emoji-search
+      )
 #+end_src
