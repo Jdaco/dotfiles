@@ -191,16 +191,6 @@ r = rotate by 90
 
 *** gallery-dl
 
-#+begin_src json  :tangle ~/.config/gallery-dl/config.json
-{
-    "downloader": {
-        "ytdl": {
-            "module": "yt_dlp"
-        }
-    }
-}
-#+end_src
-
 #+begin_src sh :noweb-ref aliases
 alias gdl gallery-dl -o browser=firefox $*
 #+end_src
@@ -278,6 +268,26 @@ alias gdl gallery-dl -o browser=firefox $*
       :desc "gallery-dl"  :n "a s g" #'transient-gallery-dl
       )
 #+end_src
+
+**** Config    :crypt:
+
+-----BEGIN PGP MESSAGE-----
+
+hQEMAwdIIsOCIXDtAQf/eA+CnfWSmteg/pOtf+W18yZzvKQScOO7CFKPcBxC97uT
+q+rjoBit2YZ43WQZv2QYEIEgFA5tUKt9wPK+hqBltxeOCTKXlM9GIm+PSZrDPswz
+Gh6UvgfAcTVgzSCZIqciMLV2Znvf4kVrMcaCk+lExOP1tCKLKcwVPrjzjNkCeedF
+BpLtSMxG5Gz45SIgKnFjDSRgUEF1r+FTn9eyCzO4puyzS8nEEezwxfeHczLX4i6o
+e9ZPjQN/9ULK2gydWYXbuQ0aHI1+91kTGy9E4zEK4RA04xvaPZOp7NlfWgCg5cwD
+D8UF9k1bvJ0fmTX4DVmUSC8wISeevve97wgKXZYLf9LAXgENshZgQLSEug9Hh8Ob
+7xCalffLZ3n8z8nbe+/HjZ2NT1cDEL2aZv+F0d0n94BWcIJY8q282WNFaCPc2x/r
+s8QBbpQ3Nx4EXgotQTguYpZ/QgNiqr41tdwX++2o9VJtOVbVsvaQTEHClrAymLAF
+VsupHzLvArmdOP6mcurmL6hfXAX3L717SKWyWrmlAPCYidoI50kmSQ3A123tkxwc
+VESUZ95iaGq+Uw27CYleEUhBV/cbQdp7F6FbtOj9bsvrbypGMxUWJ0RovNgt36eL
+VPBslqszc90gf0+X4tOFi840CespUwanGA3GAdjpk6dHKztyL8na/sRtuPwUV2OG
++iWHe7hkIX0rr2dhtSQX7BCSujJvESE+Ex4TyMCWEeU=
+=4ac6
+-----END PGP MESSAGE-----
+
 
 ** Audio
 
