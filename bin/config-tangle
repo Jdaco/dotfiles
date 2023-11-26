@@ -3,6 +3,7 @@
 (require 'ob-tangle)
 (require 'ox)
 (require 'subr-x)
+(require 'org-crypt)
 
 (defun org-macro-replace-all (templates)
   "Replace all macros in current buffer by their expansion.
@@ -108,6 +109,8 @@ a definition in TEMPLATES."
   )
 
 (with-current-buffer (find-file-noselect (format "%s/.machine-tangle.org" export-directory))
+  (setq org-crypt-disable-auto-save t)
+  (org-decrypt-entries)
   (org-babel-tangle))
 
 (kill-emacs 0)

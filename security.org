@@ -8,9 +8,17 @@ alias shreddisk shred --iterations 1 --random-source /dev/random --verbose $*
 alias entropy cat /proc/sys/kernel/random/entropy_avail
 #+end_src
 
+** org-crypt
+
+I use org-crypt to encrypt/decrypt entries in Orgmode files
+
+#+begin_src elisp :noweb-ref config
+(setq org-crypt-key "0xFE994E00571A5368")
+#+end_src
+
+
 ** Secrets
 I keep my secrets in =~/.secrets=. This directory is contains subdirectories that symlinked into my home directory. This directory is synced between computers using Syncthing
-
 ** Passwords
 
 I use [[https://www.passwordstore.org/][Pass]] to manage my passwords
