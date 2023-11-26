@@ -35,3 +35,11 @@ Show the battery status in the emacs modeline
       display-time-mail-icon nil)
 (display-time-mode t)
 #+end_src
+
+*** Storage
+
+I use [[https://github.com/Rolinh/dfc][dfc]] as a replacement for ~df~
+
+#+begin_src sh :noweb-ref aliases
+alias df dfc -f $*
+#+end_src

@@ -25,6 +25,7 @@
     "acpi"
     "lsof"
     "lshw"
+    "dfc"
     ;;  Media
     "imv"
     "imagemagick"
