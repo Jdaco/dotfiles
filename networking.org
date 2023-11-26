@@ -63,10 +63,10 @@ Teach Embark how to act on IP addresses
 
 #+begin_src elisp :noweb-ref configs
 (defvar wifi-buffer-name "*wifi*")
-(set-popup-rule! (regexp-quote bluetooth-buffer-name) :side 'bottom :size 0.3 :select nil :ttl 0)
+(set-popup-rule! (regexp-quote wifi-buffer-name) :side 'bottom :size 0.3 :select nil :ttl 0)
 
 (defun ccc/connect-wifi (network password)
-  "Select a bluetooth device and connect to it"
+  "Select a wifi network and connect to it"
   (interactive (list (completing-read "Network: " (split-string (shell-command-to-string "nmcli -g ssid dev wifi") "\n" t)nil t)
                      (read-passwd "Password: ")))
   (async-shell-command (format "sudo nmcli dev wifi connect '%s' password '%s'" network password) wifi-buffer-name))
