@@ -52,13 +52,13 @@ My primary workstation
       ccc/lock-image "~/Downloads/wallpapers/filip-bazarewski-piunk.jpg"
       ccc/alpha 97
       doom-theme 'doom-outrun-electric
-      ccc/lock-args (append ccc/lock-args
-                            '(("--date-color" "ff3030")
-                              ("--time-color" "ff3030")
-                              ("--timeoutline-color" "111111")
-                              ("--timeoutline-width" "1")
-                              ("--dateoutline-color" "111111")
-                              ("--dateoutline-width" "1")))
+      ;; ccc/lock-args (append ccc/lock-args
+      ;;                       '(("--date-color" "ff3030")
+      ;;                         ("--time-color" "ff3030")
+      ;;                         ("--timeoutline-color" "111111")
+      ;;                         ("--timeoutline-width" "1")
+      ;;                         ("--dateoutline-color" "111111")
+      ;;                         ("--dateoutline-width" "1")))
       )
 #+end_src
 
@@ -75,6 +75,7 @@ My primary workstation
 #+include: ./vm.org
 #+include: ./ai.org
 #+include: ./social.org
+#+include: ./backups.org
 
 *** X
 **** Autorandr

@@ -68,7 +68,7 @@ module "backup_bucket" {
 (add-to-list 'ccc/comint-password-prompts "\\(^GnuPG passphrase for signing key: *\\)")
 (add-to-list 'ccc/comint-password-prompts "\\(^GnuPG passphrase for decryption: *\\)")
 
-(defun duplicity-get-command (action args)
+(defun ccc/duplicity-get-command (action args)
   (let* ((fmt "duplicity %s %s %s %s")
          (excludes (mapcar (apply-partially #'concat "--exclude ") ccc/backup-excludes))
          (opts (remove-if (apply-partially #'string-match "dest\\|source") args))
@@ -77,21 +77,21 @@ module "backup_bucket" {
     (format fmt action (s-join " " (append excludes opts)) source destination)
   ))
 
-(defun duplicity-copy-command (&rest args)
+(defun ccc/duplicity-copy-command (&rest args)
   (interactive (transient-args transient-current-command))
-  (let ((command (duplicity-get-command "full" args)))
+  (let ((command (ccc/duplicity-get-command "full" args)))
     (message "Command: %s" command)
     (kill-new command))
   )
 
-(defun duplicity-backup-full (&rest args)
+(defun ccc/duplicity-backup-full (&rest args)
   (interactive (transient-args transient-current-command))
-  (let* ((command (duplicity-get-command "full" args)))
+  (let* ((command (ccc/duplicity-get-command "full" args)))
    (async-shell-command command ccc/backup-buffer-name)))
 
-(defun duplicity-backup-incremental (&rest args)
+(defun ccc/duplicity-backup-incremental (&rest args)
   (interactive (transient-args transient-current-command))
-  (let* ((command (duplicity-get-command "incremental" args)))
+  (let* ((command (ccc/duplicity-get-command "incremental" args)))
    (async-shell-command command ccc/backup-buffer-name)))
 
 (transient-define-prefix transient-duplicity-backup ()
@@ -122,9 +122,9 @@ module "backup_bucket" {
 
    ]
   ["Actions"
-   ("f" "Full" duplicity-backup-full)
-   ("i" "Incremental" duplicity-backup-incremental)
-   ("x" "Copy command" duplicity-copy-command)
+   ("f" "Full" ccc/duplicity-backup-full)
+   ("i" "Incremental" ccc/duplicity-backup-incremental)
+   ("x" "Copy command" ccc/duplicity-copy-command)
    ]
 )
 
