@@ -47,6 +47,8 @@
     "alacritty"
     "xset"
     ;; File utils
+    "fd"
+    "visidata"
     "zip"
     "unzip"
     "exa"
