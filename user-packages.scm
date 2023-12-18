@@ -83,6 +83,7 @@
     ;;
     "libvterm" ;; This is needed to compile emacs-vterma
     "go"
+    "ansible"
     "stow"
     "bpytop"
     "icecat"
