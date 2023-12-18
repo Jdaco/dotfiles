@@ -121,7 +121,7 @@ I use [[https://syncthing.net/][Syncthing]] to sync data between my different de
 ; This bookmark shows me any file conflicts in my home directory
 ("conflicts"
   (location . "~")
-  (pattern . "*conflict*")
+  (pattern . "conflict")
   (handler . ccc/find-bookmark-handler))
 #+end_src
 *** rsync

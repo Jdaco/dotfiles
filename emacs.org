@@ -724,9 +724,8 @@ for f in ${1:*} { ${2:echo} "$f"; $3} $0
 
 (defun ccc/find-bookmark-handler (record)
   (let ((search-dir (bookmark-prop-get record 'location))
-        (search-pattern (bookmark-prop-get record 'pattern))
-        (find-name-arg "-not \\( -wholename '*/.*' -prune \\) -name"))
-    (find-name-dired search-dir search-pattern)))
+        (search-pattern (bookmark-prop-get record 'pattern)))
+    (fd-dired search-dir search-pattern)))
 
 (defun ccc/org-bookmark-handler (record)
   (let ((link (bookmark-prop-get record 'link)))
