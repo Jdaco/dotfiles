@@ -10,6 +10,12 @@
     :kill-process-buffer-on-stop t)
 #+end_src
 
+Aliases:
+#+begin_src sh :noweb-ref aliases
+alias addr curl -sL ip.guide/$1 | yq -P
+#+end_src
+
+
 
 ** Emacs Network Configs
 #+begin_src elisp :noweb-ref configs
