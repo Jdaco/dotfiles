@@ -73,7 +73,7 @@ I use [[https://jblevins.org/projects/deft/][Deft]] to search my org files using
                      :super-groups ((:auto-category)))
                     ("Maintenance"
                      :buffers-files org-agenda-files
-                     :query (and (tags "maintenance") (todo))
+                     :query (and (tags "maintenance") (not (tags "ARCHIVE")) (todo))
                      :super-groups ((:auto-category)))
                     ("Work Queue"
                      :buffers-files org-agenda-files
