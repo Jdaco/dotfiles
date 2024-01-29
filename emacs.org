@@ -868,6 +868,18 @@ If INITIAL is non-nil, use as initial input."
   (let ((files (dired-get-marked-files)))
     (dolist (file files)
       (dired-rename-file file (ccc/randomize-file-name file) nil))))
+
+(defun ccc/dired-mark-dangling-url ()
+  "Mark in Dired the .url files that don't have another file by the same name
+
+This is usefule for removing .url files for videos that I've already watched and deleted "
+  (interactive)
+  (dired-map-dired-file-lines
+   (lambda (file)
+     (when (and
+            (s-ends-with? ".url" file)
+            (= 1 (length (f-glob (s-concat (s-replace "[" "[[]" (f-base file)) ".*")))))
+       (call-interactively #'dired-mark)))))
 #+end_src
 
 #+begin_src elisp :noweb-ref packages
