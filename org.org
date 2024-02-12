@@ -493,10 +493,16 @@ If time is specified, return number days that time is since epoch"
       :nvm "g s" nil
       :m "g s s" #'avy-goto-char-2
       )
+
+(defun ccc/org-agenda-open-hook ()
+  (olivetti-mode))
+
+(add-hook 'org-agenda-mode-hook 'ccc/org-agenda-open-hook)
 #+end_src
 
 #+begin_src elisp :noweb-ref packages
 (package! org-super-agenda)
+(package! olivetti)
 #+end_src
 *** Timeblock
 
