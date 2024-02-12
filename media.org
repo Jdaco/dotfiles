@@ -111,11 +111,19 @@ Use ~mpv~ to view your webcam
 (defun yt-dlp--format (prompt initial history)
   (format "'bestvideo[height<=?%s]+bestaudio/best'" (read-string prompt initial)))
 
+(defun ccc/transient-read-or-create-directory (&rest args)
+  ""
+  (let ((dirname (apply #'transient-read-directory args)))
+    (unless (f-exists? dirname)
+      (mkdir dirname t))
+    dirname
+    ))
+
 (transient-define-prefix transient-yt-dlp ()
   "yt-dlp transient"
   :value '("--write-url-link" "--paths=~/Downloads" "--format='bestvideo[height<=?720]+bestaudio/best'")
   ["Arguments"
-   ("-p" "Download Path" "--paths=" :always-read t :reader transient-read-existing-directory)
+   ("-p" "Download Path" "--paths=" :always-read t :reader ccc/transient-read-or-create-directory)
    ("-w" "Write URL Link" "--write-url-link")
    ("-f" "Format" "--format=" :prompt "Resolution: " :reader yt-dlp--format)
    ]
