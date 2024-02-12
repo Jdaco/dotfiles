@@ -388,6 +388,13 @@ templates"
         org-log-done-with-time t
         org-agenda-start-day nil
         org-agenda-start-on-weekday nil
+        org-agenda-hide-tags-regexp ".*"
+      org-agenda-prefix-format '((agenda . " %i  %?-12t ")
+                                 (todo . " %i %-12:c")
+                                 (tags . " %i %-12:c")
+                                 (search . " %i %-12:c"))
+
+        org-agenda-time-grid '((daily) () "" "")
         org-agenda-custom-commands
         '(("w" "Upcoming week" agenda "" ((org-agenda-span 7) (org-agenda-tag-filter-preset '("-meal" "-maintenance" "-assistant" "-training"))))
           ("g" "Grouped" todo "" ((org-agenda-tag-filter-preset '("-maintenance")) (org-super-agenda-groups '((:todo "PROGRESS" :name "In Progress") (:auto-group))))))
@@ -399,13 +406,18 @@ templates"
         org-todo-keywords '((sequence "TODO(t)" "PROGRESS(p!)" "WAITING(w!)" "|" "DONE(d!)" "CANCELLED(c@/!)")
                             (sequence "SCHEDULED(s)" "|" "DONE(d!)" "CANCELLED(c@/!)")
                             (sequence "WISH(W)" "SHIPPING(S)" "|" "OWNED(o!)" "TRASHED(T!)" "RETURNED(r!)"))
-        org-super-agenda-groups '((:time-grid)
-                                  (:deadline (past))
+        org-super-agenda-groups '((:name " Today "
+                                   :time-grid)
+                                  (:name " Past Due "
+                                   :deadline (past))
                                   (:todo "WAITING")
-                                  (:todo "SHIPPING")
+                                  (:name " Shipping "
+                                   :todo "SHIPPING")
                                   (:tag "assistant")
-                                  (:tag "maintenance")
-                                  (:deadline (future))
+                                  (:name " Maintenance "
+                                   :tag "maintenance")
+                                  (:name "Deadline"
+                                   :deadline (future))
                                   (:auto-category))
 
         org-clock-clocktable-default-properties '(:scope agenda-with-archives
@@ -418,6 +430,12 @@ templates"
   :config
   (org-super-agenda-mode)
   )
+
+(after! org-super-agenda
+  (org-super-agenda--def-auto-group category "their org-category property"
+    :key-form (org-super-agenda--when-with-marker-buffer (org-super-agenda--get-marker item)
+                (org-get-category))
+    :header-form (format "%s %s " (car (org-agenda-get-category-icon key)) key)))
 
 (defun ccc/num-days (&optional time)
   "Return number of days since epoch

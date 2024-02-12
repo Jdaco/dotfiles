@@ -431,3 +431,22 @@ Used to capture books I want to read into the right category
       )
   )
 #+end_src
+** Agenda  :crypt:
+
+-----BEGIN PGP MESSAGE-----
+
+hQEMAwdIIsOCIXDtAQf/RdSce6Xe+Km8A8qseoOWBswTCGC95vVLfSZ1+3YecRb0
+//YVK4X0c9CA9p8BpI3njhZ8VYJCOZuhqJ9yOL67QaW7ebaOl9JC8F5wbXBaa8Ty
+xa4g5P/i3TaB/yXIFVxLdWAT1+OQb/kaKqYZzY7PHHXr1fBVA+IjTTB3QxaIAnOS
+dt7nEmHz2ugLLQBOK1M3m7iPddB3LbpLeNKlVDMHu06paR8Ms00KDStjp5JMMqjO
+ioQzZ9K+CrwkdG05EvTyhw0hM+crN5mQ0GQpKOMTWlrtNzWmeEVuOXMyYljh6Nl+
+LjByStEsAeTvTbTOa+6offmFRolvAyzQRYCY/H/cstLAlwGI865TvkRvS2APYzU2
+BXJ8Cp5/nET/Qn5YPc2lXDbGAn1kRmFaVksSLx81vYvA/8xWPN1krMS0AhfhvJeN
+aC/kNeUX+JNfn1oBiAaPpnb2VbmbDjeTa7fnzs2Re7kErfptC6ktv9SYVHCZ/mC0
+jQL2wy8NnuZHuisFl/GbfEOUbS0HEGrKcjlKhkoOf9PlTQMEIyAmGJTNej1QQKJP
+qde1nXOvXVyMb5bdvR1qeJi1jquWJwGtpGBLOzrPVMRYJ3bKFJpmeRvERPHvyIGH
+8FSSgtMvIQt9pvZ0S8wmxnMZgz7fTIP28Kn8x8Fgbb/rgSuFrgnoiJu1Ak4AJWiJ
+0sMNcoPhqytH29oJklZ06Tz2oZ3Bp3EUvpTpbX1tQMz84R+i/vnsI8DYspw5mKNw
+DIHCtFaVJoLv5A8EVk3DGgV3RmHGAk1AVT0qbN+13eMlXh0At20TwmI=
+=pxq9
+-----END PGP MESSAGE-----
