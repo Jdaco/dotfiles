@@ -832,3 +832,8 @@ For example, an org-ql dynamic block header could look like:
 (map! :map embark-org-table-cell-map
       "x" #'org-table-blank-field)
 #+end_src
+** Crypt
+#+begin_src elisp :noweb-ref configs
+(org-crypt-use-before-save-magic)
+(setq org-crypt-key "074822C3822170ED")
+#+end_src
