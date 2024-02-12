@@ -832,6 +832,21 @@ For example, an org-ql dynamic block header could look like:
 (map! :map embark-org-table-cell-map
       "x" #'org-table-blank-field)
 #+end_src
+** Links
+
+Github's orgmode rendering doesn't support all of the types of links. In order for your heading links to work you have to use the format =#headline-text= for internal headlines or =./file.org#headline-text= for a headline in another file
+
+The external headline link format doesn't work natively in emacs, normally you would do =./file.org::custom-id=.
+
+So I'm adding some advice to the =org-link-open-as-file= function to make the github format work in emacs.
+
+#+begin_src elisp
+(defun ccc/file-link (args)
+  (append (list (string-replace "#" "::#" (car args))) (cdr args)))
+
+(advice-remove 'org-link-open-as-file #'ccc/file-link)
+(advice-add 'org-link-open-as-file :filter-args #'ccc/file-link)
+#+end_src
 ** Crypt
 #+begin_src elisp :noweb-ref configs
 (org-crypt-use-before-save-magic)
