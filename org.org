@@ -372,6 +372,11 @@ templates"
     (org-entry-put position "PRIORITY" nil))
   ))
 
+(custom-set-faces!
+  '(org-agenda-date :inherit outline-1 :height 1.15)
+  '(org-super-agenda-header :inherit custom-button :weight bold :height 1.15)
+  )
+
 (use-package! org-super-agenda
   :after org-agenda
   :init
