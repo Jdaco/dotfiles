@@ -394,7 +394,8 @@ templates"
         org-agenda-start-day nil
         org-agenda-start-on-weekday nil
         org-agenda-hide-tags-regexp ".*"
-      org-agenda-prefix-format '((agenda . " %i  %?-12t ")
+        org-agenda-scheduled-leaders '("" "Sched.%2dx: ")
+      org-agenda-prefix-format '((agenda . " %i %s %?-12t ")
                                  (todo . " %i %-12:c")
                                  (tags . " %i %-12:c")
                                  (search . " %i %-12:c"))
