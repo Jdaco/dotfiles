@@ -1,0 +1,70 @@
+#+title: Jira
+
+I use [[id:5a11c97f-121f-4724-b5df-e3030347ec4e][org-jira]] to interact with Jira. This makes it easier to search and update tasks. However, I don't put all of my thoughts and notes into Jira, so I usually have a task in my main org file that's linked to the Jira task
+
+* org-jira
+
+To get [[https://github.com/ahungry/org-jira][org-jira]] working for your Jira setup you'll need to set these settings
+
+#+begin_src elisp
+(setq jiralib-url "https://example.atlassian.net"
+      ccc/jira-boards  '("EXMPL")
+      ccc/jira-user-name "The Emperor"
+      ccc/jira-files ("~/.org-jira/PROJ.org")
+      )
+#+end_src
+
+You'll also need to add your API key to =~/.authinfo=
+
+#+begin_src conf
+machine example.atlassian.net login user@email.com password long-api-key port 443
+#+end_src
+
+** Config
+#+begin_src elisp :noweb-ref configs
+(setq org-jira-use-status-as-todo t
+      org-jira-boards-default-limit 1000
+      ;; This is to ensure curl can load your certs from Guix
+      request-curl-options (list (format "--cacert %s" (f-expand  "~/.guix-profile/etc/ssl/certs/ca-certificates.crt")))
+      )
+
+(map!
+   (:leader
+    :prefix "o I"
+    "c" #'org-jira-create-issue
+    "u" #'org-jira-update-issue
+    ))
+
+#+end_src
+
+** Packages
+#+begin_src elisp :noweb-ref packages
+(package! request)
+(package! org-jira :recipe '(:type git :host github :repo "Ruin0x11/org-jira") :pin "3670719cf05495e99003ebb9e77ec96dfd5e9b9a")
+#+end_src
+
+** org-ql
+#+begin_src elisp :noweb-ref org-ql-views
+("Jira - My work"
+ :buffers-files ccc/jira-files
+ :query (and
+         (not (tags "ARCHIVE"))
+         (todo)
+         (property "assignee" ccc/jira-user-name))
+ :sort priority
+ :super-groups ((:name "In Progress" :todo "PROGRESS" :todo "IN-PROGRESS")
+                (:name "Review" :todo "READY-FOR-REVIEW")
+                (:priority "A")
+                (:auto-category)))
+("Jira - Epics"
+ :buffers-files ccc/jira-files
+ :query (and
+         (not (tags "ARCHIVE"))
+         (todo)
+         (property "type" "Epic"))
+ :sort priority
+ :super-groups ((:name "In Progress" :todo "PROGRESS" :todo "IN-PROGRESS")
+                (:name "Review" :todo "READY-FOR-REVIEW")
+                (:priority "A")
+                (:auto-category)))
+#+end_src
