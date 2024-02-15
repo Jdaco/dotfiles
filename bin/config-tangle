@@ -99,6 +99,7 @@ a definition in TEMPLATES."
 
 (goto-char (org-find-entry-with-id machine))
 (org-narrow-to-subtree)
+(setq skip-decrypt? (string-equal "no" (org-entry-get (point) "decrypt")))
 (copy-to-buffer export-file (point-min) (point-max))
 
 (with-current-buffer export-file
@@ -110,7 +111,7 @@ a definition in TEMPLATES."
 
 (with-current-buffer (find-file-noselect (format "%s/.machine-tangle.org" export-directory))
   (setq org-crypt-disable-auto-save t)
-  (org-decrypt-entries)
+  (unless skip-decrypt? (org-decrypt-entries))
   (org-babel-tangle))
 
 (kill-emacs 0)
