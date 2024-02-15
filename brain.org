@@ -48,89 +48,90 @@ I use [[https://jblevins.org/projects/deft/][Deft]] to search my org files using
 #+end_src
 
 ** org-ql
-#+begin_src elisp :noweb-ref configs
-(setq org-ql-views '(("Visions"
-                     :buffers-files org-agenda-files
-                     :query (tags-local "vision")
-                     :super-groups ((:auto-category)))
-                     ("Rules"
-                     :buffers-files org-agenda-files
-                     :query (tags-local "rule")
-                     :super-groups ((:auto-category)))
-                    ("Fitness"
-                     :buffers-files org-agenda-files
-                     :query (and (category "Fitness") (tags "goal") (todo "PROGRESS") (parent (tags "progression")))
-                     :super-groups ((:auto-parent))
-                     )
-                    ("Progressions"
-                     :buffers-files org-agenda-files
-                     :query (and (tags-local "progression") (todo "PROGRESS") )
-                     :super-groups ((:auto-parent))
-                     )
-                    ("Recipes"
-                     :buffers-files org-agenda-files
-                     :query (tags-local "recipe")
-                     :super-groups ((:auto-category)))
-                    ("Maintenance"
-                     :buffers-files org-agenda-files
-                     :query (and (tags "maintenance") (not (tags "ARCHIVE")) (todo))
-                     :super-groups ((:auto-category)))
-                    ("Work Queue"
-                     :buffers-files org-agenda-files
-                     :query (and
-                             (not (scheduled))
-                             (not (todo "WISH" "SHIPPING"))
-                             (not (tags "ARCHIVE" "recipe" "certification" "book" "goal" "vision" "training" "progression"))
-                             (not (path "contacts.org"))
-                             (todo))
-                     :sort priority
-                     :super-groups ((:name "In Progress" :todo "PROGRESS")
-                                    (:name "Waiting" :todo "WAITING")
-                                    (:priority "A")
-                                    (:auto-category)))
-                    ("Wishlist"
-                     :buffers-files org-agenda-files
-                     :query (todo "WISH" "SHIPPING")
-                     :sort priority
-                     :super-groups ((:name "In Progress" :todo "SHIPPING")
-                                       (:auto-category)))
-                       ("Owned"
-                        :buffers-files org-agenda-files
-                        :query (or (and (tags-local "owned") (not (tags-local "book"))) (todo "OWNED"))
-                        :sort priority
-                        :super-groups ((:auto-category)))
-                       ("Consumables"
-                        :buffers-files org-agenda-files
-                        :query (tags-local "consumable")
-                        :sort priority
-                        :super-groups ((:auto-category)))
-                       ("Goals"
-                        :buffers-files org-agenda-files
-                        :query (tags-local "goal")
-                        :super-groups ((:name "In Progress" :todo "PROGRESS")
-                                       (:auto-category)))
-                       ("Goals - In Progress"
-                        :buffers-files org-agenda-files
-                        :query (and (todo "PROGRESS") (tags-local "goal"))
-                        :super-groups ((:auto-category)))
-                       ("Training"
-                        :buffers-files org-agenda-files
-                        :query (tags-local "training")
-                        :super-groups ((:auto-category)))
-                       ("Books"
-                        :buffers-files org-agenda-files
-                        :query (tags-local "book")
-                        :sort (priority todo)
-                        :super-groups ((:name "In Progress" :todo "PROGRESS")
-                                       (:priority "A")
-                                       (:auto-category)))
-                       ("Certifications"
-                        :buffers-files org-agenda-files
-                        :query (tags-local "certification")
-                        :super-groups ((:name "In Progress" :todo "PROGRESS")
-                                       (:name "Done" :todo "DONE")
-                                       (:auto-category)))  ))
+#+begin_src elisp :noweb-ref org-ql-views
+("Visions"
+ :buffers-files org-agenda-files
+ :query (tags-local "vision")
+ :super-groups ((:auto-category)))
+("Rules"
+ :buffers-files org-agenda-files
+ :query (tags-local "rule")
+ :super-groups ((:auto-category)))
+("Fitness"
+ :buffers-files org-agenda-files
+ :query (and (category "Fitness") (tags "goal") (todo "PROGRESS") (parent (tags "progression")))
+ :super-groups ((:auto-parent))
+ )
+("Progressions"
+ :buffers-files org-agenda-files
+ :query (and (tags-local "progression") (todo "PROGRESS") )
+ :super-groups ((:auto-parent))
+ )
+("Recipes"
+ :buffers-files org-agenda-files
+ :query (tags-local "recipe")
+ :super-groups ((:auto-category)))
+("Maintenance"
+ :buffers-files org-agenda-files
+ :query (and (tags "maintenance") (not (tags "ARCHIVE")) (todo))
+ :super-groups ((:auto-category)))
+("Work Queue"
+ :buffers-files org-agenda-files
+ :query (and
+         (not (scheduled))
+         (not (todo "WISH" "SHIPPING"))
+         (not (tags "ARCHIVE" "recipe" "certification" "book" "goal" "vision" "training" "progression"))
+         (not (path "contacts.org"))
+         (todo))
+ :sort priority
+ :super-groups ((:name "In Progress" :todo "PROGRESS")
+                (:name "Waiting" :todo "WAITING")
+                (:priority "A")
+                (:auto-category)))
+("Wishlist"
+ :buffers-files org-agenda-files
+ :query (todo "WISH" "SHIPPING")
+ :sort priority
+ :super-groups ((:name "In Progress" :todo "SHIPPING")
+                (:auto-category)))
+("Owned"
+ :buffers-files org-agenda-files
+ :query (or (and (tags-local "owned") (not (tags-local "book"))) (todo "OWNED"))
+ :sort priority
+ :super-groups ((:auto-category)))
+("Consumables"
+ :buffers-files org-agenda-files
+ :query (tags-local "consumable")
+ :sort priority
+ :super-groups ((:auto-category)))
+("Goals"
+ :buffers-files org-agenda-files
+ :query (tags-local "goal")
+ :super-groups ((:name "In Progress" :todo "PROGRESS")
+                (:auto-category)))
+("Goals - In Progress"
+ :buffers-files org-agenda-files
+ :query (and (todo "PROGRESS") (tags-local "goal"))
+ :super-groups ((:auto-category)))
+("Training"
+ :buffers-files org-agenda-files
+ :query (tags-local "training")
+ :super-groups ((:auto-category)))
+("Books"
+ :buffers-files org-agenda-files
+ :query (tags-local "book")
+ :sort (priority todo)
+ :super-groups ((:name "In Progress" :todo "PROGRESS")
+                (:priority "A")
+                (:auto-category)))
+("Certifications"
+ :buffers-files org-agenda-files
+ :query (tags-local "certification")
+ :super-groups ((:name "In Progress" :todo "PROGRESS")
+                (:name "Done" :todo "DONE")
+                (:auto-category)))
 #+end_src
+
 
 ** Flash Cards
 

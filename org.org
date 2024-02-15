@@ -838,6 +838,14 @@ For example, an org-ql dynamic block header could look like:
       (delete-char -1)
       (org-table-align))))
 #+end_src
+*** Views
+
+#+begin_src elisp :noweb-ref configs
+(setq org-ql-views '(
+<<org-ql-views>>
+))
+#+end_src
+
 ** Tables
 
 #+begin_src elisp :noweb-ref configs
