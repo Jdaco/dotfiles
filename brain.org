@@ -35,8 +35,24 @@ Capture Templates
 ("Task" :keys "t" :file (lambda () (ccc/find-areas)) :olp ("Tasks") :template "* TODO %?")
 ("Event" :keys "e" :file (lambda () (ccc/find-areas)) :olp ("Events") :template-file ,(f-join dotfiles-directory "templates" "org" "event.org"))
 ("Art" :keys "a" :file ,(f-join org-directory "areas/art.org") :id "23909e75-68b8-44ff-a26a-6dab908122c0" :template-file ,(f-join dotfiles-directory "templates" "org" "art.org"))
-
 #+end_src
+
+** Snippets
+:PROPERTIES:
+:snippet_mode: org-mode
+:END:
+
+*** clothes
+#+BEGIN_SRC snippet :tangle (get-snippet-path)
+# name: clothes
+# key: clothes
+# --
+- Pants :: $1
+- Shoes :: $2
+- Belt :: $3
+- Shirt :: $4
+- Jacket :: $5
+#+END_SRC
 
 ** Search
 *** Deft
@@ -266,7 +282,7 @@ I use [[https://github.com/weirdNox/org-noter][org-noter]] when I'm taking notes
     (let* ((id (with-temp-buffer
                     (bibtex-mode)
                     (insert entry)
-                    (bibtex-completion-key-at-point)))
+                    ))
             (exists (citar-get-entry id)))
         (if exists
             (message (format "Entry %s already exists" id))
@@ -436,18 +452,19 @@ Used to capture books I want to read into the right category
 
 -----BEGIN PGP MESSAGE-----
 
-hQEMAwdIIsOCIXDtAQf/RdSce6Xe+Km8A8qseoOWBswTCGC95vVLfSZ1+3YecRb0
-//YVK4X0c9CA9p8BpI3njhZ8VYJCOZuhqJ9yOL67QaW7ebaOl9JC8F5wbXBaa8Ty
-xa4g5P/i3TaB/yXIFVxLdWAT1+OQb/kaKqYZzY7PHHXr1fBVA+IjTTB3QxaIAnOS
-dt7nEmHz2ugLLQBOK1M3m7iPddB3LbpLeNKlVDMHu06paR8Ms00KDStjp5JMMqjO
-ioQzZ9K+CrwkdG05EvTyhw0hM+crN5mQ0GQpKOMTWlrtNzWmeEVuOXMyYljh6Nl+
-LjByStEsAeTvTbTOa+6offmFRolvAyzQRYCY/H/cstLAlwGI865TvkRvS2APYzU2
-BXJ8Cp5/nET/Qn5YPc2lXDbGAn1kRmFaVksSLx81vYvA/8xWPN1krMS0AhfhvJeN
-aC/kNeUX+JNfn1oBiAaPpnb2VbmbDjeTa7fnzs2Re7kErfptC6ktv9SYVHCZ/mC0
-jQL2wy8NnuZHuisFl/GbfEOUbS0HEGrKcjlKhkoOf9PlTQMEIyAmGJTNej1QQKJP
-qde1nXOvXVyMb5bdvR1qeJi1jquWJwGtpGBLOzrPVMRYJ3bKFJpmeRvERPHvyIGH
-8FSSgtMvIQt9pvZ0S8wmxnMZgz7fTIP28Kn8x8Fgbb/rgSuFrgnoiJu1Ak4AJWiJ
-0sMNcoPhqytH29oJklZ06Tz2oZ3Bp3EUvpTpbX1tQMz84R+i/vnsI8DYspw5mKNw
-DIHCtFaVJoLv5A8EVk3DGgV3RmHGAk1AVT0qbN+13eMlXh0At20TwmI=
-=pxq9
+hQEMAwdIIsOCIXDtAQgAz+doe/BPHiY7thpQMzOIyu8mbV8eecLRrpk3qyugSE73
+HbpZi9QSfys8zTxwwqjxEORKixRtxsaMSVWlTge7eKQ22CGiFEkfqGB8BSCu4l1M
+545gcxJZEjJHXNaan3BX4akXM5k7qEIIr3vNMO+OLf7qtJx5IAdyaJy4VjguhKAn
+DF03HCJxXM/d4WXIzrh/VES86ji32xXOlKGk/S5SnGB0A+9JhMCDxPjOhHAI+yGZ
+cKeSWSaqBJLW8zepVSwENT1+tuwEr++O7Z4Wuetejvo+JPQArtUNREengJxx1l+t
+W3f7z6Vw8QfFnIMZARQ9yQeIwbeAd6Y8tW/uNL5ZHdLAxgFN8zaxA3WXB7PREbNq
+sZVp+HhxfjxePn6i4m4XKIivieg+px9xlZLSjwmD3CGElnRvxEFNvNDhIbft5H1D
+6Vx6erT5wo2XhZCc2mHQYaVYZoJ17nG6DPEcH6nUdQ052z+HKG3mpgMfv3a+hy0N
+qqCYngI+nyGE94qbIf2lGHVbxxks1eSxGq6/ukAvY4GwZugeQylKCEEA8Pyl/QE9
+xUjU16DX9eiVCtLacT8vat6XFpBnKzi4gkznkJEJnTVuiqtQ9Zv8kWaUSwgW69Tt
+A/3ZftH1msnIBIGKDj8HlcbHfeBB05tacyf3Et9oP/fpH6c0rNklXTccF6EY7eBA
+vWN/DNht6LTLYHQkKJXkQPjyS5nmqreXM/oGeTn0MULo3z1bqCamEj2aDLUybuGY
+IGoMmEeotIQhEQtkLATf6YHhTtYz5rv3j/R3SwUz6Jq7JwxoCVcTM+kSLuJgYm+s
+iNQrMlbxzrPpWw3e0lFknt28p77M66Tg6TYH0ZAFDf+tvfMkiJzsJw==
+=uG1G
 -----END PGP MESSAGE-----
