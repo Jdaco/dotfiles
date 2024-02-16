@@ -422,7 +422,7 @@ templates"
                                   (:tag "assistant")
                                   (:name " Maintenance "
                                    :tag "maintenance")
-                                  (:name "Deadline"
+                                  (:name " Deadline"
                                    :deadline (future))
                                   (:auto-category))
 
