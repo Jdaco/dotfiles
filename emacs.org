@@ -463,6 +463,12 @@ I use Vertico as my completion system
       )
 #+end_src
 
+[[https://github.com/edkolev/evil-lion][evil-lion]] allows you to align fields around delimeters
+
+#+begin_src elisp :noweb-ref packages
+(package! evil-lion)
+#+end_src
+
 *** Snippets
 
 I use the [[https://github.com/joaotavora/yasnippet][yasnippet]] emacs package for snippets
