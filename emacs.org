@@ -641,6 +641,8 @@ I use [[https://www.gnu.org/software/emacs/manual/html_mono/eshell.html][Eshell]
 #+end_src
 
 #+begin_src shell :tangle .config/doom/eshell/aliases
+alias q exit
+alias e find-file $*
 alias cdm 'mkdir $1 && cd $1'
 alias doom ~/.emacs.d/bin/doom $*
 alias guixupdate sudo guix system reconfigure /etc/config.scm
@@ -698,7 +700,39 @@ export GUIX_PYTHONPATH="$GUIX_PROFILE/lib/python3.10/site-packages"
 # --
 for f in ${1:*} { ${2:echo} "$f"; $3} $0
 #+end_src
+**** Prompt
 
+#+begin_src elisp  :noweb-ref configs
+(defun ccc/eshell-prompt-git-branch ()
+  "Get the eshell prompt text for the current git branch"
+  (let ((branch (magit-name-branch "HEAD")))
+    (if branch
+      (format "[󰊢 %s] " branch)
+    "")))
+
+(defun ccc/eshell-prompt-aws-profile ()
+  "Get the eshell prompt text for the current AWS profile"
+  (let* ((profile (getenv "AWS_PROFILE"))
+         (is-default (or (not profile) (string-equal profile "default"))))
+    (if (not is-default)
+      (format "[󰸏 %s] " profile)
+        ""
+    )))
+
+(defun ccc/eshell-prompt ()
+  (let* ((branch (ccc/eshell-prompt-git-branch))
+         (directory (abbreviate-file-name (eshell/pwd)))
+         (success (zerop eshell-last-command-status))
+         (aws (ccc/eshell-prompt-aws-profile)))
+    (format "\n%s %s%s%s "
+            (propertize directory 'face '+eshell-prompt-pwd)
+            (propertize aws 'face 'magit-branch-current)
+            (propertize branch 'face 'magit-branch-current)
+            (propertize "λ" 'face (if success 'success 'error))
+            )))
+
+(setq eshell-prompt-function #'ccc/eshell-prompt)
+#+end_src
 *** Vterm
 
 #+begin_src elisp :noweb-ref configs
