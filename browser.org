@@ -37,6 +37,8 @@ https://addons.mozilla.org/en-US/firefox/addon/firefox-color/
        ("MDN" "https://developer.mozilla.org/en-US/search?q=%s")
        ("Odysee" "https://odysee.com/$/search?q=%s")
        ("Helm Charts" "https://artifacthub.io/packages/search?ts_query_web=%s")
-       ("Amazon" "https://www.amazon.com/s?k=%s")))
+       ("Amazon" "https://www.amazon.com/s?k=%s")
+       ("Melpa" "https://melpa.org/#/?q=%s")
+       ))
 
 #+end_src
