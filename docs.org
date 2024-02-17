@@ -15,3 +15,24 @@ To install these dash docsets:
 (dolist (docs dash-docs-common-docsets) (dash-docs-install-docset docs))
 (dolist (docs dash-docs-common-user-docsets) (dash-docs-install-user-docset docs))
 #+end_src
+** TLDR
+
+[[https://tldr.sh/][tldr.sh]] provides usage summaries of common tools
+
+#+begin_src elisp :noweb-ref packages
+(package! tldr)
+#+end_src
+
+#+begin_src elisp :noweb-ref configs
+(map! :leader
+      :prefix ("a d" . "Docs")
+      "t" #'tldr)
+#+end_src
+
+** DevDocs
+There are two packages for viewing [[https://devdocs.io/][devdocs.io]]
+
+- [[https://github.com/astoff/devdocs.el][devdocs.el]]
+- [[https://github.com/blahgeek/emacs-devdocs-browser][devdocs-browser]]
+
+*Note:* I'm no currently using either of these
