@@ -84,7 +84,7 @@ git clone https://github.com/hlissner/doom-emacs ~/.emacs.d
        ophints           ; highlight the region an operation acts on
        (popup +defaults)   ; tame sudden yet inevitable temporary windows
        ;;tabs              ; a tab bar for Emacs
-       treemacs          ; a project drawer, like neotree but cooler
+       ;; treemacs          ; a project drawer, like neotree but cooler
        unicode           ; extended unicode support for various languages
        vc-gutter         ; vcs diff in the fringe
        vi-tilde-fringe   ; fringe tildes to mark beyond EOB
@@ -761,6 +761,8 @@ If INITIAL is non-nil, use as initial input."
 **** Treemacs
 [[https://github.com/Alexander-Miller/treemacs][Treemacs]] gives you a tree-style overview of your current project or directory
 
+*Note:* Disabling treemacs in favor of =dired-sidebar= until I have a reason not to
+
 **** Projectile
 
 [[https://github.com/bbatsov/projectile][Projectile]] is an emacs package that provides helpful commands for search, navigating, and executing commands within a project. Projectile recognizes a project as a directory containing a =.git= directory
@@ -1023,6 +1025,19 @@ This function requires GNU ls from coreutils installed."
       "s" #'cc/dired-sort-by
       )
 #+end_src
+***** Sidebar
+
+[[https://github.com/jojojames/dired-sidebar][dired-sidebar]] toggles a dired window on the side, similar to treemacs
+
+#+begin_src elisp :noweb-ref packages
+(package! dired-sidebar)
+#+end_src
+
+#+begin_src elisp :noweb-ref configs
+(map! :leader
+      "o p" #'dired-sidebar-toggle-sidebar)
+#+end_src
+
 
 *** Trash
 #+begin_src elisp :noweb-ref configs
