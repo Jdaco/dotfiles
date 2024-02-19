@@ -530,14 +530,9 @@ I use the [[https://github.com/ichernyshovvv/org-timeblock][org-timeblock]] pack
       "k" #'org-timeblock-backward-block
       "h" #'org-timeblock-backward-column
       "l" #'org-timeblock-forward-column
-      )
-(map! :map org-timeblock-mode-map
-      "j" #'org-timeblock-forward-block
-      "k" #'org-timeblock-backward-block
-      "h" #'org-timeblock-backward-column
-      "l" #'org-timeblock-forward-column
-      "v" #'org-timeblock-switch-view
-      "t" #'org-timeblock-toggle-timeblock-list
+      "v" #'org-timeblock-change-span
+      "t" #'org-timeblock-todo
+      "L" #'org-timeblock-toggle-timeblock-list
       "C-j" #'org-timeblock-day-later
       "C-k" #'org-timeblock-day-earlier
       "J" #'org-timeblock-jump-to-day
