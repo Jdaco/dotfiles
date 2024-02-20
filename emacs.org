@@ -731,7 +731,8 @@ for f in ${1:*} { ${2:echo} "$f"; $3} $0
             (propertize "λ" 'face (if success 'success 'error))
             )))
 
-(setq eshell-prompt-function #'ccc/eshell-prompt)
+(after! eshell
+    (setq eshell-prompt-function #'ccc/eshell-prompt))
 #+end_src
 *** Vterm
 
