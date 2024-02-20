@@ -531,6 +531,26 @@ I use the [[https://github.com/joaotavora/yasnippet][yasnippet]] emacs package f
       :n "C-'" #'iedit-mode
       )
 #+end_src
+*** Formatting
+
+I use the doom function =(+format/buffer)= to format my files
+
+You can configure the formatter for a given mode using =(set-formatter!)=
+
+#+begin_src emacs-lisp
+(set-formatter! 'unique-name '("command" "line" "here") :modes '(name-of-major-mode))
+#+end_src
+**** Formatting src blocks
+
+Currently the only way to format src blocks is to...
+
+1. =(org-edit-src-code)= :: Open source in a new buffer
+2. =(+format-buffer)= :: Format the buffer
+3. =C-C= :: Save the buffer
+
+TODO: automate src block formatting
+
+
 ** Bookmarks
 [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Bookmarks.html][Bookmarks]] let you save your position in commonly used files
 
