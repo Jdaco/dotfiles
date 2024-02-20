@@ -22,3 +22,10 @@ aws iam create-login-profile --user-name $1 --password `(password-generator-stro
 #+begin_src elisp :noweb-ref packages
 (package! awscli-capf)
 #+end_src
+* Bookmarks
+
+#+begin_src elisp :noweb-ref bookmarks
+("IAM Actions"
+ (link . "https://www.awsiamactions.io")
+ (handler . ccc/org-bookmark-handler))
+#+end_src
