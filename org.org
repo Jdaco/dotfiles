@@ -538,7 +538,8 @@ I use the [[https://github.com/ichernyshovvv/org-timeblock][org-timeblock]] pack
       "J" #'org-timeblock-jump-to-day
       )
 
-(setq org-timeblock-fast-todo-commands '(("TODO" . "1")
+(setq org-timeblock-show-future-repeats t
+      org-timeblock-fast-todo-commands '(("TODO" . "1")
                                          ("DONE" . "D")
                                          ("CANCELLED" . "c")
                                          ("PROGRESS" . "p")))
