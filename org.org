@@ -9,7 +9,7 @@ I use [[https://orgmode.org/][Org mode]] for:
 - Keeping track of books that I read
 - Storing my contacts
 
-- Note :: The configurations for someof these are stored in =brain.org=
+- Note :: The configurations for some of these are stored in =brain.org=
 
 #+begin_src elisp :noweb-ref configs
 (after! (org-agenda)
@@ -419,7 +419,6 @@ templates"
                                   (:todo "WAITING")
                                   (:name " Shipping "
                                    :todo "SHIPPING")
-                                  (:tag "assistant")
                                   (:name " Maintenance "
                                    :tag "maintenance")
                                   (:name " Deadline"
