@@ -469,6 +469,18 @@ I use Vertico as my completion system
 (package! evil-lion)
 #+end_src
 
+[[https://github.com/mamapanda/evil-owl][evil-owl]] shows your marks and registers when you try to use them
+
+#+begin_src elisp :noweb-ref packages
+(package! evil-owl)
+#+end_src
+
+#+begin_src elisp :noweb-ref configs
+(setq evil-owl-display-method 'posframe
+        evil-owl-extra-posframe-args '(:width 50 :height 20)
+        evil-owl-max-string-length 50)
+#+end_src
+
 *** Snippets
 
 I use the [[https://github.com/joaotavora/yasnippet][yasnippet]] emacs package for snippets
