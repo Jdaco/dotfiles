@@ -764,6 +764,7 @@ for f in ${1:*} { ${2:echo} "$f"; $3} $0
             )))
 
 (after! eshell
+    (require 'magit)
     (setq eshell-prompt-function #'ccc/eshell-prompt))
 #+end_src
 *** Vterm
