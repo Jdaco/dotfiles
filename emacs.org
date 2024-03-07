@@ -837,7 +837,11 @@ If INITIAL is non-nil, use as initial input."
 
 *Note:* Disabling treemacs in favor of =dired-sidebar= until I have a reason not to
 
-**** Projectile
+**** Projects
+
+TODO: Look into using [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Projects.html][project.el]]
+
+***** Projectile
 
 [[https://github.com/bbatsov/projectile][Projectile]] is an emacs package that provides helpful commands for search, navigating, and executing commands within a project. Projectile recognizes a project as a directory containing a =.git= directory
 

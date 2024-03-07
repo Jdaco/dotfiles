@@ -207,6 +207,10 @@ alias kls k3d cluster ls $*
 )
 #+end_src
 
+** Plugins
+
+- https://github.com/sunny0826/kubectl-pod-lens
+- https://github.com/robscott/kube-capacity
 * Snippets
 :PROPERTIES:
 :snippet_mode: yaml-mode

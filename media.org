@@ -16,8 +16,8 @@ force-window=yes
 
 #+begin_src conf :tangle .config/mpv/input.conf
 # Ctrl+o run "/bin/bash" "-c" "directory=`dirname \"${path}\"`/finished; mkdir -p \"${directory}\" && mv \"${path}\" \"${directory}\""
-Ctrl+O run "/bin/bash" "-c" "mkdir -p `dirname \"${path}\"`/finished && mv \"${path}\" `dirname \"${path}\"`/finished"; playlist-next
-Ctrl+K run "/bin/bash" "-c" "rm -v \"${path}\""; playlist-next
+Ctrl+O run "bash" "-c" "mkdir -p `dirname \"${path}\"`/finished && mv \"${path}\" `dirname \"${path}\"`/finished"; playlist-next
+Ctrl+K run "bash" "-c" "rm -v \"${path}\""; playlist-next
 Ctrl+L playlist-next
 Ctrl+H playlist-prev
 Ctrl+l seek  5
