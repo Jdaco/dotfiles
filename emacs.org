@@ -1188,7 +1188,9 @@ Set =ansi-colors= to match =term-colors= (=ansi-colors= are used by Eshell and o
 
 #+begin_src elisp :noweb-ref configs
 (map! :map embark-file-map
-      :desc "Find in directory" "C-f" (lambda (file) (find-file (ccc/find-file-in (if (f-directory-p file) file (f-dirname file))))))
+      :desc "Find in directory" "C-f" (lambda (file) (find-file (ccc/find-file-in (if (f-directory-p file) file (f-dirname file)))))
+      :desc "Open in window" "W" (cmd! (aw-switch-to-window (aw-select nil)) (call-interactively #'find-file))
+      )
 #+end_src
 
 #+begin_src elisp :noweb-ref packages
