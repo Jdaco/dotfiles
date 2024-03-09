@@ -179,6 +179,14 @@ $0
 `(format "#+END:")`
 $0
 #+end_src
+
+*** image-size
+#+BEGIN_SRC snippet :tangle (get-snippet-path)
+# name: image-size
+# key: image-size
+# --
+,#+ATTR_HTML: :width: $0
+#+end_src
 ** Capture
 :PROPERTIES:
 :ID:       5fe33daf-9f01-4348-91fd-e438e4381e50
@@ -836,7 +844,7 @@ For example, an org-ql dynamic block header could look like:
 *** Views
 
 #+begin_src elisp :noweb-ref configs
-(setq org-ql-views '(
+(setq org-ql-views `(
 <<org-ql-views>>
 ))
 #+end_src
