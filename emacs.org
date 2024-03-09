@@ -460,6 +460,7 @@ I use Vertico as my completion system
 
 (map! :nvm "M-a" #'evil-scroll-up
       :nvm "M-;" #'evil-scroll-down
+      :n "g s d" #'avy-kill-region
       )
 #+end_src
 
