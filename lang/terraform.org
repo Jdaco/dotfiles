@@ -195,6 +195,8 @@ resource "aws_iam_role" "${1:name}" {
 alias tf terraform $*
 alias tfa terraform apply $*
 alias tfA terraform apply -auto-approve $*
+alias tfa! terraform init && terraform apply $*
+alias tfA! terraform init && terraform apply -auto-approve $*
 alias tfd terraform destroy $*
 alias tfD terraform destroy -auto-approve $*
 #+end_src
