@@ -51,7 +51,7 @@
     "visidata"
     "zip"
     "unzip"
-    "exa"
+    "eza"
     "ripgrep"
     "duplicity"
     "python-boto3"                      ; required by duplicity

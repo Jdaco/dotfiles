@@ -67,7 +67,7 @@
            (specification->package "jq")
            (specification->package "youtube-dl")
            (specification->package "gptfdisk")
-           (specification->package "exa")
+           (specification->package "eza")
            (specification->package "alacritty")
            (specification->package "btrfs-progs")
            (specification->package "dosfstools")

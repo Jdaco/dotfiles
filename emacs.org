@@ -679,7 +679,7 @@ alias e find-file $*
 alias cdm 'mkdir $1 && cd $1'
 alias doom ~/.emacs.d/bin/doom $*
 alias guixupdate sudo guix system reconfigure /etc/config.scm
-alias ls exa --long --color=always --group-directories-first $*
+alias ls eza --long --color=always --group-directories-first $*
 alias lsr ls --tree $*
 alias lsrd lsr --only-dirs $*
 alias lsa ls -a $*
