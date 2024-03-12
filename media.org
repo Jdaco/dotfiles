@@ -183,7 +183,7 @@ Use ~mpv~ to view your webcam
 (defun ccc/imv-dir (dir &optional not-random)
   (interactive)
   (let* ((images (split-string (shell-command-to-string
-                                (format "find %s -type f | %s | head -n 10000" dir (if not-random "cat - " "shuf"))) "\n" t)))
+                                (format "find '%s' -type f | %s | head -n 10000" dir (if not-random "cat - " "shuf"))) "\n" t)))
     (apply #'start-process "imv" "imv" "imv" images)))
 #+end_src
 
@@ -196,7 +196,7 @@ Config:
 <Ctrl+Shift+K> = exec rm -v "$imv_current_file"; close
 <Ctrl+Shift+L> = next 1
 <Ctrl+Shift+H> = prev 1
-<Ctrl+Shift+O> = exec mkdir -vp `dirname "$imv_current_file"`"/finished"; exec mv -v "$imv_current_file" `dirname "$imv_current_file"`"/finished"; close
+<Ctrl+Shift+O> = exec mkdir -vp "$(dirname "$imv_current_file")/finished"; exec mv -v "$imv_current_file" "$(dirname "$imv_current_file")/finished"; close
 r = rotate by 90
 #+end_src
 
