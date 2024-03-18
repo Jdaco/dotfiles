@@ -37,6 +37,16 @@ Capture Templates
 ("Art" :keys "a" :file ,(f-join org-directory "areas/art.org") :id "23909e75-68b8-44ff-a26a-6dab908122c0" :template-file ,(f-join dotfiles-directory "templates" "org" "art.org"))
 #+end_src
 
+#+begin_src elisp :noweb-ref bookmarks
+("index"
+  (filename . "~/roam/README.org"))
+("places"
+  (filename . "~/roam/other/places.org"))
+("bookmarks"
+  (filename . "~/roam/other/bookmarks.org"))
+("contacts"
+  (filename . "~/roam/other/contacts.org"))
+#+end_src
 ** Snippets
 :PROPERTIES:
 :snippet_mode: org-mode
@@ -173,14 +183,6 @@ I use [[https://jblevins.org/projects/deft/][Deft]] to search my org files using
 #+begin_src elisp :noweb-ref bookmarks
 ("drills"
   (filename . "~/roam/other/drills.org"))
-("bookmarks"
-  (filename . "~/roam/other/bookmarks.org"))
-("contacts"
-  (filename . "~/roam/other/contacts.org"))
-("places"
-  (filename . "~/roam/other/places.org"))
-("books"
-  (filename . "~/roam/books/books.bib"))
 #+end_src
 #+end_src
 ** Roam
@@ -242,6 +244,10 @@ I prefer to read ebooks because being able to highlight and copy text from the b
 
 I use [[https://github.com/weirdNox/org-noter][org-noter]] when I'm taking notes on the book. It provides an interface with the PDF and the org-mode notes side-by-side. Org-noter will add metadata to your notes to link them to the page in the PDF that they're about
 
+#+begin_src elisp :noweb-ref bookmarks
+("books"
+  (filename . "~/roam/books/books.bib"))
+#+end_src
 
 *** org-noter
 #+begin_src elisp :noweb-ref configs :results none
