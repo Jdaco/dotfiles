@@ -43,3 +43,31 @@ I use [[https://github.com/Rolinh/dfc][dfc]] as a replacement for ~df~
 #+begin_src sh :noweb-ref aliases
 alias df dfc -f $*
 #+end_src
+** Disks
+*** Disk Setup
+
+#+begin_src sh
+#!/usr/bin/env sh
+
+set -eu
+
+DEV="${1}"
+KEYFILE="${2}"
+PARTITION="${DEV}1"
+
+# Shred drive
+shred -n 1 -v --random-source /dev/random ${DEV}
+
+# # Create partitions
+parted --script ${DEV} mktable gpt
+parted --script --align optimal ${DEV} mkpart Data 0% 100%
+
+# Encrypt partition with password
+cryptsetup luksFormat --use-random --batch-mode --key-file "${KEYFILE}" ${PARTITION}
+
+# Create filesystem
+TEMP_NAME=$(basename $(mktemp -q))
+cryptsetup luksOpen --key-file "${KEYFILE}" ${PARTITION} ${TEMP_NAME}
+mkfs.btrfs /dev/mapper/${TEMP_NAME}
+cryptsetup luksClose ${TEMP_NAME}
+#+end_src
