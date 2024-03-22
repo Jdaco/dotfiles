@@ -12,7 +12,8 @@ alias pkf pk put file --filenodes $*
 (prodigy-define-service
     :name "Perkeep"
     :url "http://localhost:3179"
-    :command "perkeepd")
+    :command "perkeepd"
+    :args '("-openbrowser=false"))
 #+end_src
 * Transient
 
