@@ -78,14 +78,23 @@ more flexible configuration of password promts "
 ** GnuPG
 *** gpg-agent
 
-Config
-
-#+begin_src conf
+#+begin_src conf :tangle "~/.gnupg/gpg-agent.conf"
 default-cache-ttl 3600
-# allow-loopback-pinentry
-pinentry-program /usr/bin/pinentry-emacs
-# allow-emacs-pinentry
+allow-loopback-pinentry
+# pinentry-program /usr/bin/pinentry-emacs
+allow-emacs-pinentry
 #+end_src
+
+#+begin_src elisp :noweb-ref packages
+(package! pinentry)
+#+end_src
+
+#+begin_src elisp :noweb-ref configs
+(require 'pinentry)
+(pinentry-start)
+#+end_src
+
+
 
 *** Config
 :PROPERTIES:

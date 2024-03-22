@@ -193,6 +193,22 @@ A compositor is required to enable transparency in emacs
 ;; The following snippet can be used to completely disable mode-specific keys:
 (define-key exwm-mode-map (kbd "C-c") nil)
 
+(defun ccc/exwm-generate-monitors ()
+  "Generate exwm-randr-workspace-monitor-plist from attached monitors"
+  (let* ((monitor-info (exwm-randr--get-monitors))
+         (primary-monitor (car monitor-info))
+         (max-extra-monitors (1- exwm-workspace-number))
+         (workspace-sequence (number-sequence 0 max-extra-monitors))
+         (extra-monitors (remove primary-monitor (mapcar #'car (nth 2 monitor-info))))
+         (num-extra-monitors (length extra-monitors)))
+    (cond
+      ((= num-extra-monitors max-extra-monitors) (flatten-list (-zip workspace-sequence (append (list primary-monitor) extra-monitors))))
+      (t (flatten-list (-zip-fill (car extra-monitors) workspace-sequence (make-list (/ exwm-workspace-number (1+ (length extra-monitors))) primary-monitor))))
+    )))
+
+(defun ccc/set-monitor-list ()
+  (setq exwm-randr-workspace-monitor-plist (ccc/exwm-generate-monitors)))
+
 <<exwm-configs>>
 
 (add-hook 'exwm-randr-screen-change-hook
@@ -229,7 +245,6 @@ A compositor is required to enable transparency in emacs
   (add-hook 'exwm-init-hook #'exwm-modeline-mode)
   )
 #+end_src
-
 
 ** Monitors
 I use ~autorandr~ to manage monitor orientation

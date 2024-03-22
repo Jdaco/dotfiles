@@ -217,7 +217,9 @@ My primary laptop
 
 *** Monitors
 #+begin_src elisp :noweb-ref exwm-configs
-(setq exwm-randr-workspace-monitor-plist '(0 "eDP-1" 1 "eDP-1" 2 "DP-1" 3 "DP-1"))
+; (setq exwm-randr-workspace-monitor-plist '(0 "eDP-1" 1 "eDP-1" 2 "DP-2" 3 "DP-2"))
+; Dynamically set monitor layout
+(advice-add 'exwm-randr-refresh :before #'ccc/set-monitor-list)
 #+end_src
 
 *** Disks
