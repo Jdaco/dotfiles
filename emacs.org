@@ -1337,8 +1337,10 @@ When 0, no border is showed."
 #+begin_src elisp :noweb-ref configs
 (setq transient-posframe-min-height 1)
 (transient-posframe-mode t)
-#+end_src
 
+(map! :leader
+      "t t" #'transient-posframe-mode)
+#+end_src
 
 
 ** Search
