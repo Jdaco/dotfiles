@@ -661,6 +661,36 @@ I use [[https://github.com/rejeep/prodigy.el][Prodigy]] to manage user-level bac
 I use [[https://www.gnu.org/software/emacs/manual/html_mono/eshell.html][Eshell]] as my primary shell. For certain uses I use ~ansi-term~ instead. For some ncurses programs I'll use ~bash~ in the ~alacritty~ terminal emulator
 
 *** Eshell
+
+#+begin_src elisp :noweb-ref configs
+(map! :leader
+      :prefix "o C-e"
+      "l" #'+eshell/split-right
+      "j" #'+eshell/split-below
+      )
+(map! :map eshell-mode-map
+      "M-h" #'esh-help-run-help
+      :i "C-k" #'eshell-previous-matching-input-from-input
+      :i "C-j" #'eshell-next-matching-input-from-input
+      :n "C-S-k" #'+eshell/search-history
+      )
+#+end_src
+
+**** Packages
+
+#+begin_src elisp :noweb-ref packages
+(package! eshell-up)
+(package! esh-help)
+(package! bash-completion)
+(package! eshell-z)
+#+end_src
+
+These packages that are added by Doom that I don't want
+
+#+begin_src elisp :noweb-ref packages
+(disable-packages! eshell-did-you-mean fish-completion)
+#+end_src
+
 **** Aliases
 :PROPERTIES:
 :ID:       d14e235d-95ff-4976-bed9-4c0253a576e3
@@ -676,7 +706,10 @@ I use [[https://www.gnu.org/software/emacs/manual/html_mono/eshell.html][Eshell]
 #+begin_src shell :tangle .config/doom/eshell/aliases
 alias q exit
 alias e find-file $*
+alias up eshell-up $*
 alias cdm 'mkdir $1 && cd $1'
+alias cds cd $(ccc/find-file-in default-directory nil "directory")
+alias cdS cd $(ccc/find-file-in "~/" nil "directory")
 alias doom ~/.emacs.d/bin/doom $*
 alias guixupdate sudo guix system reconfigure /etc/config.scm
 alias ls eza --long --color=always --group-directories-first $*
@@ -708,7 +741,6 @@ alias mnt mount $1 ${mktemp -d}
       "C-l" (cmd! (eshell-z ".."))
       "C-f" #'eshell-z)
 #+end_src
-
 **** PATH
 #+begin_src sh :tangle "~/.config/doom/eshell/profile"
 export GUIX_PROFILE="~/.guix-profile"
@@ -721,17 +753,6 @@ export GUIX_PYTHONPATH="$GUIX_PROFILE/lib/python3.10/site-packages"
 (add-to-list 'exec-path (expand-file-name "~/go/bin"))
 (add-to-list 'exec-path (expand-file-name "/usr/bin"))
 (setq eshell-path-env (s-join ":" exec-path))
-#+end_src
-**** Snippets
-:PROPERTIES:
-:snippet_mode: eshell-mode
-:END:
-
-#+begin_src snippet :tangle (get-snippet-path)
-# name: For loop
-# key: for
-# --
-for f in ${1:*} { ${2:echo} "$f"; $3} $0
 #+end_src
 **** Prompt
 
@@ -768,6 +789,18 @@ for f in ${1:*} { ${2:echo} "$f"; $3} $0
     (require 'magit)
     (setq eshell-prompt-function #'ccc/eshell-prompt))
 #+end_src
+**** Snippets
+:PROPERTIES:
+:snippet_mode: eshell-mode
+:END:
+
+#+begin_src snippet :tangle (get-snippet-path)
+# name: For loop
+# key: for
+# --
+for f in ${1:*} { ${2:echo} "$f"; $3} $0
+#+end_src
+
 *** Vterm
 
 #+begin_src elisp :noweb-ref configs
