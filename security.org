@@ -24,10 +24,16 @@ I keep my secrets in =~/.secrets=. This directory is contains subdirectories tha
 I use [[https://www.passwordstore.org/][Pass]] to manage my passwords
 
 #+begin_src elisp :noweb-ref exwm-keys
-([?\s-!] . (cmd! (call-interactively #'password-store-copy) (exwm-input--fake-key ?\C-v)))
+([?\s-!] . ccc/password-store-insert-password)
 #+end_src
 
 #+begin_src elisp :noweb-ref configs
+(defun ccc/password-store-insert-password ()
+  (interactive)
+  (call-interactively #'password-store-copy)
+  (sleep-for 1)
+  (exwm-input--fake-key ?\C-v))
+
 (map! :leader
       (:prefix ("!" . "Passwords")
        "l" #'pass
