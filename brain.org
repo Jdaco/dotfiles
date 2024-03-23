@@ -236,6 +236,11 @@ I use [[https://jblevins.org/projects/deft/][Deft]] to search my org files using
 (add-to-list 'embark-keymap-alist '(org-roam-node embark-org-roam-map))
 #+end_src
 
+#+begin_src elisp :noweb-ref bookmarks
+("books"
+  (filename . "~/roam/books/books.bib"))
+#+end_src
+
 ** Books
 
 I prefer to read ebooks because being able to highlight and copy text from the book makes it much easier to take notes. Emacs has a great system for reading and annotating PDF files ([[https://github.com/politza/pdf-tools][pdf-tools]]). I store all of my ebooks in a single flat directory. Metadata about each book is stored in a [[http://www.bibtex.org/][Bibtex]] file and each books is named after it's bibtex entry ID.
