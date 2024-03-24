@@ -1149,7 +1149,20 @@ This function requires GNU ls from coreutils installed."
 (map! :leader
       "o p" #'dired-sidebar-toggle-sidebar)
 #+end_src
+***** Filetags
 
+I use [[https://github.com/DerBeutlin/filetags.el][filetags.el]] as an interface to tag dired files. The tags are stored in the file name.
+
+Search file tags is as simple as filtering with ~find-file~
+
+#+begin_src elisp :noweb-ref configs
+(map! :map dired-mode-map
+      :n "T" #'filetags-dired-update-tags)
+#+end_src
+
+#+begin_src elisp :noweb-ref packages
+(package! filetags)
+#+end_src
 
 *** Trash
 #+begin_src elisp :noweb-ref configs
