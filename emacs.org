@@ -1535,3 +1535,17 @@ I use the [[https://github.com/bastibe/annotate.el][annotate.el]] to annotate te
       :i "s" #'emoji-search
       )
 #+end_src
+** Packages
+
+Doom eamcs uses =straight.el= to manage packages
+
+*** Keys
+
+#+begin_src elisp :noweb-ref configs
+(map! :leader
+      "h p" #'doom/help-packages)
+
+(map! :map embark-package-map
+      ; Open the homepage for the package
+      "u" #'doom/help-package-homepage)
+#+end_src
