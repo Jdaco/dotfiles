@@ -725,7 +725,6 @@ alias mount sudo mount $*
 alias pgrep pgrep --list-full $*
 alias iostat iostat -hNs $*
 alias pstree pstree -U $*
-alias df df -h $*
 alias clip xclip -selection clipboard -o $*
 
 # Block Devices

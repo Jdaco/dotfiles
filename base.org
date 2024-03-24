@@ -18,7 +18,6 @@ These are the base layers that will be installed on every system
 #+INCLUDE: ./system.org
 #+INCLUDE: ./k8s.org
 #+INCLUDE: ./diagrams.org
-#+INCLUDE: ./perkeep.org
 #+INCLUDE: ./translation.org
 
 #+INCLUDE: ./packages/random.org
