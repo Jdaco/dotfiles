@@ -398,6 +398,7 @@ templates"
         org-lowest-priority 68
         org-default-priority 68
         org-log-done "time"
+        org-super-agenda-hide-empty-groups t
         org-log-done-with-time t
         org-agenda-start-day nil
         org-agenda-start-on-weekday nil
@@ -410,8 +411,15 @@ templates"
 
         org-agenda-time-grid '((daily) () "" "")
         org-agenda-custom-commands
-        '(("w" "Upcoming week" agenda "" ((org-agenda-span 7) (org-agenda-tag-filter-preset '("-meal" "-maintenance" "-assistant" "-training"))))
-          ("g" "Grouped" todo "" ((org-agenda-tag-filter-preset '("-maintenance")) (org-super-agenda-groups '((:todo "PROGRESS" :name "In Progress") (:auto-group))))))
+        '(("w" "Upcoming week" agenda ""
+           ((org-agenda-span 7)
+            (org-agenda-start-on-weekday 1)
+            (org-agenda-tag-filter-preset '("-meal" "-daily" "-weekly" "-assistant" "-training"))
+            (org-super-agenda-groups '((:auto-category)))
+            ))
+          ("g" "Grouped" todo ""
+           ((org-agenda-tag-filter-preset '("-maintenance"))
+            (org-super-agenda-groups '((:todo "PROGRESS" :name "In Progress") (:auto-group))))))
 
         ; The evil keys aren't working on super-agenda headings
         ; https://github.com/alphapapa/org-super-agenda/issues/50
