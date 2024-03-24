@@ -911,6 +911,13 @@ TODO: Look into using [[https://www.gnu.org/software/emacs/manual/html_node/emac
 (map! :leader
       "f -" #'dired-jump)
 
+(defun ccc/dired-rename (&optional arg)
+  "When ARG is set, set dired-dwim-target to nil so the prompt stays in the current dired location"
+  (interactive "P")
+  (let* ((dired-dwim-target (if arg nil dired-dwim-target)))
+    (dired-do-rename)
+    ))
+
 (defun ccc/dired-ediff ()
   (interactive)
   (let* ((files (dired-get-marked-files))
@@ -933,6 +940,7 @@ TODO: Look into using [[https://www.gnu.org/software/emacs/manual/html_node/emac
 
 (map! :map dired-mode-map
       :nvm
+      "R" #'ccc/dired-rename
       "M-=" #'ccc/dired-ediff
       "g h" (cmd! () (find-file "~"))
       "C-k" #'dired-kill-line
