@@ -130,6 +130,10 @@ I use [[https://jblevins.org/projects/deft/][Deft]] to search my org files using
  :query (tags-local "consumable")
  :sort priority
  :super-groups ((:auto-category)))
+("Deadlines"
+ :buffers-files org-agenda-files
+ :query (and (deadline) (todo) (not (tags "goal" "event" "book" "training" "maintenance" "meal")))
+ :super-groups ((:auto-category)))
 ("Goals"
  :buffers-files org-agenda-files
  :query (tags-local "goal")
