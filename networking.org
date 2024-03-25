@@ -107,6 +107,7 @@ I use [[https://syncthing.net/][Syncthing]] to sync data between my different de
 (prodigy-define-service
     :name "Syncthing"
     :command "syncthing"
+    :args '("serve" "--no-browser" "--no-restart")
     :port "8384"
     :url "http://localhost:8384"
     :kill-process-buffer-on-stop t)
