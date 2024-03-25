@@ -55,6 +55,12 @@
     "ripgrep"
     "duplicity"
     "python-boto3"                      ; required by duplicity
+    ;; Python
+    "python-language-server"
+    "python-pylint"
+    "python-black"
+    "python-pyls-black"
+    "python-mypy"
     ;; Office
     "mupdf"
     "libreoffice"
@@ -89,6 +95,7 @@
     "stow"
     "bpytop"
     "icecat"
+    "nyxt"
     "pandoc"
     "awscli"
     "scrot"

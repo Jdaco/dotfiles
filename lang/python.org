@@ -1,5 +1,51 @@
 #+TITLE: Python
 
+* Testing
+
+- Pytest
+* LSP
+I use [[https://emacs-lsp.github.io/lsp-mode/page/lsp-pylsp/][pylsp]] as my language server
+
+#+begin_src elisp :noweb-ref configs
+(setq lsp-pylsp-plugins-jedi-completion-enabled t
+      lsp-pylsp-plugins-jedi-definition-enabled t
+      lsp-pylsp-plugins-jedi-hover-enabled t
+      lsp-pylsp-plugins-jedi-references-enabled t
+      lsp-pylsp-plugins-jedi-signature-help-enabled t
+      lsp-pylsp-plugins-jedi-use-pyenv-environment t)
+#+end_src
+
+** System packages
+- ~python-language-server~
+- ~python-jedi~
+
+* Linting
+- pylint
+
+#+begin_src elisp :noweb-ref configs
+(setq lsp-pyls-plugins-pylint-enabled t
+      lsp-pylsp-plugins-mypy-enabled t)
+#+end_src
+
+** System Packages
+- ~python-pylint~
+- ~python-mypy~
+** Python packages
+- ~pylsp-mypy~
+
+* Formatting
+#+begin_src elisp :noweb-ref configs
+(setq lsp-pylsp-plugins-black-enabled t
+      lsp-pylsp-plugins-isort-enabled t
+      lsp-pylsp-plugins-yapf-enabled nil)
+
+(add-hook! python-mode (setq-local +format-with-lsp nil))
+#+end_src
+
+** System Packages
+- ~python-black~
+- ~python-lsp-black~
+* Virutal Environments
 * Snippets
 :PROPERTIES:
 :snippet_mode: python-mode

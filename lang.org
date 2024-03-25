@@ -1,0 +1,58 @@
+#+title: Languages
+
+
+* LSP
+
+#+begin_src elisp :noweb-ref configs
+(map! :leader
+      "c d" #'lsp-describe-session
+      "c q" #'lsp-workspace-shutdown
+      )
+#+end_src
+
+* Navigation
+
+#+begin_src elisp :noweb-ref configs
+(map! :n "g d" #'+lookup/definition)
+#+end_src
+
+#+begin_src elisp :noweb-ref configs
+(map! :leader
+      "c D" #'+lookup/references
+      "c j" #'consult-lsp-symbols)
+#+end_src
+
+* Refactoring
+
+#+begin_src elisp :noweb-ref configs
+(map! :leader
+      "c r" #'lsp-rename)
+
+#+end_src
+
+
+* Formatting
+
+#+begin_src elisp :noweb-ref configs
+(map! :leader
+      "c =" #'+format/buffer)
+#+end_src
+
+* REPL
+
+#+begin_src elisp :noweb-ref configs
+(map! :leader
+      "o r" #'+eval/open-repl-other-window
+      "o R" #'+eval/open-repl-same-window
+      )
+#+end_src
+
+#+INCLUDE: ./lang/makefile.org
+#+INCLUDE: ./lang/markdown.org
+#+INCLUDE: ./lang/python.org
+#+INCLUDE: ./lang/shell.org
+#+INCLUDE: ./lang/terraform.org
+#+INCLUDE: ./lang/cloud/aws.org
+#+INCLUDE: ./lang/elisp.org
+#+INCLUDE: ./lang/graphql.org
+#+INCLUDE: ./lang/go.org

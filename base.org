@@ -24,12 +24,4 @@ These are the base layers that will be installed on every system
 
 
 #+INCLUDE: ./ansible.org
-#+INCLUDE: ./lang/makefile.org
-#+INCLUDE: ./lang/markdown.org
-#+INCLUDE: ./lang/python.org
-#+INCLUDE: ./lang/shell.org
-#+INCLUDE: ./lang/terraform.org
-#+INCLUDE: ./lang/cloud/aws.org
-#+INCLUDE: ./lang/elisp.org
-#+INCLUDE: ./lang/graphql.org
-#+INCLUDE: ./lang/go.org
+#+INCLUDE: ./lang.org
