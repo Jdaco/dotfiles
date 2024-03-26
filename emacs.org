@@ -678,16 +678,54 @@ I use [[https://www.gnu.org/software/emacs/manual/html_mono/eshell.html][Eshell]
       )
 #+end_src
 
-**** Packages
+**** Navigation
+#+begin_src elisp :noweb-ref configs
+(map! :map eshell-mode-map
+      ;; Move up one directory
+      :ni "C-h" (cmd! (eshell/cd "..") (eshell-interactive-print "\n") (eshell-emit-prompt))
+      ;; Move back to previous directory
+      :ni "C-l" (cmd! (eshell/cd "-") (eshell-interactive-print "\n") (eshell-emit-prompt))
+      )
+#+end_src
+
+#+begin_src shell :noweb-ref aliases
+alias cds cd $(ccc/find-file-in default-directory nil "directory")
+alias cdS cd $(ccc/find-file-in "~/" nil "directory")
+#+end_src
+
+***** eshell-up
+
+[[https://github.com/peterwvj/eshell-up][eshell-up]] makes it eash to move up to a certain parent directory
+
+#+begin_src shell :noweb-ref aliases
+alias up eshell-up $1
+#+end_src
 
 #+begin_src elisp :noweb-ref packages
 (package! eshell-up)
-(package! esh-help)
-(package! bash-completion)
+#+end_src
+***** eshell-z
+
+[[https://github.com/xuchunyang/eshell-z][eshell-z]] lets you jump to a recently used directory
+
+#+begin_src elisp :noweb-ref configs
+(map! :mode eshell-mode
+      :i "C-f" #'eshell-z)
+#+end_src
+
+#+begin_src elisp :noweb-ref packages
 (package! eshell-z)
 #+end_src
 
-These packages that are added by Doom that I don't want
+
+**** Packages
+
+#+begin_src elisp :noweb-ref packages
+(package! esh-help)
+(package! bash-completion)
+#+end_src
+
+These are packages that are added by Doom that I don't want
 
 #+begin_src elisp :noweb-ref packages
 (disable-packages! eshell-did-you-mean fish-completion)
@@ -708,10 +746,8 @@ These packages that are added by Doom that I don't want
 #+begin_src shell :tangle .config/doom/eshell/aliases
 alias q exit
 alias e find-file $*
-alias up eshell-up $*
+alias d dired .
 alias cdm 'mkdir $1 && cd $1'
-alias cds cd $(ccc/find-file-in default-directory nil "directory")
-alias cdS cd $(ccc/find-file-in "~/" nil "directory")
 alias doom ~/.emacs.d/bin/doom $*
 alias guixupdate sudo guix system reconfigure /etc/config.scm
 alias ls eza --long --color=always --group-directories-first $*
@@ -736,12 +772,6 @@ alias mnt mount $1 ${mktemp -d}
 <<aliases>>
 #+end_src
 
-#+begin_src elisp :noweb-ref configs
-(map! :mode eshell-mode
-      :i
-      "C-l" (cmd! (eshell-z ".."))
-      "C-f" #'eshell-z)
-#+end_src
 **** PATH
 #+begin_src sh :tangle "~/.config/doom/eshell/profile"
 export GUIX_PROFILE="~/.guix-profile"

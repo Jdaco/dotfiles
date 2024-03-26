@@ -41,6 +41,3 @@
       `(:title ,(ccc/random-get-path element)
         :selection ,(--map (org-element-property :raw-value it) results)))))
 #+end_src
-
-#+RESULTS:
-: ccc/random-get-selection
