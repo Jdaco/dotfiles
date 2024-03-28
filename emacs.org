@@ -747,13 +747,16 @@ These are packages that are added by Doom that I don't want
 alias q exit
 alias e find-file $*
 alias d dired .
-alias cdm 'mkdir $1 && cd $1'
+alias cdm mkdir $1 && cd $1
 alias doom ~/.emacs.d/bin/doom $*
 alias guixupdate sudo guix system reconfigure /etc/config.scm
 alias ls eza --long --color=always --group-directories-first $*
 alias lsr ls --tree $*
 alias lsrd lsr --only-dirs $*
 alias lsa ls -a $*
+alias empty-trash ccc/empty-trash && sync && df
+alias cdmount sudo mount $1 {mktemp -d} && cd $_
+alias unmount sudo umount
 
 # Sudo
 alias umount sudo umount $*
