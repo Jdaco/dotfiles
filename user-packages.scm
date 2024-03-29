@@ -48,6 +48,7 @@
     "xset"
     ;; File utils
     "fd"
+    "bat"
     "visidata"
     "zip"
     "unzip"

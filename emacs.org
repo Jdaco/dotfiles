@@ -757,6 +757,7 @@ alias lsa ls -a $*
 alias empty-trash ccc/empty-trash && sync && df
 alias cdmount sudo mount $1 {mktemp -d} && cd $_
 alias unmount sudo umount
+alias bat bat --paging=never $*
 
 # Sudo
 alias umount sudo umount $*
