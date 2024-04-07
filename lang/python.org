@@ -45,6 +45,15 @@ I use [[https://emacs-lsp.github.io/lsp-mode/page/lsp-pylsp/][pylsp]] as my lang
 ** System Packages
 - ~python-black~
 - ~python-lsp-black~
+
+* Refactoring
+
+#+begin_src elisp :noweb-ref configs
+(map! :map python-mode-map
+      :leader
+      "c I" #'python-add-import)
+#+end_src
+
 * Virutal Environments
 * Snippets
 :PROPERTIES:
@@ -110,9 +119,8 @@ if __name__ == '__main__':
 # key: def
 # uuid: def
 # --
-def ${1:name}($2):
-    \"\"\"$3
-    ${2:$(python-args-to-docstring)}
+def ${1:name}($2) -> ${3:None}:
+    \"\"\"$4
     \"\"\"
     $0
 #+end_src
