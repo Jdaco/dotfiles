@@ -307,7 +307,6 @@ git clone https://github.com/hlissner/doom-emacs ~/.emacs.d
 (require 'f)
 (require 'bookmark)
 (bookmark-maybe-load-default-file)
-(global-auto-revert-mode)
 
 (recentf-mode 0)
 
@@ -562,6 +561,16 @@ Currently the only way to format src blocks is to...
 3. =C-C= :: Save the buffer
 
 TODO: automate src block formatting
+*** Auto Revert
+
+I use syncthing to sync files between machines, and =global-auto-revert-mode= will automatically reload files from the filesystem when they change
+
+#+begin_src elisp :noweb-ref configs
+(global-auto-revert-mode t)
+
+(map! :leader
+      "b a" (cmd! (auto-revert-buffers)))
+#+end_src
 
 
 ** Bookmarks
