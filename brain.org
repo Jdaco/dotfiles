@@ -25,10 +25,6 @@ These are my configurations needed to work with my main notes and agendas. These
     "p" #'find-place)
 #+end_src
 
-#+begin_src elisp :noweb-ref packages
-(package! emacsql-sqlite3)
-#+end_src
-
 Capture Templates
 
 #+begin_src elisp :noweb-ref capture-templates
