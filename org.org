@@ -122,23 +122,13 @@ I adapted this from [[https://github.com/A7R7/org-popup-posframe][A7R7/org-popup
   '((t (:inherit default :background "gray50")))
   "Face used by the org-popup-posframe's border.")
 
-
-(defcustom org-popup-posframe-min-width 0
-  "The width of org-popup-min-posframe."
-  :type 'number)
-
-(defcustom org-popup-posframe-min-height 0
-  "The height of org-popup-min-posframe."
-  :type 'number)
-
-(defcustom org-popup-posframe-border-width 1
-  "The border width used by org-popup-posframe.
-When 0, no border is showed."
-  :type 'number)
-
-(defcustom org-popup-posframe-parameters nil
-  "The frame parameters used by org-popup-posframe."
-  :type 'string)
+(setq org-popup-posframe-min-width 0
+      org-popup-posframe-min-height 0
+      org-popup-posframe-border-width 1
+      org-popup-posframe-parameters nil
+      org-popup-posframe-font nil
+      org-popup-posframe-org-todo-poshandler #'posframe-poshandler-point-1
+ )
 
 ;; (defcustom org-popup-posframe-org-attach-poshandler
 ;;   #'posframe-poshandler-window-bottom-right-corner
@@ -163,11 +153,6 @@ When 0, no border is showed."
 ;; (defcustom org-popup-posframe-org-set-tags-command-poshandler
 ;;   #'posframe-poshandler-point-1
 ;;   "The posframe poshandler of `org-set-tags-command'.")
-
-(defcustom org-popup-posframe-org-todo-poshandler
-  #'posframe-poshandler-point-1
-  "The posframe poshandler of `org-todo'.")
-
 
 (defun org-popup-posframe--show-buffer (buffer poshandler)
   "Show BUFFER in a posframe, use POSHANDLER to handle it."
@@ -256,8 +241,10 @@ When 0, no border is showed."
 ;;       (when buffer (kill-buffer buffer)))))
 
 (defun org-popup-posframe--org-fast-todo-selection-advice (func &optional current-todo-keyword)
-  (let ((original-buffer (current-buffer))
-        (buffer (get-buffer-create " *Org todo*")))
+  (let* ((original-buffer (current-buffer))
+         (buffer (get-buffer-create " *Org todo*"))
+         (buffer-live (window-live-p (get-buffer-window original-buffer)))
+         (poshandler (if buffer-live org-popup-posframe-org-todo-poshandler #'posframe-poshandler-frame-center)))
     (fset 'original-set-window-buffer (symbol-function 'set-window-buffer))
     (unwind-protect
         (cl-letf* (((symbol-function 'delete-other-windows) #'ignore)
@@ -275,7 +262,7 @@ When 0, no border is showed."
                         ;; posframe show
                         (org-popup-posframe--show-buffer
                          buffer
-                         org-popup-posframe-org-todo-poshandler)))))
+                         poshandler)))))
           (funcall-interactively func current-todo-keyword))
       (when buffer (kill-buffer buffer)))))
 
