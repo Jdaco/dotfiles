@@ -105,6 +105,13 @@ Configure my common elfeed search as Emacs bookmarks
 ("feeds"
   (filename . "~/roam/other/feeds.org"))
 #+end_src
+
+Doom automatically installs this package but I don't want it
+
+#+begin_src elisp :noweb-ref packages
+(disable-packages! elfeed-goodies)
+#+end_src
+
 ** Utils
 #+begin_src sh :noweb-ref aliases
 alias yt-feed bash -c "curl -s '$1' | grep -o -E 'https://www.youtube.com/feeds/videos.xml\?channel_id=[^\"]+' | head -n1"
