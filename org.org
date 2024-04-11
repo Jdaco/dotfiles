@@ -276,8 +276,9 @@ I adapted this from [[https://github.com/A7R7/org-popup-posframe][A7R7/org-popup
 
 ;; Make sure these org buffers aren't handled by Doom popup system
 (after! org
-  (advice-remove 'org-switch-to-buffer-other-window
-                 #'+popup--org-pop-to-buffer-a))
+  (advice-remove 'org-switch-to-buffer-other-window #'+popup--org-pop-to-buffer-a)
+  (advice-remove 'org-fast-todo-selection #'+popup--org-fix-popup-window-shrinking-a)
+  )
 #+end_src
 
 ** Snippets
