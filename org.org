@@ -571,7 +571,9 @@ templates"
         org-lowest-priority 68
         org-default-priority 68
         org-log-done "time"
-        org-super-agenda-hide-empty-groups t
+        ;; Setting this to t is causing org-ql buffers to be blank
+        ;; I assume this is a bug that will be fixed
+        org-super-agenda-hide-empty-groups nil
         org-log-done-with-time t
         org-agenda-start-day nil
         org-agenda-start-on-weekday nil
@@ -689,7 +691,9 @@ If time is specified, return number days that time is since epoch"
       )
 
 (defun ccc/org-agenda-open-hook ()
-  (olivetti-mode))
+  (when (not (s-contains? "Org QL" (buffer-name)))
+    (olivetti-mode))
+  )
 
 (add-hook 'org-agenda-mode-hook 'ccc/org-agenda-open-hook)
 #+end_src
