@@ -47,7 +47,7 @@ My primary workstation
       download-directory "~/Downloads"
       scrot-directory download-directory
       magit-repository-directories `((,dotfiles-directory . 0))
-      ccc/backup-destination "boto3+s3://jdaco-gamma-backup/alpha/"
+      ccc/backup-destination "file:///mnt/backups/alpha/"
       ccc/wallpaper "~/Downloads/wallpapers/planet-21_1920x1080.jpg"
       ccc/lock-image "~/Downloads/wallpapers/filip-bazarewski-piunk.jpg"
       ccc/alpha 97
