@@ -68,7 +68,8 @@ I use [[https://www.ledger-cli.org/][Ledger]] for my financial bookkeeping. I lo
       "C-c C-v" #'ledger-report-toggle-real
       "C-c C-u" #'ledger-report-toggle-unbudgeted
       "C-c C-n" #'ledger-report-next-month
-      "C-c C-p" #'ledger-report-previous-month)
+      "C-c C-p" #'ledger-report-previous-month
+      :n "S" #'ledger-report-select-report)
 
 (map! :mode ledger-mode
       :localleader
