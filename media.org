@@ -126,6 +126,7 @@ Use ~mpv~ to view your webcam
    ("-p" "Download Path" "--paths=" :always-read t :reader ccc/transient-read-or-create-directory)
    ("-w" "Write URL Link" "--write-url-link")
    ("-f" "Format" "--format=" :prompt "Resolution: " :reader yt-dlp--format)
+   ("-N" "Concurrent Fragments" "--concurrent-fragments=" :prompt "Concurrent Fragments: " :reader transient-read-number-N+)
    ]
   ["Actions"
    ("y" "Single" yt-dlp-download)
