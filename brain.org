@@ -84,6 +84,10 @@ I use [[https://jblevins.org/projects/deft/][Deft]] to search my org files using
  :query (and (category "Fitness") (tags "goal") (todo "PROGRESS") (parent (tags "progression")))
  :super-groups ((:auto-parent))
  )
+("Training"
+ :buffers-files org-agenda-files
+ :query (tags-local "training")
+ :super-groups ((:auto-category)))
 ("Progressions"
  :buffers-files org-agenda-files
  :query (and (tags-local "progression") (todo "PROGRESS") )
@@ -95,7 +99,7 @@ I use [[https://jblevins.org/projects/deft/][Deft]] to search my org files using
  :super-groups ((:auto-category)))
 ("Maintenance"
  :buffers-files org-agenda-files
- :query (and (tags "maintenance") (not (tags "ARCHIVE")) (todo))
+ :query (and (tags "maintenance") (not (tags "ARCHIVE")) (or (todo) (done)))
  :super-groups ((:auto-category)))
 ("Work Queue"
  :buffers-files org-agenda-files
@@ -138,10 +142,6 @@ I use [[https://jblevins.org/projects/deft/][Deft]] to search my org files using
 ("Goals - In Progress"
  :buffers-files org-agenda-files
  :query (and (todo "PROGRESS") (tags-local "goal"))
- :super-groups ((:auto-category)))
-("Training"
- :buffers-files org-agenda-files
- :query (tags-local "training")
  :super-groups ((:auto-category)))
 ("Books"
  :buffers-files org-agenda-files
