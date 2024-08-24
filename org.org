@@ -125,6 +125,7 @@ I adapted this from [[https://github.com/A7R7/org-popup-posframe][A7R7/org-popup
       org-popup-posframe-border-width 1
       org-popup-posframe-parameters nil
       org-popup-posframe-font nil
+      org-popup-posframe-org-insert-link nil
       org-popup-posframe-org-todo-poshandler #'posframe-poshandler-point-1
  )
 
