@@ -453,6 +453,7 @@ templates"
                                  (search . " %i %-12:c"))
 
         org-agenda-time-grid '((daily) () "" "")
+        org-agenda-tag-filter-preset '("-goal")
         org-agenda-custom-commands
         '(("w" "Upcoming week" agenda ""
            ((org-agenda-span 7)
