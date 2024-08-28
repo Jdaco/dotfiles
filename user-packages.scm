@@ -102,6 +102,7 @@
     "scrot"
     "ledger"
     "jq"
+    "yq"
     "multipath-tools"
     "gcc"
     "k9s"))
