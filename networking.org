@@ -279,21 +279,23 @@ This is a transient for running nmap commands
   "Returns Nmap ping command from transient arguments"
   (interactive)
   (let* ((interface (transient-arg-value "--interface=" args))
-         (info (network-info interface)))
-    (format "nmap -sP %s/%s" (plist-get info :network) (plist-get info :cidr))))
+         (info (network-info interface))
+         (opts (remove-if (apply-partially #'string-match "interface") args))
+         )
+    (format "nmap -sP %s/%s %s" (plist-get info :network) (plist-get info :cidr) (s-join " " opts))))
 
 (defun nmap-ping (&rest args)
   "Run NMAP ping from transient arguemnts"
   (interactive (transient-args transient-current-command))
   (let* ((command (nmap-ping--get-command args)))
+    (message command)
     (async-shell-command command nmap-buffer-name)))
 
 (transient-define-prefix nmap ()
   "Nmap transient"
-  :value '("--port=8080:80@loadbalancer" "--agents=2")
+  :value '()
   ["Arguments"
-        ("i" "Interface" "--interface="
-         :init-value (lambda (o) (oset o value (default-interface))))
+        ("i" "Interface" "--interface=" :init-value (lambda (o) (oset o value (default-interface))))
    ]
   ["Actions"
    ("p" "Ping" nmap-ping)
