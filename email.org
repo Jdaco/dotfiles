@@ -99,7 +99,9 @@ offlineimap
       mu4e-maildir "<<maildir>>"
       mu4e-enable-async-operation t
       mu4e-get-mail-command "offlineimap -o -q"
-      mu4e-view-show-images t)
+      mu4e-view-show-images t
+      mu4e-mu-version   "1.12.6"
+      )
 
 (map! :after mu4e
       :mode mu4e-headers-mode
