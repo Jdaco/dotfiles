@@ -953,8 +953,9 @@ TODO: Look into using [[https://www.gnu.org/software/emacs/manual/html_node/emac
 **** Dired
 
 #+begin_src elisp :noweb-ref configs
-(map! :leader
-      "f -" #'dired-jump)
+(map! "M-d" #'dired-jump
+      :leader
+      "o p" #'dirvish-side)
 
 (defun ccc/dired-rename (&optional arg)
   "When ARG is set, set dired-dwim-target to nil so the prompt stays in the current dired location"
@@ -970,36 +971,20 @@ TODO: Look into using [[https://www.gnu.org/software/emacs/manual/html_node/emac
          (file-b (or (car (cdr files)) (read-file-name "File B: "))))
     (ediff file-a file-b)))
 
-(defun ccc/format-size (size)
-  "Converts a number of bytes to a human-readable format."
-  (cond
-   ((< size 1024)                   (format "%d B" size))
-   ((< size (* 1024 1024))          (format "%.1f kB" (/ size 1024.0)))
-   ((< size (* 1024 1024 1024))     (format "%.1f MB" (/ size (* 1024.0 1024))))
-   (t                               (format "%.1f GB" (/ size (* 1024 1024 1024))))))
-
-
-(defun ccc/show-file-size (file)
-  (interactive "fFile: ")
-  (message (ccc/format-size (f-size file))))
-
 (map! :map dired-mode-map
       :nvm
       "R" #'ccc/dired-rename
-      "M-=" #'ccc/dired-ediff
       "g h" (cmd! () (find-file "~"))
       "C-k" #'dired-kill-line
       "C-S-k" #'dired-do-kill-lines
       "Z" #'dired-do-compress
       "c" #'dired-do-compress-to
-      "<tab>" #'dired-subtree-toggle
-      "<backtab>" #'dired-subtree-cycle
       :localleader
       "t"  (cmd! () (dired-toggle-marks) (image-dired-display-thumbs) (dired-unmark-all-marks))
       )
 
 (map! :map embark-file-map
-      "s" #'ccc/show-file-size)
+      "s" #'dirvish-total-file-size)
 
 (evil-collection-define-key 'normal 'dired-mode-map
       "h" #'dired-up-directory
@@ -1007,22 +992,15 @@ TODO: Look into using [[https://www.gnu.org/software/emacs/manual/html_node/emac
       "we" (cmd! () (consult-file-externally (car (dired-get-marked-files))))
       "l" #'dired-open-file)
 
-(add-hook! 'dired-mode-hook #'dired-hide-details-mode)
-(add-hook! 'dired-subtree-after-insert-hook #'nerd-icons-dired--refresh)
-(add-hook! 'dired-subtree-after-remove-hook #'nerd-icons-dired--refresh)
+(add-hook! 'dirvish-setup-hook #'dirvish-emerge-mode)
 
-(setq dired-listing-switches "-algho --group-directories-first"
+(setq dired-listing-switches "-algho"
 
-      dired-open-extensions '(("mp4" . "mpv")
-                              ("webm" . "mpv")
-                              ("mkv" . "mpv")
-                              ("mov" . "mpv")
-                              ("m4v" . "mpv")
-                              ("gif" . "imv")
-                              ("webp" . "imv")
-                              ("mp3" . "mpv")
-                              )
-      dired-omit-files (rx (seq bol "." (* any) eol))
+      dirvish-emerge-groups '(("Directories" (predicate . directories))
+                              ("Org" (extensions "org"))
+                             ("Documents" (extensions "pdf" "docx"))
+                             ("Images" (extensions "jpg" "jpeg" "png" "gif" "svg"))
+                             ("Videos" (extensions "mp4" "mkv" "webm" "flv")))
       )
 
 
@@ -1049,10 +1027,6 @@ This is usefule for removing .url files for videos that I've already watched and
        (call-interactively #'dired-mark)))))
 #+end_src
 
-#+begin_src elisp :noweb-ref packages
-(package! dired-open)
-(package! dired-subtree)
-#+end_src
 ***** Sorting
 
 #+begin_src elisp :noweb-ref configs
@@ -1189,18 +1163,6 @@ This function requires GNU ls from coreutils installed."
       :nvm
       "s" #'cc/dired-sort-by
       )
-#+end_src
-***** Sidebar
-
-[[https://github.com/jojojames/dired-sidebar][dired-sidebar]] toggles a dired window on the side, similar to treemacs
-
-#+begin_src elisp :noweb-ref packages
-(package! dired-sidebar)
-#+end_src
-
-#+begin_src elisp :noweb-ref configs
-(map! :leader
-      "o p" #'dired-sidebar-toggle-sidebar)
 #+end_src
 ***** Filetags
 
