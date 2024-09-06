@@ -55,13 +55,14 @@
     "eza"
     "ripgrep"
     "duplicity"
-    "python-boto3"                      ; required by duplicity
     ;; Python
     "python-language-server"
     "python-pylint"
     "python-black"
     "python-pyls-black"
     "python-mypy"
+    "python-pandas"
+    "python-boto3"                      ; required by duplicity
     ;; Office
     "mupdf"
     "libreoffice"
