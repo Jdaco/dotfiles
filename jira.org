@@ -11,6 +11,16 @@ To get [[https://github.com/ahungry/org-jira][org-jira]] working for your Jira s
       ccc/jira-boards  '("EXMPL")
       ccc/jira-user-name "The Emperor"
       ccc/jira-files ("~/.org-jira/PROJ.org")
+
+      ;; Use this to add custom properties from jira
+      org-jira-issue-custom-fields-alist '(
+        ; Acceptance Criteria
+        (customfield_10029 . (:type 'string :location 'headline))
+        ; Epic Link
+        (customfield_10014 . (:type 'string :location 'property))
+        )
+
+
       )
 #+end_src
 
@@ -21,9 +31,13 @@ machine example.atlassian.net login user@email.com password long-api-key port 44
 #+end_src
 
 ** Config
+
 #+begin_src elisp :noweb-ref configs
 (setq org-jira-use-status-as-todo t
       org-jira-boards-default-limit 1000
+      org-jira--default-property-slot-names '(filename reporter type type-id priority labels resolution status components created updated sprint)
+      ;; Use this to exclude custom fields that are causing problems
+      ;; jiralib-update-issue-fields-exclude-list '(reporter customfield_10014)
       ;; This is to ensure curl can load your certs from Guix
       request-curl-options (list (format "--cacert %s" (f-expand  "~/.guix-profile/etc/ssl/certs/ca-certificates.crt")))
       )
@@ -33,6 +47,7 @@ machine example.atlassian.net login user@email.com password long-api-key port 44
     :prefix "o I"
     "c" #'org-jira-create-issue
     "u" #'org-jira-update-issue
+    "r" #'org-jira-get-issues-from-custom-jql
     ))
 
 #+end_src
@@ -40,24 +55,24 @@ machine example.atlassian.net login user@email.com password long-api-key port 44
 ** Packages
 #+begin_src elisp :noweb-ref packages
 (package! request)
-(package! org-jira :recipe '(:type git :host github :repo "Ruin0x11/org-jira") :pin "3670719cf05495e99003ebb9e77ec96dfd5e9b9a")
+(package! org-jira)
 #+end_src
 
 ** org-ql
 #+begin_src elisp :noweb-ref org-ql-views
 ("Jira - My work"
- :buffers-files ccc/jira-files
+ :buffers-files ,(f-glob "*.org" "~/.org-jira")
  :query (and
          (not (tags "ARCHIVE"))
          (todo)
-         (property "assignee" ccc/jira-user-name))
+         (property "assignee" ,ccc/jira-user-name))
  :sort priority
  :super-groups ((:name "In Progress" :todo "PROGRESS" :todo "IN-PROGRESS")
                 (:name "Review" :todo "READY-FOR-REVIEW")
                 (:priority "A")
                 (:auto-category)))
 ("Jira - Epics"
- :buffers-files ccc/jira-files
+ :buffers-files ,(f-glob "*.org" "~/.org-jira")
  :query (and
          (not (tags "ARCHIVE"))
          (todo)
