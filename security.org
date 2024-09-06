@@ -194,6 +194,7 @@ alias ssh-keygen ssh-keygen -t ed25519 -a 100 $*
 #+begin_src conf :noweb-ref aliases
 alias cs sudo cryptsetup $*
 alias key sudo cryptsetup luksOpen /dev/$1 $2 && sudo mount /dev/mapper/$2 /mnt
+alias keyk sudo cryptsetup luksOpen --key-file $3 /dev/$1 $2 && sudo mount /dev/mapper/$2 /mnt
 alias keyoff sudo umount /mnt && sudo cryptsetup luksClose $1
 alias genkey dd bs=512 count=4 if=/dev/random of=$1
 #+end_src
