@@ -1,11 +1,14 @@
-(define-module (machines usb config))
+(define-module (machines usb config)
+  #:export (usb-os))
 (use-modules (gnu)
+             (gnu packages)
              (nongnu packages linux)
-             (nongnu system linux-initrd)
-             (srfi srfi-1))
+             (nongnu system linux-initrd))
+
+(import (only (srfi srfi-1) remove))
 (use-service-modules desktop networking xorg docker)
 
-(define-public usb-os
+(define usb-os
   (operating-system
    (locale "en_US.utf8")
    (kernel linux)
@@ -35,8 +38,6 @@
            (specification->package "fd")
            (specification->package "git")
            (specification->package "file")
-           (specification->package "nss-certs")
-           (specification->package "rsync")
            (specification->package "gnupg")
            (specification->package "password-store")
            (specification->package "duplicity")
@@ -45,6 +46,13 @@
            (specification->package "pinentry-qt")
            (specification->package "wpa-supplicant-minimal")
            (specification->package "font-victor-mono")
+           (specification->package "font-linuxlibertine")
+           (specification->package "font-liberation")
+           (specification->package "font-iosevka")
+           (specification->package "font-google-noto-emoji")
+           (specification->package "zfs")
+           (specification->package "isc-dhcp")
+           (specification->package "picom")
 
                                         ; Required by org-roam
            (specification->package "sqlite")
@@ -53,11 +61,26 @@
            (specification->package "mpv")
            (specification->package "parted")
            (specification->package "gparted")
+           (specification->package "ncdu")
+           (specification->package "dfc")
+           (specification->package "xset")
+           (specification->package "zip")
+           (specification->package "unzip")
+           (specification->package "iotop")
+           (specification->package "nmap")
+           (specification->package "sshfs")
            (specification->package "icecat")
            (specification->package "xmodmap")
            (specification->package "ncurses")
            (specification->package "ripgrep")
            (specification->package "rsync")
+           (specification->package "feh")
+           (specification->package "libvterm")
+           (specification->package "xwininfo")
+           (specification->package "ansible")
+           (specification->package "bpytop")
+           (specification->package "gcc-toolchain")
+           (specification->package "jq")
            (specification->package "wget")
            (specification->package "curl")
            (specification->package "ispell")
@@ -84,11 +107,10 @@
    (sudoers-file (plain-file "sudoers" "\
 root ALL=(ALL) ALL
 %wheel ALL=(ALL) NOPASSWD:ALL\n"))
-   (bootloader
-    (bootloader-configuration
-     (bootloader grub-efi-bootloader)
-     (target "/boot/efi")
-     (keyboard-layout keyboard-layout)))
+(bootloader (bootloader-configuration
+             (bootloader grub-efi-bootloader)
+             (targets '("/boot/efi"))))
+
    (file-systems
     (cons* (file-system
             (mount-point "/home")

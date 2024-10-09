@@ -1,8 +1,8 @@
 (define-module (machines gamma config))
-(use-modules (gnu packages ssh))
-(use-modules (gnu packages wm))
-(use-modules (gnu))
 (use-modules (gnu)
+             (gnu packages)
+             (gnu packages ssh)
+             (gnu packages wm)
              (nongnu packages linux)
              (nongnu system linux-initrd))
 (use-service-modules desktop networking ssh xorg docker)
@@ -49,7 +49,7 @@
             (specification->package "rng-tools")
             (specification->package "pinentry-qt")
             (specification->package "wpa-supplicant")
-            (specification->package "ovmf")
+            (specification->package "ovmf-x86-64")
             (specification->package "bluez-alsa")
             (specification->package "bluez")
 
@@ -62,14 +62,16 @@
     (append
       (list (service openssh-service-type (openssh-configuration (openssh openssh-sans-x) (permit-root-login #f)))
             (set-xorg-configuration (xorg-configuration (keyboard-layout keyboard-layout)))
-            (bluetooth-service #:auto-enable? #t)
-            (screen-locker-service i3lock-color "i3lock")
+            (service bluetooth-service-type (bluetooth-configuration))
+            (service screen-locker-service-type (screen-locker-configuration
+                                                 (name "i3lock")
+                                                 (program (file-append i3lock-color "/bin/i3lock"))))
             )
       %desktop-services))
   (bootloader
     (bootloader-configuration
       (bootloader grub-efi-bootloader)
-      (target "/boot/efi")
+      (targets '("/boot/efi"))
       (keyboard-layout keyboard-layout)))
   (mapped-devices
    (list (mapped-device

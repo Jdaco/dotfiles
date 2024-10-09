@@ -1,3 +1,4 @@
+(define-module (machines usb image))
 (use-modules (gnu)
              (gnu image)
              (gnu tests)
@@ -10,6 +11,7 @@
 (image
  (format 'disk-image)
  (operating-system usb-os)
+ (partition-table-type 'gpt)
  (partitions
   (list
    (partition

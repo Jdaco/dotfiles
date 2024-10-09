@@ -1,3 +1,4 @@
+(use-modules (gnu packages))
 (specifications->manifest
   '(
     ;;  Virtualization
@@ -105,5 +106,6 @@
     "jq"
     "yq"
     "multipath-tools"
-    "gcc"
+    "gcc-toolchain"
+    "freeipmi"
     "k9s"))

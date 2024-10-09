@@ -1,10 +1,9 @@
 (define-module (machines alpha config))
-(use-modules (gnu packages ssh))
-(use-modules (gnu))
 (use-modules (gnu)
+             (gnu packages)
+             (gnu packages ssh)
              (nongnu packages linux)
-             (nongnu system linux-initrd)
-             )
+             (nongnu system linux-initrd))
 (use-service-modules desktop networking ssh xorg docker pm virtualization)
 
 (operating-system
@@ -73,7 +72,7 @@
  (bootloader
   (bootloader-configuration
    (bootloader grub-efi-bootloader)
-   (target "/boot/efi")
+   (targets '("/boot/efi"))
    (keyboard-layout keyboard-layout)))
  (file-systems
   (cons* (file-system

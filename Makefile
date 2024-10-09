@@ -17,8 +17,8 @@ FILES := $(BUILD_DIR)
 # .DEFAULT_GOAL := $(HOME_FS)
 
 GUIX_RUN := guix environment --container --user=$(USB_USER) \
-							 		  --pure --network --no-cwd \
-								 	  --ad-hoc grep sed diffutils patch gawk tar gzip bzip2 xz lzip emacs git bash coreutils fd ripgrep findutils curl wget nss-certs which
+							--pure --network --no-cwd \
+							--ad-hoc grep sed diffutils patch gawk tar gzip bzip2 xz lzip emacs git bash coreutils fd ripgrep findutils curl wget nss-certs which
 
 .PHONY: boot-qemu
 boot-qemu: ## Boot the machine image using QEMU
@@ -61,7 +61,7 @@ $(HOME_FS):
 	@rm -fv $(HOME_FS)/.emacs.d/.local/autoloads*.elc
 	@mkdir $(HOME_FS)/org
 
-gamma:
+usb:
 	@cp -v $(shell guix system image -L $(PWD) machines/usb/image.scm) ./image.raw
 
 $(USB_IMAGE): $(BUILD_DIR) $(ROOT_MOUNT) $(HOME_FS)

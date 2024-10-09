@@ -1,11 +1,10 @@
-(define-module (ccc)
+(define-module (ccc ccc)
   #:use-module (guix build utils)
   #:use-module (guix git-download)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages pkg-config)
-  #:use-module (gnu packages xml)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages golang)
@@ -16,7 +15,8 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix download))
 
-(import (only (guix licenses) expat))
+(import (only (guix licenses) expat)
+        (only (gnu packages xml) libxml2))
 
 (define-public s5cmd
   (package
@@ -113,3 +113,5 @@ while working with large number of files.")
     (synopsis "FUSE-based file system backed by Amazon S3")
     (description "FUSE-based file system backed by Amazon S3")
     (license expat)))
+
+s5cmd

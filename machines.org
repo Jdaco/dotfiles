@@ -259,6 +259,7 @@ mkswap ${SWAPFILE}
 :email:    chaise.conn@protonmail.com
 :header-args:    :noweb yes :mkdirp true
 :ID: usb
+:decrypt:  no
 :END:
 This is a version of my configuration for use as a bootable medium.
 
