@@ -18,7 +18,7 @@
    (respawn? #t)
    (auto-start? #t)
    (requirement '(user-processes))
-   (start #~(make-forkexec-constructor '("/usr/bin/k3s")))
+   (start #~(make-forkexec-constructor '("/bin/k3s")))
    (stop #~(make-kill-deconstructor))))
 
 (define-public k3s-service-type
@@ -42,9 +42,9 @@
                #:builder
                #~(begin
                    (use-modules (guix build utils))
-                   (mkdir-p (string-append #$output "/usr/bin"))
-                   (copy-recursively #$source (string-append #$output "/usr/bin/k3s"))
-                   (chmod (string-append #$output "/usr/bin/k3s") #o555))
+                   (mkdir-p (string-append #$output "/bin"))
+                   (copy-recursively #$source (string-append #$output "/bin/k3s"))
+                   (chmod (string-append #$output "/bin/k3s") #o555))
                ))
    (synopsis "Lightweight Kubernetes")
    (description "")
