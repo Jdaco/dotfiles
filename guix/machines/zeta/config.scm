@@ -7,7 +7,7 @@
              (srfi srfi-1))
 (use-service-modules ssh networking)
 
-(define usb-os
+(define zeta-os
   (operating-system
    (initrd-modules (append (list "mpt3sas") %base-initrd-modules))
    (locale "en_US.utf8")
@@ -51,7 +51,9 @@
      %base-packages))
    (services
     (append  (list (service dhcp-client-service-type)
-	       (service openssh-service-type
+                   (service guix-publish-service-type
+                            (guix-publish-configuration (host "0.0.0.0")))
+                   (service openssh-service-type
                             (openssh-configuration (openssh openssh-sans-x) (permit-root-login #f))))
              %base-services))
 
@@ -93,4 +95,4 @@
            %base-file-systems))
    ))
 
-usb-os
+zeta-os
