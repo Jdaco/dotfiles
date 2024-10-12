@@ -20,7 +20,7 @@
     (auto-start? #t)
     (requirement '(user-processes))
     (start #~(make-forkexec-constructor
-              (list #$(file-append k3s "/bin/k3s"))))
+              (list #$(file-append k3s "/bin/k3s") "server")))
     (stop #~(make-kill-destructor)))))
 
 (define-public k3s-service-type
