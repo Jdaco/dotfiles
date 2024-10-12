@@ -78,7 +78,7 @@
            (specification->package "libvterm")
            (specification->package "xwininfo")
            (specification->package "ansible")
-           (specification->package "bpytop")
+           (specification->package "btop")
            (specification->package "gcc-toolchain")
            (specification->package "jq")
            (specification->package "wget")

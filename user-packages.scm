@@ -96,7 +96,7 @@
     "go"
     "ansible"
     "stow"
-    "bpytop"
+    "btop"
     "icecat"
     "nyxt"
     "pandoc"
