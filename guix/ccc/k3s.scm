@@ -11,22 +11,25 @@
   #:use-module (guix build-system trivial)
   )
 
-(define-public k3s-service
-  (shepherd-service
-   (documentation "Run k3s daemon")
-   (provision '(k3s))
-   (respawn? #t)
-   (auto-start? #t)
-   (requirement '(user-processes))
-   (start #~(make-forkexec-constructor '("/bin/k3s")))
-   (stop #~(make-kill-deconstructor))))
+(define-public (k3s-service config)
+  (list
+   (shepherd-service
+    (documentation "Run k3s daemon")
+    (provision '(k3s))
+    (respawn? #t)
+    (auto-start? #t)
+    (requirement '(user-processes))
+    (start #~(make-forkexec-constructor
+              (list #$(file-append k3s "/bin/k3s"))))
+    (stop #~(make-kill-destructor)))))
 
 (define-public k3s-service-type
   (service-type
    (name 'k3s)
    (description "Shepherd service for k3s")
    (extensions
-    (list (service-extension shepherd-root-service-type k3s-service)))))
+    (list (service-extension shepherd-root-service-type k3s-service)))
+   (default-value '())))
 
 (define-public k3s
   (package
@@ -49,6 +52,6 @@
    (synopsis "Lightweight Kubernetes")
    (description "")
    (home-page "")
-   (license gpl3+)))
+   (license asl2.0)))
 
 k3s
