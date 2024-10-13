@@ -53,10 +53,6 @@
       (specification->package "btrfs-progs")
       (specification->package "dosfstools")
       (specification->package "vim")
-      (specification->package "docker")
-      (specification->package "docker-cli")
-      (specification->package "containerd")
-      (specification->package "libcgroup")
       (specification->package "syncthing")
       )
      %base-packages))
@@ -67,9 +63,12 @@
                         (exports '(("/data" "*(rw,insecure,no_subtree_check,crossmnt,fsid=0)")))))
               (simple-service 'cron-jobs mcron-service-type
                               (list (btrfs-snapshot-job 5 "/data/data")
+                                    (btrfs-snapshot-job 5 "/data/proj")
                                     (btrfs-snapshot-job 5 "/data/backups/gamma")
-                                    (btrfs-snapshot-job 5 "/data/backups/delta")))
-              (service k3s-service-type)
+                                    (btrfs-snapshot-job 5 "/data/backups/delta")
+                                    ))
+              (service k3s-service-type
+                       (k3s-configuration (storage-path "/data/k3s")))
               (service dhcp-client-service-type)
               (service syncthing-service-type
                        (syncthing-configuration

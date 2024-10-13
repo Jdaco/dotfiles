@@ -1,4 +1,5 @@
 (define-module (ccc packages k3s)
+  #:use-module (guix records)
   #:use-module (guix licenses)
   #:use-module (gnu services)
   #:use-module (gnu services shepherd)
@@ -9,9 +10,16 @@
   #:use-module (guix utils)
   #:use-module (guix build utils)
   #:use-module (guix build-system trivial)
+  #:export (k3s-configuration
+            k3s-service-type
+            k3s)
   )
 
-(define-public (k3s-service config)
+(define-record-type* <k3s-configuration> k3s-configuration make-k3s-configuration k3s-configuration?
+  (arguments k3s-configuration-arguments (default '()))
+  (storage-path k3s-configuration-storage-path (default "/var/lib/rancher/k3s/storage")))
+
+(define (k3s-service config)
   (list
    (shepherd-service
     (documentation "Run k3s daemon")
@@ -20,18 +28,19 @@
     (auto-start? #t)
     (requirement '(user-processes))
     (start #~(make-forkexec-constructor
-              (list #$(file-append k3s "/bin/k3s") "server")))
+              (list #$(file-append k3s "/bin/k3s") "server"
+                    "--default-local-storage-path" #$(k3s-configuration-storage-path config))))
     (stop #~(make-kill-destructor)))))
 
-(define-public k3s-service-type
+(define k3s-service-type
   (service-type
    (name 'k3s)
    (description "Shepherd service for k3s")
    (extensions
     (list (service-extension shepherd-root-service-type k3s-service)))
-   (default-value '())))
+   (default-value (k3s-configuration))))
 
-(define-public k3s
+(define k3s
   (package
    (name "k3s")
    (version "1.31.1")
@@ -53,5 +62,3 @@
    (description "")
    (home-page "")
    (license asl2.0)))
-
-k3s
