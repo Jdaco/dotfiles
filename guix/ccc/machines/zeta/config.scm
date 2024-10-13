@@ -1,13 +1,13 @@
-(define-module (machines zeta config)
+(define-module (ccc machines zeta config)
   #:export (usb-os))
 (use-modules (gnu)
              (gnu packages)
              (gnu packages ssh)
-             (ccc k3s)
+             (ccc packages k3s)
              (srfi srfi-1)
              (nongnu packages linux)
              (nongnu system linux-initrd))
-(use-service-modules ssh networking)
+(use-service-modules ssh networking nfs)
 
 (define zeta-os
   (operating-system
@@ -67,6 +67,9 @@
      %base-packages))
    (services
     (append  (list
+              (service nfs-service-type
+                       (nfs-configuration
+                        (exports '(("/data" "*(rw,insecure,no_subtree_check,crossmnt,fsid=0)")))))
               (service k3s-service-type)
               (service dhcp-client-service-type)
               (service guix-publish-service-type

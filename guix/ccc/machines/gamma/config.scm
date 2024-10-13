@@ -1,10 +1,12 @@
-(define-module (machines gamma config))
+(define-module (ccc machines gamma config))
 (use-modules (gnu)
+             (gnu services mcron)
              (gnu packages)
              (gnu packages ssh)
              (gnu packages wm)
              (nongnu packages linux)
-             (nongnu system linux-initrd))
+             (nongnu system linux-initrd)
+             (ccc lib btrfs))
 (use-service-modules desktop networking ssh xorg docker)
 
 (operating-system
@@ -41,7 +43,6 @@
             (specification->package "fd")
             (specification->package "git")
             (specification->package "file")
-            (specification->package "nss-certs")
             (specification->package "gnupg")
             (specification->package "password-store")
             (specification->package "duplicity")
@@ -61,6 +62,8 @@
   (services
     (append
       (list (service openssh-service-type (openssh-configuration (openssh openssh-sans-x) (permit-root-login #f)))
+            (simple-service 'cron-jobs mcron-service-type
+                            (list (btrfs-snapshot-job 5 "/home")))
             (set-xorg-configuration (xorg-configuration (keyboard-layout keyboard-layout)))
             (service bluetooth-service-type (bluetooth-configuration))
             (service screen-locker-service-type (screen-locker-configuration
@@ -75,16 +78,16 @@
       (keyboard-layout keyboard-layout)))
   (mapped-devices
    (list (mapped-device
-          (source (uuid "d2706825-09fb-4564-9832-6a17c88d2758"))
-          (target "cryptroot")
+          (source (uuid "6392da3f-791b-4749-8884-8fcafe37c781"))
+          (target "rc")
           (type luks-device-mapping))))
   (file-systems
     (cons* (file-system
             (mount-point "/boot/efi")
-            (device (uuid "5E06-132C" 'fat32))
+            (device (uuid "9194-D0DD" 'fat32))
             (type "vfat"))
            (file-system
             (mount-point "/")
-            (device "/dev/mapper/cryptroot")
+            (device "/dev/mapper/rc")
             (type "btrfs"))
            %base-file-systems)))

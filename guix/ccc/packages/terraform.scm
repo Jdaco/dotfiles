@@ -1,4 +1,4 @@
-(define-module (ccc terraform)
+(define-module (ccc packages terraform)
   #:use-module (guix build utils)
   #:use-module (guix git-download)
   #:use-module (gnu packages golang)

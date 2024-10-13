@@ -1,4 +1,4 @@
-(define-module (ccc k3s)
+(define-module (ccc packages k3s)
   #:use-module (guix licenses)
   #:use-module (gnu services)
   #:use-module (gnu services shepherd)

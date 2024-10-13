@@ -1,10 +1,10 @@
-(define-module (machines usb image))
+(define-module (ccc machines usb image))
 (use-modules (gnu)
              (gnu image)
              (gnu tests)
              (gnu system image)
              (guix gexp)
-             (machines usb config))
+             (ccc machines usb config))
 
 (define MiB (expt 2 20))
 

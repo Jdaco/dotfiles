@@ -1,4 +1,4 @@
-(define-module (ccc ccc)
+(define-module (ccc packages ccc)
   #:use-module (guix build utils)
   #:use-module (guix git-download)
   #:use-module (gnu packages python-web)

@@ -1,4 +1,4 @@
-(define-module (machines usb config)
+(define-module (ccc machines usb config)
   #:export (usb-os))
 (use-modules (gnu)
              (gnu packages)

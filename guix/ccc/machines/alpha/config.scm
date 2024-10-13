@@ -1,4 +1,4 @@
-(define-module (machines alpha config))
+(define-module (ccc machines alpha config))
 (use-modules (gnu)
              (gnu packages)
              (gnu packages ssh)
