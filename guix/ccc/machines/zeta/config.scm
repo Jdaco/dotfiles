@@ -3,20 +3,14 @@
 (use-modules (gnu)
              (gnu packages)
              (gnu packages ssh)
-             (ccc packages k3s)
              (srfi srfi-1)
-             (nongnu packages linux)
-             (nongnu system linux-initrd))
-(use-service-modules ssh networking nfs)
+             (ccc packages k3s)
+             (ccc lib btrfs))
+(use-service-modules ssh networking nfs syncthing mcron)
 
 (define zeta-os
   (operating-system
-   (kernel linux)
-   (kernel-arguments (append '("cgroup_no_v1=all" "cgroup_enable=cpuset" "cgroup_memory=1" "cgroup_enable=memory")
-                             %default-kernel-arguments))
-   (initrd microcode-initrd)
    (initrd-modules (append (list "mpt3sas") %base-initrd-modules))
-   (firmware (list linux-firmware))
    (locale "en_US.utf8")
    (timezone "America/Los_Angeles")
    (keyboard-layout (keyboard-layout "us"))
@@ -63,6 +57,7 @@
       (specification->package "docker-cli")
       (specification->package "containerd")
       (specification->package "libcgroup")
+      (specification->package "syncthing")
       )
      %base-packages))
    (services
@@ -70,8 +65,16 @@
               (service nfs-service-type
                        (nfs-configuration
                         (exports '(("/data" "*(rw,insecure,no_subtree_check,crossmnt,fsid=0)")))))
+              (simple-service 'cron-jobs mcron-service-type
+                              (list (btrfs-snapshot-job 5 "/data/data")
+                                    (btrfs-snapshot-job 5 "/data/backups/gamma")
+                                    (btrfs-snapshot-job 5 "/data/backups/delta")))
               (service k3s-service-type)
               (service dhcp-client-service-type)
+              (service syncthing-service-type
+                       (syncthing-configuration
+                        (arguments '("--gui-address=0.0.0.0:8384"))
+                        (user "chaise")))
               (service guix-publish-service-type
                        (guix-publish-configuration
                         (host "0.0.0.0")
