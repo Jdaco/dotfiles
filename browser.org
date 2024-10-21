@@ -1,5 +1,7 @@
 * Browser
-** Extensions
+** Firefox
+
+*** Extensions
 https://addons.mozilla.org/en-US/firefox/addon/darkreader/
 https://addons.mozilla.org/en-US/firefox/addon/clearurls/
 https://addons.mozilla.org/en-US/firefox/addon/foxyproxy-standard/
@@ -14,8 +16,8 @@ https://addons.mozilla.org/en-US/firefox/addon/canvasblocker/
 https://addons.mozilla.org/en-US/firefox/addon/chameleon-ext/
 https://github.com/kuanyui/copy-as-org-mode
 https://addons.mozilla.org/en-US/firefox/addon/firefox-color/
-*** Vimium
-**** Settings
+**** Vimium
+***** Settings
 
 #+begin_src json
 {
@@ -25,11 +27,10 @@ https://addons.mozilla.org/en-US/firefox/addon/firefox-color/
   "userDefinedLinkHintCss": "#vimiumHintMarkerContainer div.internalVimiumHintMarker, #vimiumHintMarkerContainer div.vimiumHintMarker {\n  padding: 3px 4px;\n  background: #444;\n  border: none;\n  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);\n}\n\n#vimiumHintMarkerContainer div span {\n  color: #fff;\n  text-shadow: none;\n}\n\n#vimiumHintMarkerContainer div > .matchingCharacter {\n  opacity: 0.4;\n}\n\n#vimiumHintMarkerContainer div > .matchingCharacter ~ span {\n  color: hotpink;\n}\n\n#vomnibar {\n  background: #444;\n  border: none;\n  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);\n  animation: show 200ms cubic-bezier(0, 0, 0.2, 1) forwards;\n}\n\n@keyframes show {\n  0% {\n    transform: translateY(50px);\n    opacity: 0;\n  }\n  100% {\n    transform: translateY(0);\n    opacity: 1;\n  }\n}\n\n#vomnibar .vomnibarSearchArea,\n#vomnibar input {\n  color: #fff;\n  background: transparent;\n  border: none;\n}\n\n#vomnibar .vomnibarSearchArea {\n  padding: 10px 30px;\n}\n\n#vomnibar input {\n  padding: 0;\n}\n\n#vomnibar ul {\n  padding: 0;\n  background: #444;\n  border-top: 1px solid #333;\n}\n\n#vomnibar li {\n  padding: 10px;\n  border-bottom: 1px solid #333;\n}\n\n#vomnibar li .vomnibarTopHalf,\n#vomnibar li .vomnibarBottomHalf {\n  padding: 3px 0;\n}\n\n#vomnibar li .vomnibarSource {\n  color: #aaa;\n}\n\n#vomnibar li em,\n#vomnibar li .vomnibarTitle {\n  color: #aaa;\n}\n\n#vomnibar li .vomnibarUrl {\n  color: #777;\n}\n\n#vomnibar li .vomnibarMatch {\n  color: hotpink;\n  font-weight: normal;\n}\n\n#vomnibar li .vomnibarTitle .vomnibarMatch {\n  color: hotpink;\n}\n\n#vomnibar li.vomnibarSelected {\n  background-color: #333;\n}\n\ndiv.vimiumHUD {\n  background: #444;\n  border: none;\n  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);\n}\n\ndiv.vimiumHUD span#hud-find-input,\ndiv.vimiumHUD .vimiumHUDSearchAreaInner {\n  color: #fff;\n}\n\ndiv.vimiumHUD .hud-find {\n  background-color: transparent;\n  border: none;\n}\n\ndiv.vimiumHUD .vimiumHUDSearchArea {\n  background-color: transparent;\n}"
 }
 #+end_src
-
-** Settings
+*** Settings
 - Startup
   + Restore previous session
-** Search Engines
+*** Search Engines
 
 #+begin_src elisp :noweb-ref configs
 (setq +lookup-provider-url-alist
@@ -54,3 +55,83 @@ https://addons.mozilla.org/en-US/firefox/addon/firefox-color/
        ))
 
 #+end_src
+** Nyxt
+
+#+begin_src common-lisp :tangle ~/.config/nyxt/config.lisp
+;; Enable vi bindings
+(define-configuration buffer
+  ((default-modes
+    (pushnew 'nyxt/mode/vi:vi-normal-mode %slot-value%))))
+
+(define-configuration document-mode
+  ((keyscheme-map
+    (define-keyscheme-map "custom" (list :import %slot-value%)
+                nyxt/keyscheme:vi-normal
+                (list
+                  "J" 'scroll-page-down
+                  "K" 'scroll-page-up
+                  "r" 'reload-current-buffer
+                  "R" 'reload-buffers
+                  "C-o" (lambda-command set-url-from-paste* nil (set-url :url (ring-insert-clipboard (clipboard-ring *browser*))))
+                  "? k" 'describe-key
+                  "? f" 'describe-function
+                  "? c" 'describe-class
+                  "? b" 'describe-bindings
+                  "? v" 'describe-variable
+                  "? m" 'describe-mode
+                  "? r" 'repl
+                  "? ?" 'manual
+                  "z m" 'dark-mode
+                  "t b" 'buffer-panel
+                  "b l" 'list-buffers
+                  "b D" 'delete-other-buffers
+                  )))))
+
+(define-configuration help-mode
+  ((keyscheme-map
+    (define-keyscheme-map "custom" nil nyxt/keyscheme:default
+                (list)))))
+
+(define-configuration search-buffer-mode
+  ((keyscheme-map
+    (define-keyscheme-map "custom" nil nyxt/keyscheme:vi-normal
+                (list "/" 'search-buffer)))))
+
+;; Enable adblock
+(define-configuration web-buffer
+  ((default-modes
+    (pushnew 'nyxt/mode/blocker:blocker-mode %slot-value%))))
+
+(define-configuration prompt-buffer
+  ((default-modes
+    (pushnew 'vi-insert-mode %slot-value%))))
+
+; edit-with-external-editor
+; make-buffer-focus B
+; headings-panel t
+; jump-to-heading
+; switch-buffer
+; switch-buffer-next
+; switch-buffer-prev
+; copy
+; paste
+; copy-url
+; copy-hint-url
+; follow-hint-new-buffer-focus
+; follow-hint-new-buffer
+; history-forwards
+; history-backwards
+; search-buffer
+; scroll-page-down
+; scroll-page-up
+; dark-mode
+; reduce-bandwidth-mode
+; previous-heading
+; next-heading
+; visual-mode
+; delete-current-buffer
+; delete-buffer
+
+
+#+end_src
+**
