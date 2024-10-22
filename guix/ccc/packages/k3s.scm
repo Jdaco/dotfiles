@@ -28,7 +28,8 @@
     (auto-start? #t)
     (requirement '(user-processes))
     (start #~(make-forkexec-constructor
-              (list #$(file-append k3s "/bin/k3s") "server"
+              (list #$(file-append k3s "/bin/k3s")
+                    "server"
                     "--default-local-storage-path" #$(k3s-configuration-storage-path config))))
     (stop #~(make-kill-destructor)))))
 

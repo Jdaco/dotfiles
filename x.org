@@ -145,7 +145,6 @@ A compositor is required to enable transparency in emacs
 
 #+begin_src elisp :tangle .exwm :results none
 (require 'exwm)
-(require 'exwm-config)
 (require 'exwm-randr)
 
 (defvar exwm-app-launcher--prompt "$ "
@@ -202,7 +201,7 @@ A compositor is required to enable transparency in emacs
          (extra-monitors (remove primary-monitor (mapcar #'car (nth 2 monitor-info))))
          (num-extra-monitors (length extra-monitors)))
     (cond
-      ((= num-extra-monitors max-extra-monitors) (flatten-list (-zip workspace-sequence (append (list primary-monitor) extra-monitors))))
+      ((= num-extra-monitors max-extra-monitors) (flatten-list (-zip-pair workspace-sequence (append (list primary-monitor) extra-monitors))))
       (t (flatten-list (-zip-fill (car extra-monitors) workspace-sequence (make-list (/ exwm-workspace-number (1+ (length extra-monitors))) primary-monitor))))
     )))
 
@@ -227,9 +226,8 @@ A compositor is required to enable transparency in emacs
               (exwm-workspace-rename-buffer exwm-title))))
 
 
-(exwm-randr-enable)
+(exwm-randr-mode 1)
 (exwm-enable)
-(exwm-config-misc)
 (ccc/set-wallpaper)
 #+end_src
 
