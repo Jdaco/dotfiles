@@ -55,3 +55,51 @@ I need my =.profile= to include the path to my guix profile so that Eshell over 
 
 export PATH=${HOME}/.guix-profile/bin:$PATH
 #+end_src
+** Snippets
+:PROPERTIES:
+:snippet_mode: scheme-mode
+:END:
+
+*** guix-system
+#+begin_src snippet :tangle (get-snippet-path)
+(operating-system
+  (host-name "$1")
+  (timezone "United States/Pacific")
+  (locale "en_US.utf8")
+  (bootloader (bootloader-configuration
+                (bootloader grub-efi-bootloader)
+                (targets '("/boot/efi"))))
+  (file-systems (cons (file-system
+                        (device (file-system-label "my-root"))
+                        (mount-point "/")
+                        (type "ext4"))
+                      %base-file-systems))
+
+  ;; This is where user accounts are specified.  The "root"
+  ;; account is implicit, and is initially created with the
+  ;; empty password.
+  (users (cons (user-account
+                (name "alice")
+                (comment "Bob's sister")
+                (group "users")
+
+                ;; Adding the account to the "wheel" group
+                ;; makes it a sudoer.  Adding it to "audio"
+                ;; and "video" allows the user to play sound
+                ;; and access the webcam.
+                (supplementary-groups '("wheel"
+                                        "audio" "video")))
+               %base-user-accounts))
+
+  ;; Globally-installed packages.
+  (packages (cons screen %base-packages))
+
+  ;; Add services to the baseline: a DHCP client and
+  ;; an SSH server.
+  (services (append (list (service dhcp-client-service-type)
+                          (service openssh-service-type
+                                   (openssh-configuration
+                                    (openssh openssh-sans-x)
+                                    (port-number 2222))))
+                    %base-services)))
+#+end_src
