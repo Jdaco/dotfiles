@@ -1,9 +1,11 @@
-(define-module (ccc machines alpha config))
-(use-modules (gnu)
-             (gnu packages)
-             (gnu packages ssh)
-             (nongnu packages linux)
-             (nongnu system linux-initrd))
+(define-module (ccc machines alpha config)
+  #:use-module (gnu)
+  #:use-module (gnu packages)
+  #:use-module (gnu packages ssh)
+  #:use-module (nongnu packages linux)
+  #:use-module (nongnu system linux-initrd)
+  #:use-module (ccc packages keyd)
+  )
 (use-service-modules desktop networking ssh xorg docker pm virtualization)
 
 (operating-system
@@ -48,6 +50,7 @@
          (specification->package "rng-tools")
          (specification->package "pinentry-qt")
          (specification->package "libvirt")
+         keyd
 
          ;; This needs to be installed at the same level
          ;; as emacs so that mu4e gets installed
@@ -57,6 +60,7 @@
  (services
   (append
    (list (service openssh-service-type (openssh-configuration (openssh openssh-sans-x) (permit-root-login #f)))
+         (server keyd-service-type)
          (service tlp-service-type
                   (tlp-configuration
                    (usb-autosuspend? #f)))
@@ -66,7 +70,12 @@
          ;; (service dhcp-client-service-type)
          ;; (simple-service )
          )
-   %desktop-services
+   (modify-services %desktop-services
+                    (udev-service-type config =>
+        (udev-configuration (inherit config)
+         (rules (cons kmonad
+                      (udev-configuration-rules config))))))
+
 
    ))
  (bootloader
