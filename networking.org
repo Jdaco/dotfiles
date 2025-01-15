@@ -332,7 +332,7 @@ This is a transient for running nmap commands
        (chosen (assoc (completing-read "Device: " device-alist nil t) device-alist))
        (id (cadr chosen))
        )
-  (async-shell-command (format "bluetoothctl connect %s" id) bluetooth-buffer-name)))
+  (async-shell-command (format "bluetoothctl power on && bluetoothctl connect %s" id) bluetooth-buffer-name)))
 
 (map! :leader :desc "Bluetooth" :n "a B" #'ccc/connect-bluetooth)
 #+end_src
