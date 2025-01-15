@@ -96,8 +96,9 @@ module "backup_bucket" {
 
 (transient-define-prefix transient-duplicity-backup ()
   "Duplicity backup"
-  :value '("--verbosity=info" "--exclude-other-filesystems")
+  :value '("--verbosity=info" "--exclude-other-filesystems" "--ssh-askpass")
   ["Arguments"
+   ("-h" "Ask pass" "--ssh-askpass")
    ("-p" "Progress" "--progress")
    ("-f" "Exclude other filesystems" "--exclude-other-filesystems")
    ("-v" "Verbosity" "--verbosity=" :prompt "Verbosity: ")

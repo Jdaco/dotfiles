@@ -158,7 +158,6 @@ I use [[https://jblevins.org/projects/deft/][Deft]] to search my org files using
                 (:auto-category)))
 #+end_src
 
-
 ** Flash Cards
 
 #+begin_src elisp :noweb-ref configs
@@ -184,7 +183,7 @@ I use [[https://jblevins.org/projects/deft/][Deft]] to search my org files using
 ("drills"
   (filename . "~/roam/other/drills.org"))
 #+end_src
-#+end_src
+
 ** Roam
 :PROPERTIES:
 :ID:       c94f5761-3a42-44df-afd3-55f409902dbf
