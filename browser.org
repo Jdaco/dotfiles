@@ -85,6 +85,7 @@ https://addons.mozilla.org/en-US/firefox/addon/firefox-color/
                   "t b" 'buffer-panel
                   "b l" 'list-buffers
                   "b D" 'delete-other-buffers
+                  "Z X" 'quit-after-clearing-session
                   )))))
 
 (define-configuration help-mode
