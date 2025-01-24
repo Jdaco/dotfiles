@@ -44,6 +44,102 @@ I use [[https://github.com/Rolinh/dfc][dfc]] as a replacement for ~df~
 alias df dfc -f $*
 #+end_src
 ** Disks
+*** Shred drive
+
+#+begin_src elisp :noweb-ref configs
+(defvar shred-buffer-name "*shred*")
+
+(set-popup-rule! (regexp-quote shred-buffer-name) :side 'bottom :size 0.3 :select nil :quit 'nil)
+
+(defun shred-get-command (args)
+  "Returns shred command from arguments"
+  (format "sudo shred %s" (s-join " " args))
+  )
+
+(defun shred-copy-command (&rest args)
+  (interactive (transient-args transient-current-command))
+  (let ((command (shred-get-command args)))
+    (kill-new command)))
+
+(defun shred-file (file args)
+  (interactive (list (read-file-name "File: ") (transient-args transient-current-command)))
+  (async-shell-command (shred-get-command (append args (list file))) shred-buffer-name)
+  )
+
+(transient-define-prefix transient-shred ()
+  "shred transient"
+  :value '("--iterations=3" "--verbose" "--zero")
+  ["Arguments"
+   ("-i" "Iterations" "--iterations=")
+   ("-v" "Verbose" "--verbose")
+   ("-z" "Zero" "--zero")
+   ("-u" "Remove" "--remove")
+   ]
+  ["Actions"
+   ("f" "File" shred-file)
+   ("x" "Copy command" shred-copy-command)
+   ]
+)
+
+(map! :leader
+      :desc "shred"  :n "a d s" #'transient-shred
+      )
+#+end_src
+
+*** LUKS
+
+#+begin_src elisp :noweb-ref configs
+(defvar luks-format-buffer-name "*luks-format*")
+
+(set-popup-rule! (regexp-quote luks-format-buffer-name) :side 'bottom :size 0.3 :select nil :quit 'nil)
+
+(defun luks-format-get-command (args)
+  "Returns cryptsetup luksFormat command from arguments"
+  (format "sudo cryptsetup luksFormat --batch-mode %s" (s-join " " args))
+  )
+
+(defun luks-format-copy-command (&rest args)
+  (interactive (transient-args transient-current-command))
+  (let ((command (luks-format-get-command args)))
+    (kill-new command)))
+
+(defun luks-format--create-key-file (fname)
+  (call-process "dd" nil nil nil "bs=4096" "count=1" "if=/dev/random" (format "of=%s" fname)))
+
+(defun luks-format--read-key-file (prompt initial history)
+  (let ((fname (read-file-name "File: ")))
+    (unless (or (file-exists-p fname)
+                (string= (read-answer (format "Are you sure you want to create key file %s? " fname) '(("yes" ?y "Create file") ("no" ?n "Abort"))) "no")
+                (equal (luks-format--create-key-file (f-expand fname "/")) 0))
+       (error "Failed to create file: %s" fname))
+    (f-expand fname "/")))
+
+(defun luks-format-file (file args)
+  (interactive (list (read-file-name "File: ") (transient-args transient-current-command)))
+  (async-shell-command (luks-format-get-command (append args (list file))) luks-format-buffer-name)
+  )
+
+(transient-define-prefix transient-luks-format ()
+  "cryptsetup luksFormat transient"
+  :value '("--use-random" "--iter-time=2000")
+  ["Arguments"
+   ("-d" "Key file" "--key-file=" :reader luks-format--read-key-file)
+   ("-i" "Iteration time (in ms)" "--iter-time=" :reader transient-read-number-N+)
+   ("-l" "Label" "--label=")
+   ("-u" "Use /dev/random" "--use-random")
+   ]
+  ["Actions"
+   ("f" "File" luks-format-file)
+   ("x" "Copy command" luks-format-copy-command)
+   ]
+)
+
+(map! :leader
+      :desc "luks-format"  :n "a d l" #'transient-luks-format
+      )
+#+end_src
+
+
 *** Disk Setup
 
 #+begin_src sh
@@ -70,4 +166,61 @@ TEMP_NAME=$(basename $(mktemp -q))
 cryptsetup luksOpen --key-file "${KEYFILE}" ${PARTITION} ${TEMP_NAME}
 mkfs.btrfs /dev/mapper/${TEMP_NAME}
 cryptsetup luksClose ${TEMP_NAME}
+#+end_src
+*** Tool
+
+#+name: disk-layout
+#+begin_src yaml
+- name: test
+  encrypt: yes
+  filesystem: btrfs
+- name: testing
+  encrypt: yes
+  filesystem: btrfs
+#+end_src
+
+#+begin_src sh :stdin disk-layout :results drawer
+yq '.[] | .name' -
+#+end_src
+
+#+RESULTS:
+:results:
+test
+testing
+:end:
+
+#+begin_src elisp
+;; define a file extension for YAML
+(add-to-list 'org-babel-tangle-lang-exts '("yaml" . "yaml"))
+
+;; built-in default header arguments are fine
+(defvar org-babel-default-header-args:yaml '())
+
+(defun org-babel-execute:yaml (body params) body)
+#+end_src
+** Key mapping
+
+I use [[https://github.com/kmonad/kmonad][kmonad]] to remap my system keys
+
+This has to be run as root and requires loading some udev rules. To load the udev rules on a Guix System you can add this service
+
+#+begin_src scheme
+  (use-modules (gnu packages haskell-apps))
+
+  (operating-system
+   ;; ...
+   (services
+    (modify-services %desktop-services
+      (udev-service-type config =>
+        (udev-configuration (inherit config)
+         (rules (cons kmonad
+                      (udev-configuration-rules config))))))))
+#+end_src
+
+#+begin_src scheme
+(defcfg
+  input (device-file "")
+  output (uinput-sink "KMonad output")
+  fallthrough true
+)
 #+end_src
