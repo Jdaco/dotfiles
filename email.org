@@ -6,7 +6,7 @@ The directory that I store my emails in
 
 #+name: maildir
 #+begin_src conf :exports code
-~/mail
+~/.mail
 #+end_src
 
 Once you have ~offlineimap~ and ~mu~ installed you'll need to run the below commands to download and index your emails
@@ -100,7 +100,7 @@ offlineimap
       mu4e-enable-async-operation t
       mu4e-get-mail-command "offlineimap -o -q"
       mu4e-view-show-images t
-      mu4e-mu-version   "1.12.6"
+      mu4e-mu-version   "1.12.7"
       )
 
 (map! :after mu4e
