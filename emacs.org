@@ -996,7 +996,7 @@ TODO: Look into using [[https://www.gnu.org/software/emacs/manual/html_node/emac
 (add-hook! 'dirvish-setup-hook #'dirvish-emerge-mode)
 
 (setq dired-listing-switches "-algho"
-
+      dired-omit-files "^\\."
       dirvish-emerge-groups '(("Directories" (predicate . directories))
                               ("Org" (extensions "org"))
                              ("Documents" (extensions "pdf" "docx"))
