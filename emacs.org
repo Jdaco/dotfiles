@@ -979,6 +979,7 @@ TODO: Look into using [[https://www.gnu.org/software/emacs/manual/html_node/emac
       "C-S-k" #'dired-do-kill-lines
       "Z" #'dired-do-compress
       "c" #'dired-do-compress-to
+      "C-S-d" (cmd! () (let ((delete-by-moving-to-trash nil)) (dired-do-delete)))
       :localleader
       "t"  (cmd! () (dired-toggle-marks) (image-dired-display-thumbs) (dired-unmark-all-marks))
       )
