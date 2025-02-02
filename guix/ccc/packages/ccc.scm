@@ -21,7 +21,7 @@
 (define-public s5cmd
   (package
     (name "s5cmd")
-    (version "2.2.2")
+    (version "2.3.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -30,11 +30,12 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0np2jwqbas0bwfbqv28ijhrdaqxqm1rczbgm901z19gnlcdk44p4"))))
+                "1y1bwma6f68j00jfdjxvw5flp9l4cdys7dgkrr0yvfz68lk9a17v"))))
     (build-system go-build-system)
      (arguments
       `(#:import-path "github.com/peak/s5cmd/v2"
-           #:go ,go-1.19
+           #:go ,go-1.20
+           #:tests? ,#f
            #:phases
            (modify-phases %standard-phases
          (add-after 'install 'rename-binaries
