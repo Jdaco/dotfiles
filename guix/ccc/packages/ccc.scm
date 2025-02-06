@@ -1,5 +1,6 @@
 (define-module (ccc packages ccc)
   #:use-module (guix build utils)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages tls)
@@ -13,10 +14,12 @@
   #:use-module (guix build-system go)
   #:use-module (guix packages)
   #:use-module (guix build-system gnu)
-  #:use-module (guix download))
-
-(import (only (guix licenses) expat)
-        (only (gnu packages xml) libxml2))
+  #:use-module (guix build-system trivial)
+  #:use-module (guix build-system copy)
+  #:use-module (guix download)
+  #:use-module ((guix licenses) #:prefix license:)
+  )
+(import (only (gnu packages xml) libxml2))
 
 (define-public s5cmd
   (package
@@ -53,7 +56,7 @@
 with support for a multitude of operations including tab completion and wildcard
 support for files, which can be very handy for your object storage workflow
 while working with large number of files.")
-    (license expat)))
+    (license license:expat)))
 
 (define-public k3d
   (package
@@ -85,7 +88,7 @@ while working with large number of files.")
     (home-page "https://github.com/k3d-io/k3d")
     (synopsis " Little helper to run CNCF's k3s in Docker")
     (description "k3d creates containerized k3s clusters. This means, that you can spin up a multi-node k3s cluster on a single machine using docker.")
-    (license expat)))
+    (license license:expat)))
 
 (define-public s3fs
   (package
@@ -109,10 +112,25 @@ while working with large number of files.")
        (modify-phases %standard-phases
                       (add-before 'configure 'autogen
                                   (lambda* (#:key outputs #:allow-other-keys)
-                                    (invoke "./autogen.sh"))))))
+                                    (invoke "./autogen.sh"))))
+       ))
     (home-page "https://github.com/s3fs-fuse/s3fs-fuse")
     (synopsis "FUSE-based file system backed by Amazon S3")
     (description "FUSE-based file system backed by Amazon S3")
-    (license expat)))
+    (license license:expat)))
 
-s5cmd
+(define-public grafana
+  (package
+    (name "grafana")
+    (version "11.5.1")
+    (source
+     (origin
+            (method url-fetch)
+            (uri (string-append "https://dl.grafana.com/oss/release/grafana-" version ".linux-amd64.tar.gz"))
+            (sha256 (base32 "0ihp9varx0sr556q0wfk5yf7zcx6nxplmflc3fyxpmxkjx4gr6d9"))))
+    (build-system copy-build-system)
+    (arguments `(#:install-plan '(("bin/grafana" "/bin/grafana"))))
+    (home-page "https://github.com/s3fs-fuse/s3fs-fuse")
+    (synopsis "FUSE-based file system backed by Amazon S3")
+    (description "FUSE-based file system backed by Amazon S3")
+    (license license:agpl3)))
