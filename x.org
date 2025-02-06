@@ -130,6 +130,7 @@ A compositor is required to enable transparency in emacs
 (prodigy-define-service
     :name "Picom"
     :command "picom"
+    :args '("--backend" "xrender")
     :kill-process-buffer-on-stop t)
 
 ;; Autostart picom service
