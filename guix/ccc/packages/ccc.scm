@@ -118,19 +118,3 @@ while working with large number of files.")
     (synopsis "FUSE-based file system backed by Amazon S3")
     (description "FUSE-based file system backed by Amazon S3")
     (license license:expat)))
-
-(define-public grafana
-  (package
-    (name "grafana")
-    (version "11.5.1")
-    (source
-     (origin
-            (method url-fetch)
-            (uri (string-append "https://dl.grafana.com/oss/release/grafana-" version ".linux-amd64.tar.gz"))
-            (sha256 (base32 "0ihp9varx0sr556q0wfk5yf7zcx6nxplmflc3fyxpmxkjx4gr6d9"))))
-    (build-system copy-build-system)
-    (arguments `(#:install-plan '(("bin/grafana" "/bin/grafana"))))
-    (home-page "https://github.com/s3fs-fuse/s3fs-fuse")
-    (synopsis "FUSE-based file system backed by Amazon S3")
-    (description "FUSE-based file system backed by Amazon S3")
-    (license license:agpl3)))
