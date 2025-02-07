@@ -5,8 +5,9 @@ BUILD_DIR := build
 
 USB_USER := guest
 USB_IMAGE := $(BUILD_DIR)/usb.raw
-USB_CONFIG := machines/usb/config.scm
+USB_CONFIG := guix/machines/usb/image.scm
 USB_HOME_UUID := 77941632-5715-4b77-a1f0-a32aeeae7a38
+
 
 HOME_FS := $(BUILD_DIR)/home/$(USB_USER)
 ROOT_MOUNT := $(BUILD_DIR)/root
@@ -28,8 +29,8 @@ boot-qemu: ## Boot the machine image using QEMU
         -enable-kvm \
         -vga std \
         -cpu host \
-    -drive if=pflash,format=raw,readonly,file=/usr/share/ovmf/OVMF.fd \
-        -drive format=raw,file=$(USB_IMAGE) \
+    -drive if=pflash,format=raw,readonly,file=/run/current-system/profile/share/firmware/ovmf_x64.bin \
+        -drive format=raw,file=/home/chaise/Downloads/guix-system-install-1.4.0.x86_64-linux.iso    \
     -object rng-random,filename=/dev/urandom,id=rng0 \
         -device virtio-rng-pci,rng=rng0,id=rng-device0 \
         -net nic,model=virtio \
@@ -55,17 +56,19 @@ $(ROOT_MOUNT):
 
 $(HOME_FS):
 	@mkdir -p $(HOME_FS)
-	@git clone 'https://github.com/hlissner/doom-emacs' $(HOME_FS)/.emacs.d
+	@git clone --depth 1 'https://github.com/hlissner/doom-emacs' $(HOME_FS)/.emacs.d
+	@git clone --depth 1 'https://github.com/Jdaco/dotfiles' $(HOME_FS)/dotfiles
 	@./bin/config-tangle $(PWD) $(HOME_FS) usb
 	@$(GUIX_RUN) --share=$(HOME_FS)=/home/$(USB_USER) -- bash /home/$(USB_USER)/.emacs.d/bin/doom install --no-config --no-env
+	@$(GUIX_RUN) --share=$(HOME_FS)=/home/$(USB_USER) -- bash /home/$(USB_USER)/.emacs.d/bin/doom upgrade
 	@rm -fv $(HOME_FS)/.emacs.d/.local/autoloads*.elc
 	@mkdir $(HOME_FS)/org
 
 usb:
-	@cp -v $(shell guix system image -L $(PWD) machines/usb/image.scm) ./image.raw
+	@cp -v $(shell guix system image -L $(PWD)/guix $(USB_CONFIG)) ./image.raw
 
 $(USB_IMAGE): $(BUILD_DIR) $(ROOT_MOUNT) $(HOME_FS)
-	@cp $(shell guix system image -L $(PWD) $(USB_CONFIG)) $(USB_IMAGE)
+	@cp $(shell guix system image -L $(PWD)/guix $(USB_CONFIG)) $(USB_IMAGE)
 	@chmod 755 $(USB_IMAGE)
 	@sleep 5
 	export DEV=$$(sudo losetup -Pvf --show --direct-io=on $(USB_IMAGE)) && \
