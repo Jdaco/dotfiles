@@ -2,6 +2,7 @@
   #:use-module (guix build utils)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
+  #:use-module (gnu packages databases)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages curl)
@@ -118,3 +119,30 @@ while working with large number of files.")
     (synopsis "FUSE-based file system backed by Amazon S3")
     (description "FUSE-based file system backed by Amazon S3")
     (license license:expat)))
+
+(define-public duckdb
+  (package
+   (inherit duckdb)
+   (name "duckdb")
+   (version "1.1.1")
+    (source
+      (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/duckdb/duckdb")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0s2zmrr7m0wb0gmspjcqpyglv8s0zx78k4283abm560ql87bgx30"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; There is no git checkout from which to read the version tag.
+            (substitute* "CMakeLists.txt"
+              (("set\\(DUCKDB_VERSION \"[^\"]*\"")
+               (string-append "set(DUCKDB_VERSION \"v" #$version "\"")))))))
+    (arguments
+     `(#:configure-flags
+       (list "-DCORE_EXTENSIONS=autocomplete;fts;icu;json;parquet;tpch;sqlite;")))
+    ))
