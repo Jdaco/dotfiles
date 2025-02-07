@@ -100,6 +100,10 @@ I use [[https://orgmode.org/][Org mode]] for:
      "s" #'org-sidebar-toggle
      "t" #'org-sidebar-tree-toggle
      ))
+(map! :map org-sidebar-tree-map
+      :nm "<return>" #'org-sidebar-tree-jump
+      :nm "C-<return>" #'org-sidebar-tree-jump
+      :nm "RET" #'org-sidebar-tree-jump)
 #+end_src
 
 #+begin_src elisp :noweb-ref packages
@@ -453,7 +457,7 @@ templates"
                                  (search . " %i %-12:c"))
 
         org-agenda-time-grid '((daily) () "" "")
-        org-agenda-tag-filter-preset '("-goal")
+        org-agenda-tag-filter-preset nil
         org-agenda-custom-commands
         '(("w" "Upcoming week" agenda ""
            ((org-agenda-span 7)
@@ -744,10 +748,10 @@ this (must be a single line in the Org buffer):
            (list (cons 'todo (lambda (element)
                                (org-element-property :todo-keyword element)))
                  (cons 'heading (lambda (element)
-                                  (org-make-link-string (format "id:%s" (car (org-element-map element 'headline (lambda (element) (org-id-get-create)))))
-                                                        (org-element-property :raw-value element))))
+                                  (org-make-link-string (format "id:%s" (org-element-property :ID element))
+                                                        (org-element-property :raw-value element)
+                                                        )))
                  (cons 'category (lambda (element)
-                                   (print element)
                                   (org-element-property-inherited :CATEGORY element)))
                  (cons 'priority (lambda (element)
                                    (--when-let (org-element-property :priority element)
@@ -765,7 +769,7 @@ this (must be a single line in the Org buffer):
                                    (org-element-property (intern (concat ":" (upcase property))) element)))))
           (elements (org-ql-query :from (or file (current-buffer))
                                   :where query
-                                  :select '(org-element-headline-parser (line-end-position))
+                                  :select '(org-element-properties-resolve (org-element-headline-parser (line-end-position)))
                                   :order-by sort)))
     (when take
       (setf elements (cl-etypecase take
