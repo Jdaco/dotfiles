@@ -2,7 +2,7 @@
   #:use-module (guix build utils)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
-  #:use-module (gnu packages databases)
+  #:use-module ((gnu packages databases) #:prefix gnu:)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages curl)
@@ -122,7 +122,7 @@ while working with large number of files.")
 
 (define-public duckdb
   (package
-   (inherit duckdb)
+   (inherit gnu:duckdb)
    (name "duckdb")
    (version "1.1.1")
     (source
