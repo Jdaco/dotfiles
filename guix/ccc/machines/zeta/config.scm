@@ -64,8 +64,8 @@
               (simple-service 'cron-jobs mcron-service-type
                               (list (btrfs-snapshot-job 5 "/data/data")
                                     (btrfs-snapshot-job 5 "/data/proj")
-                                    (btrfs-snapshot-job 5 "/data/backups/gamma")
-                                    (btrfs-snapshot-job 5 "/data/backups/delta")
+                                    (btrfs-snapshot-job 5 "/data/backups")
+                                    (btrfs-snapshot-job 5 "/data/services")
                                     ))
               (service k3s-service-type
                        (k3s-configuration (storage-path "/data/k3s")))
