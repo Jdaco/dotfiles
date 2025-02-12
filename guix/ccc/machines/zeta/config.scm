@@ -5,6 +5,7 @@
              (gnu packages ssh)
              (srfi srfi-1)
              (ccc packages k3s)
+             (ccc packages grafana)
              (ccc lib btrfs))
 (use-service-modules ssh networking nfs syncthing mcron)
 
@@ -61,6 +62,10 @@
               (service nfs-service-type
                        (nfs-configuration
                         (exports '(("/data" "*(rw,insecure,no_subtree_check,crossmnt,fsid=0)")))))
+              (service grafana-service-type
+                       (grafana-configuration
+                        (env-vars '("GF_PATHS_DATA=/data/services/grafana" "GF_PATHS_PLUGINS=/data/services/grafana/plugins"))
+                        ))
               (simple-service 'cron-jobs mcron-service-type
                               (list (btrfs-snapshot-job 5 "/data/data")
                                     (btrfs-snapshot-job 5 "/data/proj")

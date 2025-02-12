@@ -14,9 +14,11 @@
             grafana)
   )
 
-(define-record-type* <grafana-configuration> grafana-configuration make-grafana-configuration grafana-configuration?
+(define-record-type* <grafana-configuration>
+  grafana-configuration make-grafana-configuration grafana-configuration?
   (arguments grafana-configuration-arguments (default '()))
-  (config-path grafana-configuration-config-path)
+  (config-path grafana-configuration-config-path (default #nil))
+  (env-vars grafana-configuration-env-vars (default '()))
   )
 
 (define (grafana-service config)
@@ -31,7 +33,13 @@
               (list #$(file-append grafana "/bin/grafana")
                     "server"
                     "--homepath" #$(file-append grafana "/share/grafana")
-                    "--config" #$(grafana-configuration-config-path config))))
+                    #$@(if (nil? (grafana-configuration-config-path config))
+                           '()
+                           (list "--config" (grafana-configuration-config-path config))
+                           )
+                    )
+              #:environment-variables
+              (list #$@(grafana-configuration-env-vars config))))
     (stop #~(make-kill-destructor)))))
 
 (define grafana-service-type
