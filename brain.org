@@ -137,6 +137,7 @@ I use [[https://jblevins.org/projects/deft/][Deft]] to search my org files using
 ("Goals"
  :buffers-files org-agenda-files
  :query (tags-local "goal")
+ :sort date
  :super-groups ((:name "In Progress" :todo "PROGRESS")
                 (:auto-category)))
 ("Goals - In Progress"
