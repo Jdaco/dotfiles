@@ -980,6 +980,7 @@ TODO: Look into using [[https://www.gnu.org/software/emacs/manual/html_node/emac
       "Z" #'dired-do-compress
       "c" #'dired-do-compress-to
       "C-S-d" (cmd! () (let ((delete-by-moving-to-trash nil)) (dired-do-delete)))
+      "C-S-g" (cmd! () (call-interactively #'dirvish-emerge-mode))
       :localleader
       "t"  (cmd! () (dired-toggle-marks) (image-dired-display-thumbs) (dired-unmark-all-marks))
       )
@@ -993,16 +994,21 @@ TODO: Look into using [[https://www.gnu.org/software/emacs/manual/html_node/emac
       "we" (cmd! () (consult-file-externally (car (dired-get-marked-files))))
       "l" #'dired-open-file)
 
-(add-hook! 'dirvish-setup-hook #'dirvish-emerge-mode)
+(defun dired-scale-text ()
+  (text-scale-set 2))
+
+(add-hook! 'dired-mode-hook #'dired-scale-text)
 
 (setq dired-listing-switches "-alh"
       dired-omit-files "^\\."
       dirvish-hide-details t
       dirvish-emerge-groups '(("Directories" (predicate . directories))
                               ("Org" (extensions "org"))
-                             ("Documents" (extensions "pdf" "docx"))
+                             ("Data" (extensions "csv" "json" "tsv" "parquet" "orc"))
+                             ("Documents" (extensions "pdf" "docx" "xlsx"))
+                             ("Code" (extensions "scm" "el" "py" "go" "orc"))
                              ("Images" (extensions "jpg" "jpeg" "png" "gif" "svg"))
-                             ("Videos" (extensions "mp4" "mkv" "webm" "flv")))
+                             ("Videos" (extensions "mp4" "mkv" "webm" "flv" "m4v")))
       )
 
 
