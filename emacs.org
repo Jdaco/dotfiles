@@ -107,7 +107,7 @@ git clone https://github.com/hlissner/doom-emacs ~/.emacs.d
        ;;word-wrap         ; soft wrapping with language-aware indent
 
        :emacs
-       (dired +icons)             ; making dired pretty [functional]
+       (dired +icons +dirvish)             ; making dired pretty [functional]
        electric          ; smarter, keyword-based electric-indent
        (ibuffer +icons)         ; interactive buffer management
        undo              ; persistent, smarter undo for your inevitable mistakes
@@ -1001,19 +1001,39 @@ TODO: Look into using [[https://www.gnu.org/software/emacs/manual/html_node/emac
 (defun dired-scale-text ()
   (text-scale-set 2))
 
-(add-hook! 'dired-mode-hook #'dired-scale-text)
+(after! dired-x
+    (add-hook! 'dired-mode-hook #'dired-scale-text)
 
-(setq dired-listing-switches "-alh"
-      dired-omit-files "^\\."
-      dirvish-hide-details t
-      dirvish-emerge-groups '(("Directories" (predicate . directories))
-                              ("Org" (extensions "org"))
-                             ("Data" (extensions "csv" "json" "tsv" "parquet" "orc"))
-                             ("Documents" (extensions "pdf" "docx" "xlsx"))
-                             ("Code" (extensions "scm" "el" "py" "go" "orc"))
-                             ("Images" (extensions "jpg" "jpeg" "png" "gif" "svg"))
-                             ("Videos" (extensions "mp4" "mkv" "webm" "flv" "m4v")))
-      )
+    ;; Overwrite dired-next-line because for some reasno when
+    ;;   dired-hide-details-mode was active it was moving down 2 lines
+    (defun dired-next-line (arg)
+    "Move down lines then position at filename.
+    Optional prefix ARG says how many lines to move; default is one line."
+    (interactive "^p")
+    ;; (let ((line-move-visual)
+    ;;       (goal-column))
+    ;;   (line-move arg t))
+    ;; We never want to move point into an invisible line.
+    (line-move arg t)
+    (while (and (invisible-p (point))
+                (not (if (and arg (< arg 0)) (bobp) (eobp))))
+        (forward-char (if (and arg (< arg 0)) -1 1)))
+    (dired-move-to-filename)
+    )
+
+    (setq dired-listing-switches "-alh --group-directories-first"
+        dired-omit-files "^\\."
+        dired-hide-details t
+        dirvish-hide-details t
+        dirvish-emerge-groups '(("Directories" (predicate . directories))
+                                ("Org" (extensions "org"))
+                                ("Data" (extensions "csv" "json" "tsv" "parquet" "orc"))
+                                ("Documents" (extensions "pdf" "docx" "xlsx"))
+                                ("Code" (extensions "scm" "el" "py" "go" "orc"))
+                                ("Images" (extensions "jpg" "jpeg" "png" "gif" "svg"))
+                                ("Videos" (extensions "mp4" "mkv" "webm" "flv" "m4v")))
+        ))
+
 
 
 (defun ccc/randomize-file-name (filename)
@@ -1038,6 +1058,17 @@ This is usefule for removing .url files for videos that I've already watched and
             (= 1 (length (f-glob (s-concat (s-replace "[" "[[]" (f-base file)) ".*")))))
        (call-interactively #'dired-mark)))))
 #+end_src
+
+
+#+begin_src elisp
+#+end_src
+
+#+begin_src elisp :noweb-ref packages
+; I need dirvish-open-with-programs until Emacs 30 is available
+; https://github.com/alexluigit/dirvish/commit/362601154d3aa13ed60d78be2e1bfa2c166a5e37
+(package! dirvish :pin "77299abeeb5f518671d71447d1d061edeaf9537b")
+#+end_src
+
 
 ***** Sorting
 
