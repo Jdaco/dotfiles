@@ -140,7 +140,6 @@ git clone https://github.com/hlissner/doom-emacs ~/.emacs.d
        make              ; run make tasks from Emacs
        pass              ; password manager for nerds
        pdf               ; pdf enhancements
-       prodigy           ; managing external services & code builders
        ;;rgb               ; creating color strings
        ;;taskrunner        ; taskrunner for all your projects
        terraform         ; infrastructure as code
@@ -638,6 +637,11 @@ Man pages are reference manuals for the programs on your system
 
 ** Services
 I use [[https://github.com/rejeep/prodigy.el][Prodigy]] to manage user-level background processes
+
+#+begin_src elisp :noweb-ref packages
+(package! prodigy)
+#+end_src
+
 
 *** Prodigy
 #+begin_src elisp :noweb-ref configs
