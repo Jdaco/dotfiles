@@ -205,7 +205,7 @@ My primary laptop
 #+include: ./email.org
 #+include: ./finance.org
 #+include: ./rss.org
-#+include: ./brain.org
+#+include: ~/roam/config.org
 #+include: ./vm.org
 #+include: ./ai.org
 #+include: ./social.org
