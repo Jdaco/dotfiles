@@ -28,7 +28,7 @@
                 %base-groups))
   (packages
     (append
-      (list (specification->package "emacs")
+      (list (specification->package "emacs-next")
             (specification->package "emacs-exwm")
             (specification->package "emacs-pdf-tools")
             ;; (specification->package "emacs-emacsql-sqlite3")
