@@ -981,6 +981,7 @@ TODO: Look into using [[https://www.gnu.org/software/emacs/manual/html_node/emac
       "g h" (cmd! () (find-file "~"))
       "C-k" #'dired-kill-line
       "C-S-k" #'dired-do-kill-lines
+      "C-S-d" (cmd! () (let ((delete-by-moving-to-trash nil)) (dired-do-delete)))
       "Z" #'dired-do-compress
       "c" #'dired-do-compress-to
       "C-S-d" (cmd! () (let ((delete-by-moving-to-trash nil)) (dired-do-delete)))
