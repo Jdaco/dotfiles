@@ -1026,6 +1026,7 @@ TODO: Look into using [[https://www.gnu.org/software/emacs/manual/html_node/emac
         dired-omit-files "^\\."
         dired-hide-details t
         dirvish-hide-details t
+        dirvish-attributes '(vc-state nerd-icons subtree-state)
         dirvish-emerge-groups '(("Directories" (predicate . directories))
                                 ("Org" (extensions "org"))
                                 ("Data" (extensions "csv" "json" "tsv" "parquet" "orc"))
