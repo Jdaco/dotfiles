@@ -109,50 +109,6 @@ I use [[https://orgmode.org/][Org mode]] for:
 #+begin_src elisp :noweb-ref packages
 (package! org-sidebar)
 #+end_src
-** Ricing
-*** posframe
-
-This makes org mode popup buffers display in posframe.
-
-I adapted this from [[https://github.com/A7R7/org-popup-posframe][A7R7/org-popup-posframe]]
-
-#+begin_src elisp :noweb-ref packages
-(package! org-popup-posframe :recipe (:host github :repo "A7R7/org-popup-posframe"))
-#+end_src
-
-#+begin_src elisp :noweb-ref configs
-(require 'org-popup-posframe)
-(org-popup-posframe-mode 1)
-
-(setq org-popup-posframe-min-width 100
-      org-popup-posframe-min-height 3
-      org-popup-posframe-border-width 1
-      org-popup-posframe-parameters nil
-      org-popup-posframe-font nil
-      org-popup-posframe-org-insert-link nil
-      org-popup-posframe-org-todo-poshandler #'posframe-poshandler-point-1
- )
-
-(after! org
-  (advice-remove 'org-switch-to-buffer-other-window #'+popup--org-pop-to-buffer-a)
-  (advice-remove 'org-fast-todo-selection #'+popup--org-fix-popup-window-shrinking-a)
-  )
-
-; Temporary fix for the latest version of Org Mode v9.7
-; https://github.com/A7R7/org-popup-posframe/issues/8
-(defun org-popup-posframe--org-fast-todo-selection-advice (func &optional current-todo-keyword)
-  (unwind-protect
-      (let ((display-buffer-overriding-action
-             '((lambda (buffer _alist)
-                 (org-popup-posframe--show-buffer
-                  buffer
-                  ; If not visiting an org-mode file (e.g in agenda mode) center the posframe
-                  (if (window-live-p (get-buffer-window (current-buffer))) org-popup-posframe-org-todo-poshandler #'posframe-poshandler-frame-center))))))
-        (funcall-interactively func current-todo-keyword))
-    (when-let ((buffer (get-buffer " *Org todo*")))
-      (kill-buffer buffer))))
-#+end_src
-
 ** Snippets
 :PROPERTIES:
 :snippet_mode: org-mode
