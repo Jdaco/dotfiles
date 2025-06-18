@@ -52,6 +52,7 @@ https://addons.mozilla.org/en-US/firefox/addon/firefox-color/
        ("Helm Charts" "https://artifacthub.io/packages/search?ts_query_web=%s")
        ("Amazon" "https://www.amazon.com/s?k=%s")
        ("Melpa" "https://melpa.org/#/?q=%s")
+       ("Libgen" "https://libgen.gs/index.php?req=%s")
        ))
 
 #+end_src
