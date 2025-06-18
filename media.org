@@ -125,6 +125,7 @@ Use ~mpv~ to view your webcam
   ["Arguments"
    ("-p" "Download Path" "--paths=" :always-read t :reader ccc/transient-read-or-create-directory)
    ("-w" "Write URL Link" "--write-url-link")
+   ("-c" "Get from browser" "--cookies-from-browser=")
    ("-f" "Format" "--format=" :prompt "Resolution: " :reader yt-dlp--format)
    ("-N" "Concurrent Fragments" "--concurrent-fragments=" :prompt "Concurrent Fragments: " :reader transient-read-number-N+)
    ]
@@ -139,6 +140,9 @@ Use ~mpv~ to view your webcam
       :desc "yt-dlp"  :n "a s y" #'transient-yt-dlp
       )
 #+end_src
+
+#+RESULTS:
+: transient-yt-dlp
 
 ** Images
 
